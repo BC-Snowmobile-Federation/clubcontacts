@@ -2,6 +2,7 @@
   "name": "norloworld",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://set-forget.github.io/bcsf/",
   "type": "module",
   "scripts": {
     "dev": "vite",
