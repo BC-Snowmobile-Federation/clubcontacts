@@ -1,12 +1,55 @@
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 const SideMenu = () => {
-  let { clubName, activeUser } = useSelector(
-    (state) => state.reducer
-  );
+  let { clubName, activeUser } = useSelector((state) => state.reducer);
 
   clubName = "British Columbia Snowmobile Federation";
   activeUser = "mora@setandforget.io";
+
+  const renderSvgIcon = (pathData) => {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        className="h-6 w-6"
+        fill="currentColor"
+      >
+        <path d={pathData} />
+      </svg>
+    );
+  };
+
+  const buttonData = [
+    {
+      id: "clubsProfile",
+      iconPath: "M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 01-1.125-1.125v-3.75zM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-8.25zM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-2.25z", // Add your SVG path data
+      label: "Club Profile",
+      enabled: true,
+      divId: "clubProfilesDiv",
+    },
+    {
+      id: "clubs",
+      iconPath: "M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z", // Add your SVG path data
+      label: "Club Directors",
+      enabled: true,
+      divId: "clubsDiv",
+    },
+    {
+      id: "historical",
+      iconPath: "M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z", // Add your SVG path data
+      label: "History",
+      enabled: true,
+      divId: "historicalDiv",
+    },
+  ];
+
+  useEffect(() => {
+    // Add specific classes after component mounts (equivalent of DOMContentLoaded)
+    document
+      .getElementById("historical")
+      .classList.add("bg-[#2D4080]", "text-white");
+  }, []);
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
@@ -21,7 +64,7 @@ const SideMenu = () => {
 
         <div className="mt-8 flex justify-center">
           <h2 className="montserrat text-xl font-medium text-white">
-            Welcome 
+            Welcome
             <span className="font-semibold"> {clubName}</span>
           </h2>
         </div>
@@ -29,11 +72,21 @@ const SideMenu = () => {
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="flex flex-1 flex-col gap-y-7">
             <li>
-              <ul
-                id="buttonsContainer"
-                role="list"
-                className="-mx-2 space-y-1"
-              ></ul>
+              <ul id="buttonsContainer" role="list" className="-mx-2 space-y-1">
+                {buttonData.map((btn) => (
+                  <li key={btn.id}>
+                    <button
+                      id={btn.id}
+                      type="button"
+                      disabled={!btn.enabled}
+                      className="text-white group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold w-[240px]"
+                    >
+                      {renderSvgIcon(btn.iconPath)}
+                      {btn.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </li>
 
             <div className="bottom-4 fixed">

@@ -1,4 +1,5 @@
-const SearchBar = () => {
+// eslint-disable-next-line
+const SearchBar = ({ setSearchQuery }) => {
   return (
     <div
       id="searchContainer"
@@ -9,6 +10,7 @@ const SearchBar = () => {
         id="searchBox"
         className="outline-none ring-0 border-none w-[720px] h-14 pl-8 focus:ring-0"
         placeholder="Search..."
+        onChange={(e) => setSearchQuery(e.target.value)}
       />
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -1,7 +1,27 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const MainContent = () => {
+// eslint-disable-next-line
+const MainContent = ({ originalData, handleRoleChange, rolePosition }) => {
   let { isBcsf } = useSelector((state) => state.reducer);
+
+  const [roleOptions, setRoleOptions] = useState([]);
+  const [selectedRole, setSelectedRole] = useState("");
+
+  useEffect(() => {
+    const uniqueValues = [
+      // eslint-disable-next-line
+      ...new Set(originalData.map((item) => item[rolePosition])),
+    ].filter((el) => el !== "");
+    setRoleOptions(["All", ...uniqueValues]);
+    // eslint-disable-next-line
+  }, [originalData]);
+
+  const onRoleChange = (e) => {
+    const newRole = e.target.value;
+    setSelectedRole(newRole);
+    handleRoleChange(newRole);
+  };
 
   isBcsf = true;
 
@@ -29,8 +49,20 @@ const MainContent = () => {
           </select>
         )}
 
-        <select id="roleSelect" className="...">
-          {/* ...options */}
+        <select
+          id="roleSelect"
+          className="px-4 rounded-full bg-transparent appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+          value={selectedRole}
+          onChange={onRoleChange}
+        >
+          <option value="" disabled>
+            Role
+          </option>
+          {roleOptions.map((role, index) => (
+            <option key={index} value={role === "All" ? "All" : role}>
+              {role}
+            </option>
+          ))}
         </select>
 
         <select id="statusSelect" className="...">
