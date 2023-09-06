@@ -1,33 +1,74 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 
-// eslint-disable-next-line
-const MainContent = ({ originalData, handleRoleChange, rolePosition }) => {
+const MainContent = ({
+  // eslint-disable-next-line
+  handleRoleChange,
+  // eslint-disable-next-line
+  selectedRole,
+  // eslint-disable-next-line
+  handleClubChange,
+  // eslint-disable-next-line
+  selectedClub,
+  // eslint-disable-next-line
+  handleStatusChange,
+  // eslint-disable-next-line
+  selectedStatus,
+  // eslint-disable-next-line
+  handleAmiliaChange,
+  // eslint-disable-next-line
+  selectedAmilia,
+  // eslint-disable-next-line
+  uniqueRoleValues,
+  // eslint-disable-next-line
+  uniqueClubValues,
+  // eslint-disable-next-line
+  uniqueStatusValues,
+  // eslint-disable-next-line
+  uniqueAmiliaValues,
+}) => {
   let { isBcsf } = useSelector((state) => state.reducer);
 
-  const [roleOptions, setRoleOptions] = useState([]);
-  const [selectedRole, setSelectedRole] = useState("");
-
-  useEffect(() => {
-    const uniqueValues = [
-      // eslint-disable-next-line
-      ...new Set(originalData.map((item) => item[rolePosition])),
-    ].filter((el) => el !== "");
-    setRoleOptions(["All", ...uniqueValues]);
-    // eslint-disable-next-line
-  }, [originalData]);
+  // eslint-disable-next-line
+  const [roleOptions, setRoleOptions] = useState(["All", ...uniqueRoleValues]);
+  // eslint-disable-next-line
+  const [clubOptions, setClubOptions] = useState(["All", ...uniqueClubValues]);
+  // eslint-disable-next-line
+  const [statusOptions, setStatusOptions] = useState([
+    "All",
+    ...uniqueStatusValues,
+  ]);
+  // eslint-disable-next-line
+  const [amiliaOptions, setAmiliaOptions] = useState([
+    "All",
+    ...uniqueAmiliaValues,
+  ]);
 
   const onRoleChange = (e) => {
     const newRole = e.target.value;
-    setSelectedRole(newRole);
     handleRoleChange(newRole);
+  };
+
+  const onClubChange = (e) => {
+    const newClub = e.target.value;
+    handleClubChange(newClub);
+  };
+
+  const onStatusChange = (e) => {
+    const newStatus = e.target.value;
+    handleStatusChange(newStatus);
+  };
+
+  const onAmiliaChange = (e) => {
+    const newAmilia = e.target.value;
+    handleAmiliaChange(newAmilia);
   };
 
   isBcsf = true;
 
   return (
     <div className="flex items-center justify-center">
-      <div className="bg-slate-100 rounded-full w-[720px] h-10 items-center flex justify-around">
+      <div className="bg-transparent rounded-full w-[720px] h-10 items-center flex justify-around">
         <div className="svg-container flex h-10 items-center ml-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -44,14 +85,26 @@ const MainContent = ({ originalData, handleRoleChange, rolePosition }) => {
         </div>
 
         {isBcsf && (
-          <select id="historicalClubSelect" className="...">
-            {/* ...options */}
+          <select
+            id="historicalClubSelect"
+            className="px-4 rounded-full bg-slate-200 border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+            value={selectedClub}
+            onChange={onClubChange}
+          >
+            <option value="" disabled>
+              Club
+            </option>
+            {clubOptions.map((club, index) => (
+              <option key={index} value={club === "All" ? "All" : club}>
+                {club}
+              </option>
+            ))}
           </select>
         )}
 
         <select
           id="roleSelect"
-          className="px-4 rounded-full bg-transparent appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+          className="px-4 rounded-full bg-slate-200 border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
           value={selectedRole}
           onChange={onRoleChange}
         >
@@ -65,12 +118,36 @@ const MainContent = ({ originalData, handleRoleChange, rolePosition }) => {
           ))}
         </select>
 
-        <select id="statusSelect" className="...">
-          {/* ...options */}
+        <select
+          id="statusSelect"
+          className="px-4 rounded-full bg-slate-200 border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+          value={selectedStatus}
+          onChange={onStatusChange}
+        >
+          <option value="" disabled>
+            Status
+          </option>
+          {statusOptions.map((status, index) => (
+            <option key={index} value={status === "All" ? "All" : status}>
+              {status}
+            </option>
+          ))}
         </select>
 
-        <select id="amiliaSelect" className="...">
-          {/* ...options */}
+        <select
+          id="amiliaSelect"
+          className="px-4 rounded-full bg-slate-200 border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+          value={selectedAmilia}
+          onChange={onAmiliaChange}
+        >
+          <option value="" disabled>
+            Status
+          </option>
+          {amiliaOptions.map((amilia, index) => (
+            <option key={index} value={amilia === "All" ? "All" : amilia}>
+              {amilia}
+            </option>
+          ))}
         </select>
       </div>
     </div>
