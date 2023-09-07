@@ -7,11 +7,20 @@ const initialState = {
   isBcsf: false,
   clubName: null,
   activeUser: null,
+  clubData: [],
 };
 
 export const fetchData = createAsyncThunk("getData/fetchData", async () => {
   let url =
     "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=getAllData&activeUser=mora@setandforget.io";
+  const response = await fetch(url);
+  const data = await response.json();
+  return data.response;
+});
+
+export const fetchClubData = createAsyncThunk("getData/fetchClubData", async () => {
+  let url =
+    "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=fetchClubsProfileData&isBcsf=true";
   const response = await fetch(url);
   const data = await response.json();
   return data.response;
@@ -49,6 +58,9 @@ const appReducer = createSlice({
     builder.addCase(fetchData.fulfilled, (state, action) => {
       state.data = action.payload; // Replaces the existing data
       state.allData = action.payload; // Replaces the existing data
+    });
+    builder.addCase(fetchClubData.fulfilled, (state, action) => {
+      state.clubData = action.payload;
     });
   },
 });

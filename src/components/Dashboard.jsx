@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchData } from "../../redux/slice";
+import { fetchData, fetchClubData } from "../../redux/slice";
 import SideMenu from "./SideMenu";
 import MainContent from "./MainContent";
 import SearchBar from "./SearchBar";
 import DataTable from "./DataTable";
+import ClubDirectors from "./ClubDirectors";
+import ClubProfile from "./ClubProfile";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchData());
+    dispatch(fetchClubData());
   }, [dispatch]);
+  // eslint-disable-next-line
+  const [clubsProfileData, setClubsProfileData] = useState([]);
 
-  let { data } = useSelector((state) => state.reducer);
+  let { data, clubData } = useSelector((state) => state.reducer);
 
   let headers = [
     "Name",
@@ -38,6 +43,8 @@ const Dashboard = () => {
 
   let { isBcsf } = useSelector((state) => state.reducer);
   isBcsf = true;
+  let isManager = "MANAGER";
+  //   let clubName = 'British Columbia Snowmobile Federation'
 
   const rolePosition = isBcsf ? 7 : 6;
   const statusPosition = isBcsf ? 8 : 7;
@@ -49,6 +56,7 @@ const Dashboard = () => {
   const [selectedClub, setSelectedClub] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedAmilia, setSelectedAmilia] = useState("All");
+  const [activeButton, setActiveButton] = useState("historical");
 
   const uniqueRoleValues = [
     // eslint-disable-next-line
@@ -86,11 +94,11 @@ const Dashboard = () => {
     setSelectedAmilia(newSelectedAmilia);
   };
 
-//   useEffect(() => {
-//     if (data && data.length > 0 && filteredData.length === 0) {
-//       setFilteredData(data);
-//     }
-//   }, [data, filteredData]);
+  //   useEffect(() => {
+  //     if (data && data.length > 0 && filteredData.length === 0) {
+  //       setFilteredData(data);
+  //     }
+  //   }, [data, filteredData]);
 
   useEffect(() => {
     let newFilteredData = [...data];
@@ -139,7 +147,7 @@ const Dashboard = () => {
     selectedAmilia,
     rolePosition,
     statusPosition,
-    amiliaPosition
+    amiliaPosition,
   ]);
 
   if (!data || data.length < 1) {
@@ -148,40 +156,55 @@ const Dashboard = () => {
 
   return (
     <div>
-      {/* Side Menu */}
-      <SideMenu />
+      <SideMenu setActiveButton={setActiveButton} activeButton={activeButton} />
       <div className="lg:pl-[280px]">
         <main className="py-10">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="overflow-hidden">
               <div id="historicalDiv">
-                {/* Main Content */}
-                <MainContent
-                  originalData={data}
-                  handleRoleChange={handleRoleChange}
-                  rolePosition={rolePosition}
-                  selectedRole={selectedRole}
-                  handleClubChange={handleClubChange}
-                  selectedClub={selectedClub}
-                  handleStatusChange={handleStatusChange}
-                  statusPosition={statusPosition}
-                  selectedStatus={selectedStatus}
-                  handleAmiliaChange={handleAmiliaChange}
-                  amiliaPosition={amiliaPosition}
-                  selectedAmilia={selectedAmilia}
-                  uniqueRoleValues={uniqueRoleValues}
-                  uniqueClubValues={uniqueClubValues}
-                  uniqueStatusValues={uniqueStatusValues}
-                  uniqueAmiliaValues={uniqueAmiliaValues}
-                />
-                {/* SearchBar */}
-                <SearchBar setSearchQuery={setSearchQuery} />
-
+                {activeButton === "historical" && (
+                  <>
+                    <MainContent
+                      originalData={data}
+                      handleRoleChange={handleRoleChange}
+                      rolePosition={rolePosition}
+                      selectedRole={selectedRole}
+                      handleClubChange={handleClubChange}
+                      selectedClub={selectedClub}
+                      handleStatusChange={handleStatusChange}
+                      statusPosition={statusPosition}
+                      selectedStatus={selectedStatus}
+                      handleAmiliaChange={handleAmiliaChange}
+                      amiliaPosition={amiliaPosition}
+                      selectedAmilia={selectedAmilia}
+                      uniqueRoleValues={uniqueRoleValues}
+                      uniqueClubValues={uniqueClubValues}
+                      uniqueStatusValues={uniqueStatusValues}
+                      uniqueAmiliaValues={uniqueAmiliaValues}
+                    />
+                    <SearchBar setSearchQuery={setSearchQuery} />
+                  </>
+                )}
                 <div className="mt-1 flow-root">
                   <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                       <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg max-w-screen">
-                        <DataTable data={filteredData} headers={headers} />
+                        {activeButton === "clubs" ? (
+                          <ClubDirectors
+                            isManager={isManager}
+                            data={data}
+                            isBcsf={isBcsf}
+                            uniqueClubValues={uniqueClubValues}
+                          />
+                        ) : activeButton === "clubsProfile" ? (
+                          <ClubProfile
+                            isBcsf={isBcsf}
+                            clubData={clubData}
+                            uniqueClubValues={uniqueClubValues}
+                          />
+                        ) : activeButton === "historical" ? (
+                          <DataTable data={filteredData} headers={headers} />
+                        ) : null}
                       </div>
                     </div>
                   </div>
