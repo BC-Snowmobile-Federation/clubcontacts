@@ -15,10 +15,12 @@ const Dashboard = () => {
     dispatch(fetchData());
     dispatch(fetchClubData());
   }, [dispatch]);
-  // eslint-disable-next-line
-  const [clubsProfileData, setClubsProfileData] = useState([]);
 
-  let { data, clubData } = useSelector((state) => state.reducer);
+  let { data, clubData, isBcsf } = useSelector((state) => state.reducer);
+
+  useEffect(() => {
+
+  }, [data, clubData])
 
   let headers = [
     "Name",
@@ -41,7 +43,6 @@ const Dashboard = () => {
     return [...before, item9, ...after];
   });
 
-  let { isBcsf } = useSelector((state) => state.reducer);
   isBcsf = true;
   let isManager = "MANAGER";
   //   let clubName = 'British Columbia Snowmobile Federation'
