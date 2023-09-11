@@ -25,13 +25,14 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
   const ameliaAdminRef = useRef(null);
   const managerAccessRef = useRef(null);
   const [errorMessages, setErrorMessages] = useState({});
-
-
-
-  
+  const [shouldPost, setShouldPost] = useState(false);
+  const [clubName, setClubName] = useState("");
+  const [hasManager, setHasManager] = useState(false);
+  const [memberData, setMemberData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
-    let clubName = submitAddDirector();
     const inputRefs = [
       memberNameRef,
       memberLastNameRef,
@@ -71,15 +72,21 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
       return element.type === "checkbox" ? element.checked : element.value;
     });
 
-    const hasManager = formData.pop(); // get the last element as hasManager and remove it from formData
-    const memberData = formData;
-    memberData.splice(7, 0, "Active");
+    const localHasManager = formData.pop(); // get the last element as hasManager and remove it from formData
+    const localMemberData = formData;
+    localMemberData.splice(7, 0, "Active");
 
-    console.log(clubName, memberData, hasManager);
+    setClubName(submitAddDirector());
+    setHasManager(localHasManager);
+    setMemberData(localMemberData);
 
-    // Post the data to the apps script API
+    if (isLoading) return;
+    setShouldPost(true);
+  };
+
+  const postDirectorData = async (clubName, memberData, hasManager) => {
     let url =
-      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec";
+      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec"; // Your URL here
 
     const options = {
       method: "post",
@@ -95,13 +102,23 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
       },
     };
 
-    const response = await fetch(url, options);
+    await fetch(url, options);
     // const responseData = await response.json();
-
-    console.log(data);
-
-    return response;
+    // return response;
   };
+
+  useEffect(() => {
+    if (shouldPost && !isLoading) {
+      const addDirector = async () => {
+        setIsLoading(true);
+        await postDirectorData(clubName, memberData, hasManager);
+        dispatch(fetchData());
+        setShouldPost(false); // Reset the flag after making the API call
+        setIsLoading(false);
+      };
+      addDirector();
+    }
+  }, [shouldPost, clubName, memberData, hasManager, data, isLoading, dispatch]);
 
   return (
     <div
@@ -461,12 +478,6 @@ const MemberCard = ({
 };
 // eslint-disable-next-line
 const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchData());
-  }, [dispatch]);
-  
   let { data } = useSelector((state) => state.reducer);
   data = data.map((row) => {
     const item9 = row[11];
@@ -480,8 +491,6 @@ const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedClubName, setSelectedClubName] = useState("");
   const [version, setVersion] = useState(0);
-
-  console.log("data modf", data);
 
   const handleClubChange = (e) => {
     setSelectedClub(e.target.value);
