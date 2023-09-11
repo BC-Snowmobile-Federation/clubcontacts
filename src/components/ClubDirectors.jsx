@@ -30,6 +30,7 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
   const [hasManager, setHasManager] = useState(false);
   const [memberData, setMemberData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeSaveButton, setActiveSaveButton] = useState(false);
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
@@ -80,6 +81,7 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
     setHasManager(localHasManager);
     setMemberData(localMemberData);
 
+    setActiveSaveButton(true);
     if (isLoading) return;
     setShouldPost(true);
   };
@@ -312,23 +314,42 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
 
             <div
               id="submitButtonsContainer"
-              className="mt-5  flex justify-center"
+              className="mt-5 flex justify-center"
             >
               <button
+                disabled={activeSaveButton}
                 onClick={handleSubmit}
                 id="submitAddMember"
                 type="button"
-                className="w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm hover:text-[#535787]"
+                className={
+                  activeSaveButton
+                    ? "w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm hover:text-[#535787]"
+                    : "w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm"
+                }
               >
-                Save
+                {isLoading ? (
+                  <div
+                    className="spinner inline-block w-2 h-2 ml-2 border-t-2 border-solid rounded-full animate-spin"
+                    style={{
+                      borderColor: "#535787",
+                      borderRightColor: "transparent",
+                      width: "1.2rem",
+                      height: "1.2rem",
+                    }}
+                  ></div>
+                ) : (
+                  "Save"
+                )}
               </button>
+
               <button
+                disabled={isLoading}
                 onClick={handleCloseModal}
                 id="closeAddModal"
                 type="button"
                 className="w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787]"
               >
-                Cancel
+                Close
               </button>
             </div>
           </div>
@@ -380,8 +401,9 @@ const MemberCard = ({
   isManager,
   setOpenModal,
   setSelectedClubName,
+  isEditing,
+  setIsEditing
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
 
   const dtValues = [
     "President",
@@ -441,37 +463,41 @@ const MemberCard = ({
 
   return (
     <div className="mt-8 w-[500px] rounded-xl shadow-2xl border">
-      <div className="flex text-xl justify-between px-4 py-5 bg-gray-200 rounded-t-xl">
+      <div className="flex text-xl px-4 py-5 bg-gray-200 rounded-t-xl justify-between">
         <h2 className="font-semibold">{clubName}</h2>
-        {isEditing ? (
-          <>
-            <button
-              className="add-director-button right-0 bg-transparent"
-              onClick={handleOpenModal}
-            >
-              <p className="font-semibold text-base text-[#535787] cursor-pointer">
-                Add Director
-              </p>
-            </button>
-            <button className="save-button -ml-6 right-0 bg-transparent">
-              <p className="font-semibold text-base text-[#535787] cursor-pointer">
-                Save
-              </p>
-            </button>
-          </>
-        ) : (
-          isManager === "MANAGER" && (
-            <button
-              className="edit-button right-0 bg-transparent"
-              onClick={() => setIsEditing(true)}
-            >
-              <p className="font-semibold text-base text-[#535787] cursor-pointer">
-                Edit
-              </p>
-            </button>
-          )
-        )}
+
+        <div className="flex space-x-4">
+          {isEditing ? (
+            <>
+              <button
+                className="add-director-button bg-transparent"
+                onClick={handleOpenModal}
+              >
+                <p className="font-semibold text-base text-[#535787] cursor-pointer">
+                  Add Director
+                </p>
+              </button>
+              <button className="save-button bg-transparent">
+                <p className="font-semibold text-base text-[#535787] cursor-pointer">
+                  Save
+                </p>
+              </button>
+            </>
+          ) : (
+            isManager === "MANAGER" && (
+              <button
+                className="edit-button bg-transparent"
+                onClick={() => setIsEditing(true)}
+              >
+                <p className="font-semibold text-base text-[#535787] cursor-pointer">
+                  Edit
+                </p>
+              </button>
+            )
+          )}
+        </div>
       </div>
+
       {membersJSX}
     </div>
   );
@@ -491,6 +517,7 @@ const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedClubName, setSelectedClubName] = useState("");
   const [version, setVersion] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleClubChange = (e) => {
     setSelectedClub(e.target.value);
@@ -499,6 +526,7 @@ const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
   const handleCloseModal = () => {
     setOpenModal(false);
     setVersion((prevVersion) => prevVersion + 1);
+    setIsEditing(false)
   };
 
   const submitAddDirector = () => {
@@ -595,6 +623,8 @@ const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
                   setOpenModal={setOpenModal}
                   setSelectedClubName={setSelectedClubName}
                   version={version}
+                  isEditing={isEditing}
+                  setIsEditing={setIsEditing}
                 />
               ))}
           </div>
