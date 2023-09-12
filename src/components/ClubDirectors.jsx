@@ -360,7 +360,18 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
 };
 
 // eslint-disable-next-line
-const MemberDetail = ({ dtValue, member, index, clubName, isManager }) => {
+const MemberDetail = ({
+  dtValue,
+  member,
+  index,
+  clubName,
+  isManager,
+  isEditing,
+  data,
+  editSelectedClub,
+  handleChangesSubmit,
+  handleSelectChange,
+}) => {
   return (
     <dl className="divide-y divide-gray-500 montserrat">
       <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-[8rem] sm:px-0">
@@ -373,7 +384,35 @@ const MemberDetail = ({ dtValue, member, index, clubName, isManager }) => {
           </dt>
         </div>
         <div className="sm:grid sm:grid-cols-3 sm:gap-[8rem]">
-          {member ? (
+          {isEditing && editSelectedClub == clubName ? (
+            <dd
+              id={`${clubName}-${dtValue}-${index}`}
+              data-index={index}
+              className="text-sm leading-6 whitespace-nowrap text-gray-700 sm:col-start-3 text-right flex justify-end"
+            >
+              <select
+                className="ml-4 ring-0 border-transparent text-sm -ml-8 text-right appearance-none border-0 focus:outline-none focus:ring-0 focus:border-none"
+                defaultValue={`${member[0]} ${member[1]}`}
+                onChange={(e) => {
+                  handleSelectChange(
+                    clubName,
+                    e.target.value,
+                    `${member[0]} ${member[1]}`,
+                    dtValue
+                  );
+                }}
+              >
+                {data
+                  .filter((item) => item[7] === dtValue)
+                  .filter((elem) => elem[3] == clubName)
+                  .map((item, idx) => (
+                    <option key={idx} value={`${item[0]} ${item[1]}`}>
+                      {`${item[0]} ${item[1]}`}
+                    </option>
+                  ))}
+              </select>
+            </dd>
+          ) : member ? (
             <dd
               id={`${clubName}-${dtValue}-${index}`}
               data-value={`${member[0]} ${member[1]}`}
@@ -390,7 +429,24 @@ const MemberDetail = ({ dtValue, member, index, clubName, isManager }) => {
             ></dd>
           )}
         </div>
-        {isManager && member && <button>{/* Your SVG here */}</button>}
+
+        {isManager && member && isEditing && editSelectedClub == clubName && (
+          <button>
+            <svg
+              className="h-5 w-5 ml-[54px] mt-0.5"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              stroke="#243570"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+              />
+            </svg>
+          </button>
+        )}
       </div>
     </dl>
   );
@@ -402,9 +458,9 @@ const MemberCard = ({
   setOpenModal,
   setSelectedClubName,
   isEditing,
-  setIsEditing
+  setIsEditing,
+  data,
 }) => {
-
   const dtValues = [
     "President",
     "Vice President",
@@ -416,6 +472,10 @@ const MemberCard = ({
     "Other",
   ];
 
+  const [editSelectedClub, setEditSelectedClub] = useState("");
+  const [shouldChange, setShouldChange] = useState(false);
+  const [isLoadingSelect, setIsLoadingSelect] = useState(false);
+
   const clubName = clubData[0][3];
   // eslint-disable-next-line
   const activeMembers = clubData.filter((el) => el[8] === "Active");
@@ -425,13 +485,70 @@ const MemberCard = ({
     setSelectedClubName(clubName);
   };
 
+  const handleEdit = (clubName) => {
+    setIsEditing(true);
+    setEditSelectedClub(clubName);
+  };
+
+  const [selectedChanges, setSelectedChanges] = useState([]);
+  const dispatch = useDispatch();
+
+  const handleSelectChange = (clubName, newValue, oldValue, dtValue) => {
+    const changeObj = {
+      clubName: clubName,
+      newValue: newValue,
+      oldValue: oldValue,
+      role: dtValue,
+    };
+
+    setSelectedChanges((prev) => [...prev, changeObj]);
+  };
+
+  const handleChangesSubmit = () => {
+    console.log(selectedChanges);
+    // if (isLoadingSelect) return;
+    // setShouldChange(true);
+  };
+
+  const postSelectChanges = async (changes) => {
+    let url =
+      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec";
+
+    const options = {
+      method: "post",
+      mode: "no-cors",
+      body: JSON.stringify({
+        action: "editClubInSheet",
+        changes: changes,
+        clubName: clubName,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    await fetch(url, options);
+  };
+
+  useEffect(() => {
+    if (shouldChange && !isLoadingSelect) {
+      const sendSelectChanges = async () => {
+        isLoadingSelect(true);
+        await postSelectChanges(selectedChanges);
+        dispatch(fetchData());
+        setShouldChange(false); 
+        setIsLoadingSelect(false);
+      };
+      sendSelectChanges();
+    }
+  }, [shouldChange, isLoadingSelect, selectedChanges, dispatch]);
+
   const membersJSX = dtValues.map((dtValue, dtIndex) => {
     if (dtValue === "Director at Large" || dtValue === "Other") {
       const membersWithRole = activeMembers.filter(
         (item) => item[7] === dtValue
       );
 
-      // If there are no active members with the role, add a null member to ensure the dtValue is shown
       if (membersWithRole.length === 0) {
         membersWithRole.push(null);
       }
@@ -444,6 +561,11 @@ const MemberCard = ({
           index={dtIndex + memberIndex}
           clubName={clubName}
           isManager={isManager}
+          isEditing={isEditing}
+          data={data}
+          editSelectedClub={editSelectedClub}
+          handleSelectChange={handleSelectChange}
+          handleChangesSubmit={handleChangesSubmit}
         />
       ));
     } else {
@@ -456,6 +578,11 @@ const MemberCard = ({
           index={dtIndex}
           clubName={clubName}
           isManager={isManager}
+          isEditing={isEditing}
+          data={data}
+          editSelectedClub={editSelectedClub}
+          handleSelectChange={handleSelectChange}
+          handleChangesSubmit={handleChangesSubmit}
         />
       );
     }
@@ -477,7 +604,10 @@ const MemberCard = ({
                   Add Director
                 </p>
               </button>
-              <button className="save-button bg-transparent">
+              <button
+                className="save-button bg-transparent"
+                onClick={handleChangesSubmit}
+              >
                 <p className="font-semibold text-base text-[#535787] cursor-pointer">
                   Save
                 </p>
@@ -487,7 +617,7 @@ const MemberCard = ({
             isManager === "MANAGER" && (
               <button
                 className="edit-button bg-transparent"
-                onClick={() => setIsEditing(true)}
+                onClick={() => handleEdit(clubName)}
               >
                 <p className="font-semibold text-base text-[#535787] cursor-pointer">
                   Edit
@@ -526,7 +656,7 @@ const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
   const handleCloseModal = () => {
     setOpenModal(false);
     setVersion((prevVersion) => prevVersion + 1);
-    setIsEditing(false)
+    setIsEditing(false);
   };
 
   const submitAddDirector = () => {
@@ -625,6 +755,7 @@ const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
                   version={version}
                   isEditing={isEditing}
                   setIsEditing={setIsEditing}
+                  data={data}
                 />
               ))}
           </div>
@@ -640,6 +771,7 @@ const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
               clubData={clubData}
               isManager={isManager}
               setOpenModal={setOpenModal}
+              data={data}
             />
           ))}
         </div>
