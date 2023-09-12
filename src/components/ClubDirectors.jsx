@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../../redux/slice";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const groupDataById = (data) => {
   return data.reduce((groups, item) => {
@@ -31,6 +33,8 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
   const [memberData, setMemberData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [activeSaveButton, setActiveSaveButton] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
+  const [dateSelected, setDateSelected] = useState(false);
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
@@ -50,7 +54,18 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
     let hasErrors = false;
 
     for (let i = 0; i < inputRefs.length; i++) {
-      const element = inputRefs[i].current;
+      const element = inputRefs[i]?.current;
+
+      if (!element) continue;
+
+      if (element == null) {
+        console.log("entre");
+        if (!startDate) {
+          newErrorMessages["Effective date"] = "Effective date is required";
+          hasErrors = true;
+        }
+        continue;
+      }
 
       if (
         element.tagName.toLowerCase() === "select" &&
@@ -62,19 +77,48 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
         newErrorMessages[element.name] = `${element.name} is required`;
         hasErrors = true;
       }
+
+      // Check for phone number format validation
+      if (
+        element.name === "Phone number" ||
+        element.id === "phoneNumberInput"
+      ) {
+        // Adjust the condition as per the name or id of your phone number input
+        const phoneNumberPattern = /^\(\d{3}\)\d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
+        if (!phoneNumberPattern.test(element.value)) {
+          newErrorMessages[element.name] =
+            "Phone number format should be (xxx)yyy-zzzz";
+          hasErrors = true;
+        }
+      }
     }
 
-    setErrorMessages(newErrorMessages); // set the new error messages
+    if (!dateSelected && startDate == null) {
+      newErrorMessages["Effective date"] = "Effective date is required";
+      hasErrors = true;
+    }
 
-    if (hasErrors) return; // If there are errors, stop the function
+    setErrorMessages(newErrorMessages);
 
-    const formData = inputRefs.map((ref) => {
-      const element = ref.current;
-      return element.type === "checkbox" ? element.checked : element.value;
-    });
+    if (hasErrors) return;
 
-    const localHasManager = formData.pop(); // get the last element as hasManager and remove it from formData
+    const formData = inputRefs
+      .map((ref) => {
+        const element = ref.current;
+
+        if (!element) return null;
+
+        if (element instanceof HTMLElement) {
+          return element.type === "checkbox" ? element.checked : element.value;
+        } else {
+          return startDate;
+        }
+      })
+      .filter((data) => data !== null);
+
+    const localHasManager = formData.pop();
     const localMemberData = formData;
+    localMemberData.splice(5, 0, startDate);
     localMemberData.splice(7, 0, "Active");
 
     setClubName(submitAddDirector());
@@ -228,15 +272,20 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
 
             <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
               <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
-                Effective Date{" "}
+                Effective Date
               </label>
-              <input
-                ref={memberBirthdateRef}
+              <DatePicker
                 name="Effective date"
                 id="memberBirthdate"
+                customInput={<input ref={memberBirthdateRef} />}
                 type="text"
-                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
-                placeholder="Insert effective date"
+                selected={startDate}
+                onChange={(date) => {
+                  setStartDate(date);
+                  setDateSelected(!!date);
+                }}
+                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px]"
+                placeholderText="Insert effective date"
               />
               <span className="text-red-500">
                 {errorMessages["Effective date"]}
@@ -361,15 +410,17 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
 
 // eslint-disable-next-line
 const MemberDetail = ({
-  dtValue,
-  member,
-  index,
-  clubName,
-  isManager,
-  isEditing,
-  data,
-  editSelectedClub,
-  handleChangesSubmit,
+  // eslint-disable-next-line
+  dtValue, // eslint-disable-next-line
+  member, // eslint-disable-next-line
+  index, // eslint-disable-next-line
+  clubName, // eslint-disable-next-line
+  isManager, // eslint-disable-next-line
+  isEditing, // eslint-disable-next-line
+  setIsEditing, // eslint-disable-next-line
+  data, // eslint-disable-next-line
+  editSelectedClub, // eslint-disable-next-line
+  handleChangesSubmit, // eslint-disable-next-line
   handleSelectChange,
 }) => {
   return (
@@ -403,6 +454,7 @@ const MemberDetail = ({
                 }}
               >
                 {data
+                  // eslint-disable-next-line
                   .filter((item) => item[7] === dtValue)
                   .filter((elem) => elem[3] == clubName)
                   .map((item, idx) => (
@@ -453,12 +505,13 @@ const MemberDetail = ({
 };
 // eslint-disable-next-line
 const MemberCard = ({
-  clubData,
-  isManager,
-  setOpenModal,
-  setSelectedClubName,
-  isEditing,
-  setIsEditing,
+  // eslint-disable-next-line
+  clubData, // eslint-disable-next-line
+  isManager, // eslint-disable-next-line
+  setOpenModal, // eslint-disable-next-line
+  setSelectedClubName, // eslint-disable-next-line
+  isEditing, // eslint-disable-next-line
+  setIsEditing, // eslint-disable-next-line
   data,
 }) => {
   const dtValues = [
@@ -475,6 +528,7 @@ const MemberCard = ({
   const [editSelectedClub, setEditSelectedClub] = useState("");
   const [shouldChange, setShouldChange] = useState(false);
   const [isLoadingSelect, setIsLoadingSelect] = useState(false);
+  const [isChangingSelect, setIsChangingSelect] = useState(false);
 
   const clubName = clubData[0][3];
   // eslint-disable-next-line
@@ -505,9 +559,9 @@ const MemberCard = ({
   };
 
   const handleChangesSubmit = () => {
-    console.log(selectedChanges);
-    // if (isLoadingSelect) return;
-    // setShouldChange(true);
+    setIsChangingSelect(true);
+    if (isLoadingSelect) return;
+    setShouldChange(true);
   };
 
   const postSelectChanges = async (changes) => {
@@ -520,7 +574,6 @@ const MemberCard = ({
       body: JSON.stringify({
         action: "editClubInSheet",
         changes: changes,
-        clubName: clubName,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -533,11 +586,13 @@ const MemberCard = ({
   useEffect(() => {
     if (shouldChange && !isLoadingSelect) {
       const sendSelectChanges = async () => {
-        isLoadingSelect(true);
+        setIsLoadingSelect(true);
         await postSelectChanges(selectedChanges);
         dispatch(fetchData());
-        setShouldChange(false); 
+        setShouldChange(false);
         setIsLoadingSelect(false);
+        setIsEditing(false);
+        setIsChangingSelect(false);
       };
       sendSelectChanges();
     }
@@ -596,22 +651,45 @@ const MemberCard = ({
         <div className="flex space-x-4">
           {isEditing ? (
             <>
-              <button
-                className="add-director-button bg-transparent"
-                onClick={handleOpenModal}
-              >
-                <p className="font-semibold text-base text-[#535787] cursor-pointer">
-                  Add Director
-                </p>
-              </button>
-              <button
-                className="save-button bg-transparent"
-                onClick={handleChangesSubmit}
-              >
-                <p className="font-semibold text-base text-[#535787] cursor-pointer">
-                  Save
-                </p>
-              </button>
+              {isChangingSelect ? (
+                <button
+                  className="add-director-button hidden bg-transparent"
+                  onClick={handleOpenModal}
+                >
+                  <p className="font-semibold text-base text-[#535787] cursor-pointer">
+                    Add Director
+                  </p>
+                </button>
+              ) : (
+                <button
+                  className="add-director-button bg-transparent"
+                  onClick={handleOpenModal}
+                >
+                  <p className="font-semibold text-base text-[#535787] cursor-pointer">
+                    Add Director
+                  </p>
+                </button>
+              )}
+              {isChangingSelect ? (
+                <div
+                  className="spinner w-2 h-2 mt-24 border-t-2 border-solid rounded-full animate-spin"
+                  style={{
+                    borderColor: "#535787",
+                    borderRightColor: "transparent",
+                    width: "1.2rem",
+                    height: "1.2rem",
+                  }}
+                ></div>
+              ) : (
+                <button
+                  className="save-button bg-transparent"
+                  onClick={handleChangesSubmit}
+                >
+                  <p className="font-semibold text-base text-[#535787] cursor-pointer">
+                    Save
+                  </p>
+                </button>
+              )}
             </>
           ) : (
             isManager === "MANAGER" && (
