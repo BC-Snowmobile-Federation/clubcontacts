@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../../redux/slice";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import EditDirectorModal from "./EditDirectorModal";
 
 const groupDataById = (data) => {
   return data.reduce((groups, item) => {
@@ -423,8 +424,23 @@ const MemberDetail = ({
   handleChangesSubmit, // eslint-disable-next-line
   handleSelectChange,
 }) => {
+  const [openEditModal, setOpenEditModal] = useState(false);
+
+  const handleOpenEditModal = () => {
+    setOpenEditModal(true);
+  };
+
   return (
     <dl className="divide-y divide-gray-500 montserrat">
+        {openEditModal ? (
+          <EditDirectorModal
+            member={member}
+            dtValue={dtValue}
+            clubName={clubName}
+          />
+        ) : (
+          <></>
+        )}
       <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-[8rem] sm:px-0">
         <div className="sm:grid sm:grid-cols-3 sm:gap-[8rem] items-center">
           <dt
@@ -483,7 +499,7 @@ const MemberDetail = ({
         </div>
 
         {isManager && member && isEditing && editSelectedClub == clubName && (
-          <button>
+          <button onClick={handleOpenEditModal}>
             <svg
               className="h-5 w-5 ml-[54px] mt-0.5"
               fill="none"
