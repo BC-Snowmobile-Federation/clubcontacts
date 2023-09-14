@@ -429,19 +429,31 @@ const MemberDetail = ({
     setOpenEditModal(true);
   };
 
+  const matchingMembers = data.filter(
+    (item) => item[7] === dtValue && item[3] === clubName
+  );
+
+  const activeMatchingMember = matchingMembers.find(
+    (item) => item[8] == "Active"
+  );
+
+  const defaultMemberValue = activeMatchingMember
+    ? `${activeMatchingMember[0]} ${activeMatchingMember[1]}`
+    : "none";
+
   return (
     <dl className="divide-y divide-gray-500 montserrat">
-        {openEditModal ? (
-          <EditDirectorModal
-            member={member}
-            dtValue={dtValue}
-            clubName={clubName}
-            setOpenEditModal={setOpenEditModal}
-            setIsEditing={setIsEditing}
-          />
-        ) : (
-          <></>
-        )}
+      {openEditModal ? (
+        <EditDirectorModal
+          member={member}
+          dtValue={dtValue}
+          clubName={clubName}
+          setOpenEditModal={setOpenEditModal}
+          setIsEditing={setIsEditing}
+        />
+      ) : (
+        <></>
+      )}
       <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-[8rem] sm:px-0">
         <div className="sm:grid sm:grid-cols-3 sm:gap-[8rem] items-center">
           <dt
@@ -460,25 +472,23 @@ const MemberDetail = ({
             >
               <select
                 className="ml-4 ring-0 border-transparent text-sm -ml-8 text-right appearance-none border-0 focus:outline-none focus:ring-0 focus:border-none"
-                defaultValue={ member ? `${member[0]} ${member[1]}` : "" }
+                defaultValue={defaultMemberValue}
                 onChange={(e) => {
                   handleSelectChange(
                     clubName,
                     e.target.value,
-                    member ? `${member[0]} ${member[1]}` : "",
+                    defaultMemberValue,
                     dtValue
                   );
                 }}
               >
-                {data
-                  // eslint-disable-next-line
-                  .filter((item) => item[7] === dtValue)
-                  .filter((elem) => elem[3] == clubName)
-                  .map((item, idx) => (
-                    <option key={idx} value={`${item[0]} ${item[1]}`}>
-                      {`${item[0]} ${item[1]}`}
-                    </option>
-                  ))}
+                <option value="">None</option>
+                {matchingMembers.map((item, idx) => (
+                  <option
+                    key={idx}
+                    value={`${item[0]} ${item[1]}`}
+                  >{`${item[0]} ${item[1]}`}</option>
+                ))}
               </select>
             </dd>
           ) : member ? (
@@ -576,6 +586,7 @@ const MemberCard = ({
   };
 
   const handleChangesSubmit = () => {
+    console.log(selectedChanges)
     setIsChangingSelect(true);
     if (isLoadingSelect) return;
     setShouldChange(true);
@@ -668,7 +679,7 @@ const MemberCard = ({
         <h2 className="font-semibold">{clubName}</h2>
 
         <div className="flex space-x-4">
-          {isEditing ? (
+          {isEditing && editSelectedClub == clubName ? (
             <>
               {isChangingSelect ? (
                 <button
@@ -691,15 +702,15 @@ const MemberCard = ({
               )}
               {isChangingSelect ? (
                 <div className="mt-[2px]">
-                <div
-                  className="spinner w-2 h-2 border-t-2 border-solid rounded-full animate-spin"
-                  style={{
-                    borderColor: "#535787",
-                    borderRightColor: "transparent",
-                    width: "1.2rem",
-                    height: "1.2rem",
-                  }}
-                ></div>
+                  <div
+                    className="spinner w-2 h-2 border-t-2 border-solid rounded-full animate-spin"
+                    style={{
+                      borderColor: "#535787",
+                      borderRightColor: "transparent",
+                      width: "1.2rem",
+                      height: "1.2rem",
+                    }}
+                  ></div>
                 </div>
               ) : (
                 <button
