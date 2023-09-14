@@ -60,7 +60,6 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
       if (!element) continue;
 
       if (element == null) {
-        console.log("entre");
         if (!startDate) {
           newErrorMessages["Effective date"] = "Effective date is required";
           hasErrors = true;
@@ -437,6 +436,8 @@ const MemberDetail = ({
             member={member}
             dtValue={dtValue}
             clubName={clubName}
+            setOpenEditModal={setOpenEditModal}
+            setIsEditing={setIsEditing}
           />
         ) : (
           <></>
@@ -459,12 +460,12 @@ const MemberDetail = ({
             >
               <select
                 className="ml-4 ring-0 border-transparent text-sm -ml-8 text-right appearance-none border-0 focus:outline-none focus:ring-0 focus:border-none"
-                defaultValue={`${member[0]} ${member[1]}`}
+                defaultValue={ member ? `${member[0]} ${member[1]}` : "" }
                 onChange={(e) => {
                   handleSelectChange(
                     clubName,
                     e.target.value,
-                    `${member[0]} ${member[1]}`,
+                    member ? `${member[0]} ${member[1]}` : "",
                     dtValue
                   );
                 }}
@@ -499,9 +500,9 @@ const MemberDetail = ({
         </div>
 
         {isManager && member && isEditing && editSelectedClub == clubName && (
-          <button onClick={handleOpenEditModal}>
+          <button onClick={handleOpenEditModal} className="w-5 ml-[54px]">
             <svg
-              className="h-5 w-5 ml-[54px] mt-0.5"
+              className="h-5 w-5 mt-0.5"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -633,6 +634,7 @@ const MemberCard = ({
           clubName={clubName}
           isManager={isManager}
           isEditing={isEditing}
+          setIsEditing={setIsEditing}
           data={data}
           editSelectedClub={editSelectedClub}
           handleSelectChange={handleSelectChange}
@@ -650,6 +652,7 @@ const MemberCard = ({
           clubName={clubName}
           isManager={isManager}
           isEditing={isEditing}
+          setIsEditing={setIsEditing}
           data={data}
           editSelectedClub={editSelectedClub}
           handleSelectChange={handleSelectChange}
@@ -687,8 +690,9 @@ const MemberCard = ({
                 </button>
               )}
               {isChangingSelect ? (
+                <div className="mt-[2px]">
                 <div
-                  className="spinner w-2 h-2 mt-24 border-t-2 border-solid rounded-full animate-spin"
+                  className="spinner w-2 h-2 border-t-2 border-solid rounded-full animate-spin"
                   style={{
                     borderColor: "#535787",
                     borderRightColor: "transparent",
@@ -696,6 +700,7 @@ const MemberCard = ({
                     height: "1.2rem",
                   }}
                 ></div>
+                </div>
               ) : (
                 <button
                   className="save-button bg-transparent"
@@ -865,6 +870,7 @@ const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
               clubData={clubData}
               isManager={isManager}
               setOpenModal={setOpenModal}
+              setIsEditing={setIsEditing}
               data={data}
             />
           ))}

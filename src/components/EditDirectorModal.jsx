@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 // eslint-disable-next-line
-const EditDirectorModal = ({ member, dtValue, clubName }) => {
+const EditDirectorModal = ({ member, dtValue, clubName, setOpenEditModal, setIsEditing }) => {
   const memberNameRef = useRef(null);
   const memberLastNameRef = useRef(null);
   const memberEmailRef = useRef(null);
@@ -21,25 +21,102 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
   const [activeSaveButton, setActiveSaveButton] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [dateSelected, setDateSelected] = useState(false);
+  const [modifiedValues, setModifiedValues] = useState({});
+  const [dateModified, setDateModified] = useState(false);
+
+  const [formData, setFormData] = useState({
+    memberName: member[0] || "",
+    memberLastName: member[1] || "",
+    memberEmail: member[2] || "",
+    memberPhoneNumber: member[4] || "",
+    memberGender: member[5] || "",
+    memberRole: member[7] || "",
+    memberAdmin: member[8] || "",
+    memberManager: member[9] || "",
+  });
 
   const dispatch = useDispatch();
-  console.log(member);
+
+  function formatDate(d) {
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0"); // +1 because months are 0-indexed
+    const year = d.getFullYear();
+
+    return `${month}/${day}/${year}`;
+  }
+
+  const handleCloseModal = () => {
+    setOpenEditModal(false);
+    setIsEditing(false);
+  };
+
   useEffect(() => {
     if (member) {
-      memberNameRef.current.value = member[0] || ""; // Assuming position 0 holds the name.
-      memberLastNameRef.current.value = member[1] || ""; // And so on...
-      memberEmailRef.current.value = member[2] || "";
-      memberPhoneNumberRef.current.value = member[4] || "";
-      genderRef.current.value = member[5] || "";
-      // memberBirthdateRef is special since it's a datepicker
-      // If using react-datepicker you might set state here instead
-      // For simplicity, let's assume it's a normal input for now
       setStartDate(new Date(member[10]));
-      memberRoleRef.current.value = member[7] || "";
-      ameliaAdminRef.current.value = member[8] || "";
-      managerAccessRef.current.checked = member[9] || ""; // Assuming position 8 holds a boolean for the checkbox
     }
-  }, [member]);
+    if (dateModified) {
+      setModifiedValues((prevData) => ({
+        ...prevData,
+        ["editeffectivedate"]: formatDate(startDate),
+        email: member[2],
+      }));
+    }
+  }, [member, dateModified, startDate]);
+
+  function handleInputChange(event) {
+    const { name, value, type, checked } = event.target;
+
+    let actualValue = type === "checkbox" ? checked : value;
+
+    let newStateKey;
+    switch (name) {
+      case "Name":
+        newStateKey = "memberName";
+        break;
+      case "Last Name":
+        newStateKey = "memberLastName";
+        break;
+      case "Email":
+        newStateKey = "memberEmail";
+        break;
+      case "Phone number":
+        newStateKey = "memberPhoneNumber";
+        break;
+      case "Gender":
+        newStateKey = "memberGender";
+        break;
+      case "Role":
+        newStateKey = "memberRole";
+        break;
+      case "Is Amilia admin":
+        newStateKey = "memberAdmin";
+        break;
+      case "Club admin":
+        newStateKey = "memberManager";
+        break;
+      default:
+        return; // if name doesn't match any, don't do anything
+    }
+
+    setFormData((prevState) => ({ ...prevState, [newStateKey]: actualValue }));
+    const serverKey =
+      "edit" +
+      name
+        .trim()
+        .replace(/\s+/g, " ")
+        .split(" ")
+        .map((word, index) => {
+          return index === 0
+            ? word.toLowerCase()
+            : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join("");
+    setModifiedValues((prevData) => ({
+      ...prevData,
+      [serverKey]: value,
+      email: member[2],
+    }));
+  }
 
   const handleSubmit = async () => {
     const inputRefs = [
@@ -63,7 +140,6 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
       if (!element) continue;
 
       if (element == null) {
-        console.log("entre");
         if (!startDate) {
           newErrorMessages["Effective date"] = "Effective date is required";
           hasErrors = true;
@@ -106,30 +182,12 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
 
     if (hasErrors) return;
 
-    const formData = inputRefs
-      .map((ref) => {
-        const element = ref.current;
-
-        if (!element) return null;
-
-        if (element instanceof HTMLElement) {
-          return element.type === "checkbox" ? element.checked : element.value;
-        } else {
-          return startDate;
-        }
-      })
-      .filter((data) => data !== null);
-
-    const localMemberData = formData;
-    localMemberData.splice(5, 0, startDate);
-    localMemberData.splice(7, 0, "Active");
-
     setActiveSaveButton(true);
     if (isLoading) return;
     setShouldPostEdition(true);
   };
 
-  const editDirectorData = async (clubName, memberData, hasManager) => {
+  const editDirectorData = async (modifiedValues) => {
     let url =
       "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec"; // Your URL here
 
@@ -137,10 +195,8 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
       method: "post",
       mode: "no-cors",
       body: JSON.stringify({
-        // action: "addMemberToSheet",
-        memberData: memberData,
-        clubName: clubName,
-        hasManager: hasManager,
+        action: "modifyClubSheet",
+        modifiedValues: modifiedValues,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -148,26 +204,26 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
     };
 
     await fetch(url, options);
-    // const responseData = await response.json();
-    // return response;
   };
 
-  //   useEffect(() => {
-  //     if (shouldPostEdition && !isLoading) {
-  //       const addDirector = async () => {
-  //         setIsLoading(true);
-  //         await editDirectorData(clubName, memberData, hasManager);
-  //         dispatch(fetchData());
-  //         setShouldPostEdition(false); // Reset the flag after making the API call
-  //         setIsLoading(false);
-  //       };
-  //       addDirector();
-  //     }
-  //   }, [shouldPostEdition, clubName, memberData, hasManager, data, isLoading, dispatch]);
+    useEffect(() => {
+      if (shouldPostEdition && !isLoading) {
+        const editDirector = async () => {
+          setIsLoading(true);
+          await editDirectorData(modifiedValues);
+          dispatch(fetchData());
+          setShouldPostEdition(false); // Reset the flag after making the API call
+          setIsLoading(false);
+          setIsEditing(false)
+          setOpenEditModal(false);
+        };
+        editDirector();
+      }
+    }, [shouldPostEdition, clubName, modifiedValues, setIsEditing, setOpenEditModal, isLoading, dispatch]);
 
   return (
     <div
-      id="addMemberModal"
+      id="editMemberModal"
       className="relative z-10 ml-[40px]"
       aria-labelledby="modal-title"
       role="dialog"
@@ -194,8 +250,10 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
               <input
                 ref={memberNameRef}
                 name="Name"
-                id="memberName"
+                id="editMemberName"
                 type="text"
+                value={formData.memberName}
+                onChange={handleInputChange}
                 className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
                 placeholder="Insert name"
               />
@@ -209,8 +267,10 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
               <input
                 ref={memberLastNameRef}
                 name="Last Name"
-                id="memberLastName"
+                id="editMemberLastName"
                 type="text"
+                value={formData.memberLastName}
+                onChange={handleInputChange}
                 className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
                 placeholder="Insert last name"
               />
@@ -224,8 +284,10 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
               <input
                 ref={memberEmailRef}
                 name="Email"
-                id="memberEmail"
+                id="editMemberEmail"
                 type="text"
+                value={formData.memberEmail}
+                onChange={handleInputChange}
                 className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
                 placeholder="Insert email"
               />
@@ -239,8 +301,10 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
               <input
                 ref={memberPhoneNumberRef}
                 name="Phone number"
-                id="memberPhoneNumber"
+                id="editMemberPhoneNumber"
                 type="text"
+                value={formData.memberPhoneNumber}
+                onChange={handleInputChange}
                 className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
                 placeholder="Insert phone number"
               />
@@ -255,8 +319,10 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
               </label>
               <select
                 ref={genderRef}
-                id="gender"
+                id="editMemberGender"
                 name="Gender"
+                value={formData.memberGender}
+                onChange={handleInputChange}
                 className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
               >
                 <option value="" disabled selected>
@@ -275,12 +341,13 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
               </label>
               <DatePicker
                 name="Effective date"
-                id="memberBirthdate"
+                id="editMemberBirthdate"
                 customInput={<input ref={memberBirthdateRef} />}
                 type="text"
                 selected={startDate}
                 onChange={(date) => {
-                  setStartDate(date);
+                  setStartDate(date); // Update the startDate with the selected date
+                  setDateModified(true); // Set dateModified to true
                 }}
                 className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px]"
                 placeholderText="Insert effective date"
@@ -297,7 +364,9 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
               <select
                 ref={memberRoleRef}
                 name="Role"
-                id="memberRole"
+                id="editMemberRole"
+                value={formData.memberRole}
+                onChange={handleInputChange}
                 className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px]"
               >
                 <option value="" disabled selected>
@@ -320,9 +389,11 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
                 <div className="flex h-6 items-center">
                   <input
                     ref={ameliaAdminRef}
-                    id="ameliaAdmin"
+                    id="editMemberAmeliaAdmin"
                     name="Is Amilia admin"
                     type="checkbox"
+                    value={formData.memberAdmin}
+                    onChange={handleInputChange}
                     className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
                   />
                   <span className="text-red-500">
@@ -342,9 +413,11 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
                 <div className="flex h-6 items-center">
                   <input
                     ref={managerAccessRef}
-                    id="managerAccess"
+                    id="editManagerAccess"
                     name="Club admin"
                     type="checkbox"
+                    value={formData.memberManager}
+                    onChange={handleInputChange}
                     className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
                   />
                   <span className="text-red-500">
@@ -364,15 +437,34 @@ const EditDirectorModal = ({ member, dtValue, clubName }) => {
               className="mt-5 flex justify-center"
             >
               <button
+                disabled={activeSaveButton}
+                onClick={handleSubmit}
                 id="submitAddMember"
                 type="button"
-                className="w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm hover:text-[#535787]"
+                className={
+                  activeSaveButton
+                    ? "w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm hover:text-[#535787]"
+                    : "w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm"
+                }
               >
-                Save
+                {isLoading ? (
+                  <div
+                    className="spinner inline-block w-2 h-2 ml-2 border-t-2 border-solid rounded-full animate-spin"
+                    style={{
+                      borderColor: "#535787",
+                      borderRightColor: "transparent",
+                      width: "1.2rem",
+                      height: "1.2rem",
+                    }}
+                  ></div>
+                ) : (
+                  "Save"
+                )}
               </button>
 
               <button
                 disabled={isLoading}
+                onClick={handleCloseModal}
                 id="closeAddModal"
                 type="button"
                 className="w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787]"

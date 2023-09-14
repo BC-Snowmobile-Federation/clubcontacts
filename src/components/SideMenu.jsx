@@ -5,7 +5,7 @@ const SideMenu = ({ activeButton, setActiveButton }) => {
   let { clubName, activeUser } = useSelector((state) => state.reducer);
 
   clubName = "British Columbia Snowmobile Federation";
-  activeUser = "mora@setandforget.io";
+  activeUser = "administrator@bcsf.or";
 
   const renderSvgIcon = (pathData) => {
     return (
