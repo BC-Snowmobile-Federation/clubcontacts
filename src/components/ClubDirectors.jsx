@@ -4,6 +4,7 @@ import { fetchData } from "../../redux/slice";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import EditDirectorModal from "./EditDirectorModal";
+import SaveChangesModal from "./saveChangesModal";
 
 const groupDataById = (data) => {
   return data.reduce((groups, item) => {
@@ -166,6 +167,29 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
     }
   }, [shouldPost, clubName, memberData, hasManager, data, isLoading, dispatch]);
 
+  const [phone, setPhone] = useState("");
+
+  const normalizeInput = (value, previousValue) => {
+    if (!value) return value;
+    const currentValue = value.replace(/[^\d]/g, "");
+    const cvLength = currentValue.length;
+
+    if (!previousValue || value.length > previousValue.length) {
+      if (cvLength < 4) return currentValue;
+      if (cvLength < 7)
+        return `(${currentValue.slice(0, 3)}) ${currentValue.slice(3)}`;
+      return `(${currentValue.slice(0, 3)}) ${currentValue.slice(
+        3,
+        6
+      )}-${currentValue.slice(6, 10)}`;
+    }
+  };
+
+  const handleFormatNumber = (e) => {
+    const value = e.target.value;
+    setPhone((prevPhone) => normalizeInput(value, prevPhone));
+  };
+
   return (
     <div
       id="addMemberModal"
@@ -242,8 +266,10 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
                 name="Phone number"
                 id="memberPhoneNumber"
                 type="text"
+                value={phone}
                 className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
-                placeholder="Insert phone number"
+                placeholder="(xxx) xxx-xxxx"
+                onChange={handleFormatNumber}
               />
               <span className="text-red-500">
                 {errorMessages["Phone number"]}
@@ -422,6 +448,7 @@ const MemberDetail = ({
   editSelectedClub, // eslint-disable-next-line
   handleChangesSubmit, // eslint-disable-next-line
   handleSelectChange,
+  handleOpenModal,
 }) => {
   const [openEditModal, setOpenEditModal] = useState(false);
 
@@ -433,12 +460,12 @@ const MemberDetail = ({
     (item) => item[7] === dtValue && item[3] === clubName
   );
 
-  const activeMatchingMember = matchingMembers.find(
-    (item) => item[8] == "Active"
-  );
+  // const activeMatchingMember = matchingMembers.find(
+  //   (item) => item[8] == "Active"
+  // );
 
-  const defaultMemberValue = activeMatchingMember
-    ? `${activeMatchingMember[0]} ${activeMatchingMember[1]}`
+  const defaultMemberValue = member
+    ? `${member[0]} ${member[1]}`
     : "none";
 
   return (
@@ -489,6 +516,7 @@ const MemberDetail = ({
                     value={`${item[0]} ${item[1]}`}
                   >{`${item[0]} ${item[1]}`}</option>
                 ))}
+                <option value="openAddModal">Add director</option>
               </select>
             </dd>
           ) : member ? (
@@ -540,6 +568,10 @@ const MemberCard = ({
   isEditing, // eslint-disable-next-line
   setIsEditing, // eslint-disable-next-line
   data,
+  showModal,
+  setShowModal, 
+  setActiveButton,
+  btnId
 }) => {
   const dtValues = [
     "President",
@@ -575,18 +607,22 @@ const MemberCard = ({
   const dispatch = useDispatch();
 
   const handleSelectChange = (clubName, newValue, oldValue, dtValue) => {
-    const changeObj = {
-      clubName: clubName,
-      newValue: newValue,
-      oldValue: oldValue,
-      role: dtValue,
-    };
+    if (newValue == "openAddModal") {
+      handleOpenModal();
+    } else {
+      const changeObj = {
+        clubName: clubName,
+        newValue: newValue,
+        oldValue: oldValue,
+        role: dtValue,
+      };
 
-    setSelectedChanges((prev) => [...prev, changeObj]);
+      setSelectedChanges((prev) => [...prev, changeObj]);
+    }
   };
 
   const handleChangesSubmit = () => {
-    console.log(selectedChanges)
+    console.log(selectedChanges);
     setIsChangingSelect(true);
     if (isLoadingSelect) return;
     setShouldChange(true);
@@ -650,6 +686,7 @@ const MemberCard = ({
           editSelectedClub={editSelectedClub}
           handleSelectChange={handleSelectChange}
           handleChangesSubmit={handleChangesSubmit}
+          handleOpenModal={handleOpenModal}
         />
       ));
     } else {
@@ -668,6 +705,7 @@ const MemberCard = ({
           editSelectedClub={editSelectedClub}
           handleSelectChange={handleSelectChange}
           handleChangesSubmit={handleChangesSubmit}
+          handleOpenModal={handleOpenModal}
         />
       );
     }
@@ -681,7 +719,7 @@ const MemberCard = ({
         <div className="flex space-x-4">
           {isEditing && editSelectedClub == clubName ? (
             <>
-              {isChangingSelect ? (
+              {/* {isChangingSelect ? (
                 <button
                   className="add-director-button hidden bg-transparent"
                   onClick={handleOpenModal}
@@ -699,7 +737,7 @@ const MemberCard = ({
                     Add Director
                   </p>
                 </button>
-              )}
+              )} */}
               {isChangingSelect ? (
                 <div className="mt-[2px]">
                   <div
@@ -737,13 +775,31 @@ const MemberCard = ({
           )}
         </div>
       </div>
-
+      {showModal && (
+        <SaveChangesModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          setActiveButton={setActiveButton}
+          btnId={btnId}
+          setIsEditing={setIsEditing}
+        />
+      )}
       {membersJSX}
     </div>
   );
 };
 // eslint-disable-next-line
-const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
+const ClubDirectors = ({
+  isManager,
+  isBcsf,
+  uniqueClubValues,
+  isEditing,
+  setIsEditing,
+  showModal,
+  setShowModal,
+  setActiveButton,
+  btnId,
+}) => {
   let { data } = useSelector((state) => state.reducer);
   data = data.map((row) => {
     const item9 = row[11];
@@ -757,7 +813,6 @@ const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedClubName, setSelectedClubName] = useState("");
   const [version, setVersion] = useState(0);
-  const [isEditing, setIsEditing] = useState(false);
 
   const handleClubChange = (e) => {
     setSelectedClub(e.target.value);
@@ -866,6 +921,10 @@ const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
                   isEditing={isEditing}
                   setIsEditing={setIsEditing}
                   data={data}
+                  showModal={showModal}
+                  setShowModal={setShowModal}
+                  setActiveButton={setActiveButton}
+                  btnId={btnId}
                 />
               ))}
           </div>
@@ -883,6 +942,10 @@ const ClubDirectors = ({ isManager, isBcsf, uniqueClubValues }) => {
               setOpenModal={setOpenModal}
               setIsEditing={setIsEditing}
               data={data}
+              showModal={showModal}
+              setShowModal={setShowModal}
+              setActiveButton={setActiveButton}
+              btnId={btnId}
             />
           ))}
         </div>

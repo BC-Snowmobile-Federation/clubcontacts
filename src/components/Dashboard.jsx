@@ -18,9 +18,7 @@ const Dashboard = () => {
 
   let { data, clubData, isBcsf } = useSelector((state) => state.reducer);
 
-  useEffect(() => {
-
-  }, [data, clubData])
+  useEffect(() => {}, [data, clubData]);
 
   let headers = [
     "Name",
@@ -58,6 +56,9 @@ const Dashboard = () => {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedAmilia, setSelectedAmilia] = useState("All");
   const [activeButton, setActiveButton] = useState("historical");
+  const [isEditing, setIsEditing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [btnId, setBtnId] = useState("");
 
   const uniqueRoleValues = [
     // eslint-disable-next-line
@@ -157,7 +158,14 @@ const Dashboard = () => {
 
   return (
     <div>
-      <SideMenu setActiveButton={setActiveButton} activeButton={activeButton} />
+      <SideMenu
+        setActiveButton={setActiveButton}
+        activeButton={activeButton}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
+        setShowModal={setShowModal}
+        setBtnId={setBtnId}
+      />
       <div className="lg:pl-[280px]">
         <main className="py-10">
           <div className="px-4 sm:px-6 lg:px-8">
@@ -196,6 +204,12 @@ const Dashboard = () => {
                             data={data}
                             isBcsf={isBcsf}
                             uniqueClubValues={uniqueClubValues}
+                            isEditing={isEditing}
+                            setIsEditing={setIsEditing}
+                            showModal={showModal}
+                            setShowModal={setShowModal}
+                            setActiveButton={setActiveButton}
+                            btnId={btnId}
                           />
                         ) : activeButton === "clubsProfile" ? (
                           <ClubProfile

@@ -1,11 +1,31 @@
 import { useSelector } from "react-redux";
 
-// eslint-disable-next-line
-const SideMenu = ({ activeButton, setActiveButton }) => {
+const SideMenu = ({
+  // eslint-disable-next-line
+  activeButton,
+  // eslint-disable-next-line
+  setActiveButton,
+  // eslint-disable-next-line
+  isEditing,
+  // eslint-disable-next-line
+  setIsEditing,
+  // eslint-disable-next-line
+  setShowModal,
+  setBtnId
+}) => {
   let { clubName, activeUser } = useSelector((state) => state.reducer);
 
+  function handleChangeSection(id) {
+    if (isEditing) {
+      setShowModal(true)
+      setBtnId(id)
+    } else {
+      setActiveButton(id); // <-- Make sure to change the section even if isEditing is false
+    }
+  }
+
   clubName = "British Columbia Snowmobile Federation";
-  activeUser = "administrator@bcsf.or";
+  activeUser = "administrator@bcsf.org";
 
   const renderSvgIcon = (pathData) => {
     return (
@@ -75,10 +95,12 @@ const SideMenu = ({ activeButton, setActiveButton }) => {
                       id={btn.id}
                       type="button"
                       disabled={!btn.enabled}
-                      onClick={() => setActiveButton(btn.id)}
+                      onClick={() => handleChangeSection(btn.id)}
                       className={`text-indigo-200 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold w-[240px] hover:bg-[#2D4080] 
                   ${
-                    activeButton === btn.id ? "bg-[#2D4080] text-white" : "bg-transparent"
+                    activeButton === btn.id
+                      ? "bg-[#2D4080] text-white"
+                      : "bg-transparent"
                   }`}
                     >
                       {renderSvgIcon(btn.iconPath)}

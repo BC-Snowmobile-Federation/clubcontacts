@@ -52,7 +52,9 @@ const EditDirectorModal = ({ member, dtValue, clubName, setOpenEditModal, setIsE
 
   useEffect(() => {
     if (member) {
-      setStartDate(new Date(member[10]));
+      console.log(member[6])
+      // let dateToInsert = formatDate(member[5]);
+      setStartDate(new Date(member[6]));
     }
     if (dateModified) {
       setModifiedValues((prevData) => ({
