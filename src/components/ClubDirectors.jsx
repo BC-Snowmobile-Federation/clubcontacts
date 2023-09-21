@@ -4,7 +4,7 @@ import { fetchData } from "../../redux/slice";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import EditDirectorModal from "./EditDirectorModal";
-import SaveChangesModal from "./saveChangesModal";
+import SaveChangesModal from "./SaveChangesModal";
 
 const groupDataById = (data) => {
   return data.reduce((groups, item) => {
