@@ -17,7 +17,7 @@ const groupDataById = (data) => {
   }, {});
 };
 // eslint-disable-next-line
-const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
+const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data, setIsEditing }) => {
   // Using refs to easily access the DOM elements without triggering renders
   const memberNameRef = useRef(null);
   const memberLastNameRef = useRef(null);
@@ -150,8 +150,6 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
     };
 
     await fetch(url, options);
-    // const responseData = await response.json();
-    // return response;
   };
 
   useEffect(() => {
@@ -162,6 +160,7 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data }) => {
         dispatch(fetchData());
         setShouldPost(false); // Reset the flag after making the API call
         setIsLoading(false);
+        setIsEditing(false)
       };
       addDirector();
     }
@@ -895,6 +894,7 @@ const ClubDirectors = ({
                 handleCloseModal={handleCloseModal}
                 submitAddDirector={submitAddDirector}
                 data={data}
+                setIsEditing={setIsEditing}
               />
             ) : (
               <></>

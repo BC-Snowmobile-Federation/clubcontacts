@@ -388,7 +388,19 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
                 type="button"
                 className="w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm hover:text-[#535787]"
               >
-                Save
+                {isLoadingAddPost ? (
+                  <div
+                    className="spinner inline-block w-2 h-2 ml-2 border-t-2 border-solid rounded-full animate-spin"
+                    style={{
+                      borderColor: "#535787",
+                      borderRightColor: "transparent",
+                      width: "1.2rem",
+                      height: "1.2rem",
+                    }}
+                  ></div>
+                ) : (
+                  "Save"
+                )}
               </button>
               <button
                 id="closeAddClubModal"
