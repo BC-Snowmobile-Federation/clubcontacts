@@ -79,19 +79,19 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data, setIsEdit
         hasErrors = true;
       }
 
-      // Check for phone number format validation
-      if (
-        element.name === "Phone number" ||
-        element.id === "phoneNumberInput"
-      ) {
-        // Adjust the condition as per the name or id of your phone number input
-        const phoneNumberPattern = /^\(\d{3}\)\d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
-        if (!phoneNumberPattern.test(element.value)) {
-          newErrorMessages[element.name] =
-            "Phone number format should be (xxx)yyy-zzzz";
-          hasErrors = true;
-        }
-      }
+      // // Check for phone number format validation
+      // if (
+      //   element.name === "Phone number" ||
+      //   element.id === "phoneNumberInput"
+      // ) {
+      //   // Adjust the condition as per the name or id of your phone number input
+      //   const phoneNumberPattern = /^\(\d{3}\)\d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
+      //   if (!phoneNumberPattern.test(element.value)) {
+      //     newErrorMessages[element.name] =
+      //       "Phone number format should be (xxx)yyy-zzzz";
+      //     hasErrors = true;
+      //   }
+      // }
     }
 
     if (!dateSelected && startDate == null) {
