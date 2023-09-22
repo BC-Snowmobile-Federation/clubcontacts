@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { fetchClubData } from "../../redux/slice";
+import { useDispatch } from "react-redux";
+import AddClubModal from "./AddClubModal";
 // eslint-disable-next-line
 function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   function formatDate(date) {
@@ -16,6 +19,22 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   const [selectedClub, setSelectedClub] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredClubs, setFilteredClubs] = useState([]);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [clubMenuOpen, setClubMenuOpen] = useState("");
+  const [clubToDelete, setClubToDelete] = useState("");
+  const [postDeleteClub, setPostDeleteClub] = useState(false);
+  const [isLoadingPost, setIsLoadingPost] = useState(false);
+  const [openAddClubModal, setOpenAddClubModal] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const deleteClub = async (clubName) => {
+    let url = `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=deleteClub&clubName=${clubName}`;
+
+    await fetch(url, {
+      mode: "no-cors",
+    });
+  };
 
   useEffect(() => {
     // Apply search and select filters here
@@ -32,17 +51,66 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     }
 
     setFilteredClubs(filtered);
-  }, [searchTerm, selectedClub, clubData]);
+
+    if (postDeleteClub == true && !isLoadingPost) {
+      const deletePost = async () => {
+        setIsLoadingPost(true);
+        await deleteClub(clubToDelete);
+        dispatch(fetchClubData());
+        setPostDeleteClub(false);
+        setIsLoadingPost(false);
+      };
+      deletePost();
+    }
+  }, [
+    searchTerm,
+    selectedClub,
+    clubData,
+    clubToDelete,
+    postDeleteClub,
+    isLoadingPost,
+    dispatch,
+  ]);
 
   const handleClubChange = (e) => {
     setSelectedClub(e.target.value);
   };
 
+  const handleOpenMenu = (clubname) => {
+    if (menuVisible == false) {
+      setMenuVisible(true);
+      setClubMenuOpen(clubname);
+    } else {
+      setMenuVisible(false);
+    }
+  };
+
+  const handleDeleteClub = (clubname) => {
+    setClubToDelete(clubname);
+    setPostDeleteClub(true);
+  };
+
+  const handleOpenAddClubModal = () => {
+    // if (openAddClubModal == false) {
+    setOpenAddClubModal(true);
+    // } else {
+    //   setOpenAddClubModal(false)
+    // }
+  };
+
   return (
-    <div className="flex flex-col justify-center mt-12 items-center">
+    <div className="flex flex-col justify-center items-center">
       {isBcsf ? (
         <div>
-          <div className="flex items-center justify-center">
+          <button
+            id="addClubBtn"
+            type="button"
+            onClick={handleOpenAddClubModal}
+            className="w-[130px] right rounded-full bg-[#243570] px-3 py-2 mb-4 ml-[1100px] text-base font-semibold text-white montserrat shadow-sm hover:bg-[#535787]"
+          >
+            Add Club
+          </button>
+          <div className="flex items-center mb-8 justify-center">
             <div className="relative bg-transparent border-slate-100 border rounded-full w-[250px] h-10 items-center flex justify-around">
               <input
                 id="clubSearch"
@@ -102,6 +170,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
       )}
       <div className="flex flex-wrap justify-center items-start">
         <div className="w-full p-4">
+          {openAddClubModal ? <AddClubModal setOpenAddClubModal={setOpenAddClubModal} /> : <></>}
           <ul
             role="list"
             id="clubsProfileContainer"
@@ -123,9 +192,10 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                       <div className="text-base font-semibold leading-6 text-[#243746]">
                         {club[0]}
                       </div>
-                      <div className="relative ml-auto hidden">
+                      <div className="relative ml-auto">
                         <button
                           type="button"
+                          onClick={() => handleOpenMenu(club[0])}
                           className="menu-button -m-2.5 block p-2.5 text-gray-400 hover:text-gray-500"
                           id="options-menu-{index}-button"
                           aria-expanded="false"
@@ -141,32 +211,62 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
                           </svg>
                         </button>
-                        <div
-                          className="hidden dropdown-menu absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
-                          role="menu"
-                          aria-orientation="vertical"
-                          aria-labelledby="options-menu-{index}-button"
-                          tabIndex="-1"
-                        >
-                          <button
-                            className="block px-3 py-1 text-sm leading-6 text-gray-900 edit-button"
-                            disabled
-                            role="menuitem"
+                        {menuVisible & (club[0] == clubMenuOpen) ? (
+                          <div
+                            className="dropdown-menu absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                            role="menu"
+                            aria-orientation="vertical"
+                            aria-labelledby="options-menu-{index}-button"
                             tabIndex="-1"
-                            id="options-menu-{index}-item-0"
                           >
-                            Edit<span className="sr-only">, {club[0]}</span>
-                          </button>
-                          <button
-                            className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
-                            role="menuitem"
+                            {isLoadingPost ? (
+                              <div
+                                className="flex justify-center items-center"
+                                style={{ marginTop: "30px", height: "5px" }}
+                              >
+                                <div
+                                  className="spinner border-t-2 border-solid rounded-full animate-spin"
+                                  style={{
+                                    borderColor: "#303030",
+                                    borderRightColor: "transparent",
+                                    width: "1rem",
+                                    height: "1rem",
+                                  }}
+                                ></div>
+                              </div>
+                            ) : (
+                              <button
+                                className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
+                                role="menuitem"
+                                onClick={() => handleDeleteClub(club[0])}
+                                tabIndex="-1"
+                                id="options-menu-{index}-item-1"
+                                data-club-name="{club[0]}"
+                              >
+                                Delete
+                                <span className="sr-only">, {club[0]}</span>
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          <div
+                            className="hidden dropdown-menu absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                            role="menu"
+                            aria-orientation="vertical"
+                            aria-labelledby="options-menu-{index}-button"
                             tabIndex="-1"
-                            id="options-menu-{index}-item-1"
-                            data-club-name="{club[0]}"
                           >
-                            Delete<span className="sr-only">, {club[0]}</span>
-                          </button>
-                        </div>
+                            <button
+                              className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
+                              role="menuitem"
+                              tabIndex="-1"
+                              id="options-menu-{index}-item-1"
+                              data-club-name="{club[0]}"
+                            >
+                              Delete<span className="sr-only">, {club[0]}</span>
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                     <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
