@@ -10,7 +10,7 @@ import Dashboard from "./components/Dashboard";
 import Protected from "./components/Protected";
 
 function App() {
-  const userEmail = localStorage.getItem("userEmail");
+  const userEmail = JSON.parse(localStorage.getItem("userEmail"));
   console.log("at app", userEmail);
   return (
     <Router>

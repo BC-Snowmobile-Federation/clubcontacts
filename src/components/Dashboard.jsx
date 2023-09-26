@@ -12,21 +12,21 @@ import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
   const dispatch = useDispatch();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  let hasUser = JSON.parse(localStorage.getItem("userEmail"));
+  // let hasUser = JSON.parse(localStorage.getItem("userEmail"));
 
-  const redirect = () => {
-    console.log("has user", hasUser);
-    if (hasUser == null) {
-      console.log("entre");
-      navigate("/bcsf/");
-    }
-  };
+  // const redirect = () => {
+  //   console.log("has user", hasUser);
+  //   if (hasUser == null) {
+  //     console.log("entre");
+  //     navigate("/bcsf/");
+  //   }
+  // };
 
-  useEffect(() => {
-    redirect();
-  }, []);
+  // useEffect(() => {
+  //   redirect();
+  // }, []);
 
   useEffect(() => {
     dispatch(fetchData());
@@ -174,7 +174,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      {hasUser && (
+      {/* {hasUser && ( */}
         <SideMenu
           setActiveButton={setActiveButton}
           activeButton={activeButton}
@@ -183,7 +183,7 @@ const Dashboard = () => {
           setShowModal={setShowModal}
           setBtnId={setBtnId}
         />
-      )}
+      {/* )} */}
       <div className="lg:pl-[280px]">
         <main className="">
           <div className="px-4 mt-8 sm:px-6 lg:px-8">

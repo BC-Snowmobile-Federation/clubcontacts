@@ -17,7 +17,12 @@ const groupDataById = (data) => {
   }, {});
 };
 // eslint-disable-next-line
-const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data, setIsEditing }) => {
+const AddDirectorModal = ({
+  handleCloseModal,
+  submitAddDirector,
+  data,
+  setIsEditing,
+}) => {
   // Using refs to easily access the DOM elements without triggering renders
   const memberNameRef = useRef(null);
   const memberLastNameRef = useRef(null);
@@ -52,6 +57,16 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data, setIsEdit
       managerAccessRef,
     ];
 
+    const positionToExtract = 7;
+
+    // Extract values from the specified position into a Set to get unique values
+    const uniqueValuesSet = new Set(data.map(item => item[positionToExtract]));
+    
+    // Convert the Set back to an array
+    const uniqueValuesArray = Array.from(uniqueValuesSet);
+    
+    console.log(uniqueValuesArray);
+
     let newErrorMessages = {};
     let hasErrors = false;
 
@@ -78,20 +93,6 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data, setIsEdit
         newErrorMessages[element.name] = `${element.name} is required`;
         hasErrors = true;
       }
-
-      // // Check for phone number format validation
-      // if (
-      //   element.name === "Phone number" ||
-      //   element.id === "phoneNumberInput"
-      // ) {
-      //   // Adjust the condition as per the name or id of your phone number input
-      //   const phoneNumberPattern = /^\(\d{3}\)\d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
-      //   if (!phoneNumberPattern.test(element.value)) {
-      //     newErrorMessages[element.name] =
-      //       "Phone number format should be (xxx)yyy-zzzz";
-      //     hasErrors = true;
-      //   }
-      // }
     }
 
     if (!dateSelected && startDate == null) {
@@ -160,7 +161,7 @@ const AddDirectorModal = ({ handleCloseModal, submitAddDirector, data, setIsEdit
         dispatch(fetchData());
         setShouldPost(false); // Reset the flag after making the API call
         setIsLoading(false);
-        setIsEditing(false)
+        setIsEditing(false);
       };
       addDirector();
     }
@@ -463,9 +464,7 @@ const MemberDetail = ({
   //   (item) => item[8] == "Active"
   // );
 
-  const defaultMemberValue = member
-    ? `${member[0]} ${member[1]}`
-    : "none";
+  const defaultMemberValue = member ? `${member[0]} ${member[1]}` : "none";
 
   return (
     <dl className="divide-y divide-gray-500 montserrat">
@@ -568,9 +567,9 @@ const MemberCard = ({
   setIsEditing, // eslint-disable-next-line
   data,
   showModal,
-  setShowModal, 
+  setShowModal,
   setActiveButton,
-  btnId
+  btnId,
 }) => {
   const dtValues = [
     "President",
