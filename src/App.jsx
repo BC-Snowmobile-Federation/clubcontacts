@@ -1,13 +1,11 @@
-import React from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Navigate,
+  Navigate
 } from "react-router-dom";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
-import Protected from "./components/Protected";
 
 function App() {
   const userEmail = JSON.parse(localStorage.getItem("userEmail"));
@@ -15,19 +13,11 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="bcsf/" element={<Login />} />
-        {/* <Route
-          path="/bcsf/dashboard"
-          element={
-            userEmail != null ? <Dashboard /> : <Navigate to="/bcsf" replace />
-          }
-        /> */}
+        <Route exact path="/bcsf/" element={<Login />} />
         <Route
-          path="/bcsf/dashboard"
+          path="/bcsf/dashboard/"
           element={
-            <Protected isLoggedIn={userEmail}>
-              <Dashboard />
-            </Protected>
+            userEmail != null ? <Dashboard /> : <Navigate to="/bcsf/" replace />
           }
         />
       </Routes>

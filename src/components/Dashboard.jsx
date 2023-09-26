@@ -7,7 +7,6 @@ import SearchBar from "./SearchBar";
 import DataTable from "./DataTable";
 import ClubDirectors from "./ClubDirectors";
 import ClubProfile from "./ClubProfile";
-import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -174,16 +173,14 @@ const Dashboard = () => {
 
   return (
     <div>
-      {/* {hasUser && ( */}
-        <SideMenu
-          setActiveButton={setActiveButton}
-          activeButton={activeButton}
-          isEditing={isEditing}
-          setIsEditing={setIsEditing}
-          setShowModal={setShowModal}
-          setBtnId={setBtnId}
-        />
-      {/* )} */}
+      <SideMenu
+        setActiveButton={setActiveButton}
+        activeButton={activeButton}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
+        setShowModal={setShowModal}
+        setBtnId={setBtnId}
+      />
       <div className="lg:pl-[280px]">
         <main className="">
           <div className="px-4 mt-8 sm:px-6 lg:px-8">

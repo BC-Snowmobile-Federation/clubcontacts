@@ -18,9 +18,13 @@ const groupDataById = (data) => {
 };
 // eslint-disable-next-line
 const AddDirectorModal = ({
+// eslint-disable-next-line
   handleCloseModal,
+// eslint-disable-next-line
   submitAddDirector,
+// eslint-disable-next-line
   data,
+// eslint-disable-next-line
   setIsEditing,
 }) => {
   // Using refs to easily access the DOM elements without triggering renders
@@ -57,15 +61,15 @@ const AddDirectorModal = ({
       managerAccessRef,
     ];
 
-    const positionToExtract = 7;
+    // const positionToExtract = 7;
 
-    // Extract values from the specified position into a Set to get unique values
-    const uniqueValuesSet = new Set(data.map(item => item[positionToExtract]));
+    // // Extract values from the specified position into a Set to get unique values
+    // const uniqueValuesSet = new Set(data.map(item => item[positionToExtract]));
     
-    // Convert the Set back to an array
-    const uniqueValuesArray = Array.from(uniqueValuesSet);
+    // // Convert the Set back to an array
+    // const uniqueValuesArray = Array.from(uniqueValuesSet);
     
-    console.log(uniqueValuesArray);
+    // console.log(uniqueValuesArray);
 
     let newErrorMessages = {};
     let hasErrors = false;

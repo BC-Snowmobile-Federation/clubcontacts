@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [userInfo, setUserInfo] = useState([]);
-  const [hasAccess, setHasAccess] = useState(false);
   let userEmail = localStorage.getItem("userEmail");
 
   const navigate = useNavigate();
@@ -36,7 +35,7 @@ function Login() {
   };
 
   useEffect(() => {
-    if (userEmail != null) {
+    // if (JSON.parse(userEmail) != null) {
       if (userInfo) {
         axios
           .get(
@@ -51,13 +50,14 @@ function Login() {
           .then((response) => {
             localStorage.setItem("userEmail", JSON.stringify(response.data));
             fetchUserData(response.data.email)
-            navigate("/bcsf/dashboard");
+            navigate("/bcsf/dashboard/");
           })
           .catch((error) => console.log(error));
       }
-    } else {
-      navigate("/bcsf/dashboard");
-    }
+    // }
+    // } else {
+    //   navigate("bcsf/dashboard/");
+    // }
   }, [userInfo, navigate, userEmail]);
 
   const logoStyle = {
