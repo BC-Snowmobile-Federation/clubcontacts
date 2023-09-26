@@ -7,18 +7,35 @@ import SearchBar from "./SearchBar";
 import DataTable from "./DataTable";
 import ClubDirectors from "./ClubDirectors";
 import ClubProfile from "./ClubProfile";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  let hasUser = JSON.parse(localStorage.getItem("userEmail"));
+
+  const redirect = () => {
+    console.log("has user", hasUser);
+    if (hasUser == null) {
+      console.log("entre");
+      navigate("/bcsf/");
+    }
+  };
+
+  useEffect(() => {
+    redirect();
+  }, []);
 
   useEffect(() => {
     dispatch(fetchData());
     dispatch(fetchClubData());
   }, [dispatch]);
 
-  let { data, clubData, isBcsf } = useSelector((state) => state.reducer);
+  let { data, clubData } = useSelector((state) => state.reducer);
 
-  useEffect(() => {}, [data, clubData]);
+  // useEffect(() => {}, [data, clubData]);
 
   let headers = [
     "Name",
@@ -41,9 +58,8 @@ const Dashboard = () => {
     return [...before, item9, ...after];
   });
 
-  isBcsf = true;
-  let isManager = "MANAGER";
-  //   let clubName = 'British Columbia Snowmobile Federation'
+  let isBcsf = localStorage.getItem("isBcsf");
+  let isManager = localStorage.getItem("isManager");
 
   const rolePosition = isBcsf ? 7 : 6;
   const statusPosition = isBcsf ? 8 : 7;
@@ -158,14 +174,16 @@ const Dashboard = () => {
 
   return (
     <div>
-      <SideMenu
-        setActiveButton={setActiveButton}
-        activeButton={activeButton}
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
-        setShowModal={setShowModal}
-        setBtnId={setBtnId}
-      />
+      {hasUser && (
+        <SideMenu
+          setActiveButton={setActiveButton}
+          activeButton={activeButton}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          setShowModal={setShowModal}
+          setBtnId={setBtnId}
+        />
+      )}
       <div className="lg:pl-[280px]">
         <main className="">
           <div className="px-4 mt-8 sm:px-6 lg:px-8">

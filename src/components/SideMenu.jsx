@@ -1,4 +1,5 @@
-import { useSelector } from "react-redux";
+import { googleLogout } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
 
 const SideMenu = ({
   // eslint-disable-next-line
@@ -11,21 +12,32 @@ const SideMenu = ({
   setIsEditing,
   // eslint-disable-next-line
   setShowModal,
+  // eslint-disable-next-line
   setBtnId
 }) => {
-  let { clubName, activeUser } = useSelector((state) => state.reducer);
+
+  const navigate = useNavigate();
 
   function handleChangeSection(id) {
     if (isEditing) {
       setShowModal(true)
       setBtnId(id)
     } else {
-      setActiveButton(id); // <-- Make sure to change the section even if isEditing is false
+      setActiveButton(id); 
     }
   }
 
-  clubName = "British Columbia Snowmobile Federation";
-  activeUser = "administrator@bcsf.org";
+  const logOut = () => {
+    googleLogout();
+    localStorage.setItem("userEmail", null)
+    navigate("/bcsf/")
+  };
+
+  let clubName = localStorage.getItem("clubName")
+  let user = JSON.parse(localStorage.getItem("userEmail"))
+  let activeUser = user.email;
+  // let isBcsf = localStorage.getItem("isBcsf")
+  // let isManager = localStorage.getItem("isManager")
 
   const renderSvgIcon = (pathData) => {
     return (
@@ -150,6 +162,7 @@ const SideMenu = ({
                 <button
                   type="button"
                   id="logout"
+                  onClick={logOut}
                   className="bg-[#EF3741] h-10 text-white hover:text-white hover:bg-[#F37164] group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold w-[240px] relative"
                 >
                   <div
