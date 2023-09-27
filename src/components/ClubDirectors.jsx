@@ -18,14 +18,16 @@ const groupDataById = (data) => {
 };
 // eslint-disable-next-line
 const AddDirectorModal = ({
-// eslint-disable-next-line
+  // eslint-disable-next-line
   handleCloseModal,
-// eslint-disable-next-line
+  // eslint-disable-next-line
   submitAddDirector,
-// eslint-disable-next-line
+  // eslint-disable-next-line
   data,
-// eslint-disable-next-line
+  // eslint-disable-next-line
   setIsEditing,
+  // eslint-disable-next-line
+  setOpenModal,
 }) => {
   // Using refs to easily access the DOM elements without triggering renders
   const memberNameRef = useRef(null);
@@ -48,6 +50,17 @@ const AddDirectorModal = ({
   const [dateSelected, setDateSelected] = useState(false);
   const dispatch = useDispatch();
 
+  const roles = [
+    "President",
+    "Vice President",
+    "Secretary",
+    "Treasurer",
+    "Past President",
+    "Membership Director",
+    "Director at Large",
+    "Other",
+  ];
+
   const handleSubmit = async () => {
     const inputRefs = [
       memberNameRef,
@@ -60,16 +73,6 @@ const AddDirectorModal = ({
       ameliaAdminRef,
       managerAccessRef,
     ];
-
-    // const positionToExtract = 7;
-
-    // // Extract values from the specified position into a Set to get unique values
-    // const uniqueValuesSet = new Set(data.map(item => item[positionToExtract]));
-    
-    // // Convert the Set back to an array
-    // const uniqueValuesArray = Array.from(uniqueValuesSet);
-    
-    // console.log(uniqueValuesArray);
 
     let newErrorMessages = {};
     let hasErrors = false;
@@ -87,6 +90,11 @@ const AddDirectorModal = ({
         continue;
       }
 
+      let isAnyRoleChecked = roles.some(
+        (role) => document.getElementById(role).checked
+      );
+      console.log(isAnyRoleChecked);
+
       if (
         element.tagName.toLowerCase() === "select" &&
         element.selectedIndex === 0
@@ -95,6 +103,9 @@ const AddDirectorModal = ({
         hasErrors = true;
       } else if (element.type !== "checkbox" && element.value.trim() === "") {
         newErrorMessages[element.name] = `${element.name} is required`;
+        hasErrors = true;
+      } else if (!isAnyRoleChecked) {
+        newErrorMessages["Role"] = "At least one role must be selected";
         hasErrors = true;
       }
     }
@@ -108,32 +119,50 @@ const AddDirectorModal = ({
 
     if (hasErrors) return;
 
-    const formData = inputRefs
-      .map((ref) => {
-        const element = ref.current;
+    let checkedRoles = roles.filter(
+      (role) => document.getElementById(role).checked
+    );
 
-        if (!element) return null;
+    for (let role of checkedRoles) {
+      const formDataForRole = inputRefs
+        .map((ref) => {
+          const element = ref.current;
 
-        if (element instanceof HTMLElement) {
-          return element.type === "checkbox" ? element.checked : element.value;
-        } else {
-          return startDate;
-        }
-      })
-      .filter((data) => data !== null);
+          if (!element) return null;
 
-    const localHasManager = formData.pop();
-    const localMemberData = formData;
-    localMemberData.splice(5, 0, startDate);
-    localMemberData.splice(7, 0, "Active");
+          if (element instanceof HTMLElement) {
+            if (ref === memberRoleRef) {
+              return role;
+            }
+            return element.type === "checkbox"
+              ? element.checked
+              : element.value;
+          } else {
+            return startDate;
+          }
+        })
+        .filter((data) => data !== null);
 
-    setClubName(submitAddDirector());
-    setHasManager(localHasManager);
-    setMemberData(localMemberData);
+      const localHasManager = formDataForRole.pop();
+      const localMemberData = [...formDataForRole];
+      localMemberData.splice(5, 0, startDate);
+      localMemberData.splice(7, 0, "Active");
 
-    setActiveSaveButton(true);
-    if (isLoading) return;
-    setShouldPost(true);
+      setIsLoading(true);
+      setActiveSaveButton(true);
+
+      await postDirectorData(
+        submitAddDirector(),
+        localMemberData,
+        localHasManager
+      );
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second before the next iteration
+    }
+
+    dispatch(fetchData());
+    setIsLoading(false);
+    setIsEditing(false);
+    setOpenModal(false);
   };
 
   const postDirectorData = async (clubName, memberData, hasManager) => {
@@ -157,19 +186,20 @@ const AddDirectorModal = ({
     await fetch(url, options);
   };
 
-  useEffect(() => {
-    if (shouldPost && !isLoading) {
-      const addDirector = async () => {
-        setIsLoading(true);
-        await postDirectorData(clubName, memberData, hasManager);
-        dispatch(fetchData());
-        setShouldPost(false); // Reset the flag after making the API call
-        setIsLoading(false);
-        setIsEditing(false);
-      };
-      addDirector();
-    }
-  }, [shouldPost, clubName, memberData, hasManager, data, isLoading, dispatch]);
+  // useEffect(() => {
+  //   if (shouldPost && !isLoading) {
+  //     const addDirector = async () => {
+  //       setIsLoading(true);
+  //       await postDirectorData(clubName, memberData, hasManager);
+  //       dispatch(fetchData());
+  //       setShouldPost(false); // Reset the flag after making the API call
+  //       setIsLoading(false);
+  //       setIsEditing(false);
+  //       setOpenModal(false);
+  //     };
+  //     addDirector();
+  //   }
+  // }, [shouldPost, clubName, memberData, hasManager, data, isLoading, dispatch]);
 
   const [phone, setPhone] = useState("");
 
@@ -322,32 +352,39 @@ const AddDirectorModal = ({
               </span>
             </div>
 
-            <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
+            <div className="flex flex-col gap-3 w-full py-2 text-gray-500 px-1 outline-none  ">
               <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
                 Role{" "}
               </label>
-              <select
-                ref={memberRoleRef}
-                name="Role"
-                id="memberRole"
-                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px]"
-              >
-                <option value="" disabled selected>
-                  Select role
-                </option>
-                <option value="President">President</option>
-                <option value="Vice President">Vice President</option>
-                <option value="Secretary">Secretary</option>
-                <option value="Treasurer">Treasurer</option>
-                <option value="Past President">Past President</option>
-                <option value="Membership Director">Membership Director</option>
-                <option value="Director at Large">Director at Large</option>
-                <option value="Other">Other</option>
-              </select>
+              {roles.map((el, e) => (
+                <div
+                  key={e}
+                  className="flex mt-2 flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none"
+                >
+                  <div className="relative flex gap-x-3">
+                    <div className="flex h-6 items-center">
+                      <input
+                        ref={memberRoleRef}
+                        id={el}
+                        name="Role"
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
+                      />
+                    </div>
+                    <div className="text-sm leading-6">
+                      <p className="text-gray-500 sm:text-2xl lg:text-base">
+                        {el}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
               <span className="text-red-500">{errorMessages["Role"]}</span>
             </div>
-
             <div className="flex mt-4 flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none">
+              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm">
+                Access{" "}
+              </label>
               <div className="relative flex gap-x-3">
                 <div className="flex h-6 items-center">
                   <input
@@ -898,6 +935,7 @@ const ClubDirectors = ({
                 submitAddDirector={submitAddDirector}
                 data={data}
                 setIsEditing={setIsEditing}
+                setOpenModal={setOpenModal}
               />
             ) : (
               <></>

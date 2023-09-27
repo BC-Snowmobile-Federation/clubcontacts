@@ -69,13 +69,13 @@ function Login() {
     }
   }, [navigate, userInfo, makePost]);
 
-  // useEffect(() => {
-  //   // const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
-  //   if (userEmail) {
-  //     // If userEmail is present, navigate to dashboard
-  //     navigate("/bcsf/dashboard/");
-  //   }
-  // }, [navigate, userEmail]);
+  useEffect(() => {
+    const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
+    if (userEmailInStorage) {
+      // If userEmail is present, navigate to dashboard
+      navigate("/bcsf/dashboard/");
+    }
+  }, [navigate]);
 
   const logoStyle = {
     width: "100px",
