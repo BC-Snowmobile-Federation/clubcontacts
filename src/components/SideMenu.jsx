@@ -29,7 +29,9 @@ const SideMenu = ({
 
   const logOut = () => {
     googleLogout();
+    localStorage.clear();
     localStorage.setItem("userEmail", null)
+    localStorage.setItem("userInfo", null)
     navigate("/bcsf/")
   };
 

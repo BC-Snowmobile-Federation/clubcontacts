@@ -7,18 +7,24 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [userInfo, setUserInfo] = useState([]);
-  let userEmail = localStorage.getItem("userEmail");
-
+  const [userEmail, setUserEmail] = useState([]);
+  const [makePost, setMakePost] = useState(false);
+  const [goToDashboard, setGoToDashboard] = useState(false);
   const navigate = useNavigate();
 
   const login = useGoogleLogin({
-    onSuccess: (response) => setUserInfo(response),
+    onSuccess: (response) => {
+      console.log("response here", response)
+      localStorage.setItem("userInfo", JSON.stringify(response));
+      setMakePost(true);
+      // setUserInfo(response);
+    },
     onError: (error) => console.log(`Login Failed: ${error}`),
   });
 
   const logOut = () => {
     googleLogout();
-    localStorage.setItem("userEmail", null);
+    localStorage.clear();
   };
 
   const fetchUserData = (userEmail) => {
@@ -27,38 +33,49 @@ function Login() {
         `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=login&userEmail=${userEmail}`
       )
       .then((response) => {
-        console.log(response);
-        localStorage.setItem("isBcsf", response.data.response.userData.isBcsf)
-        localStorage.setItem("isManager", response.data.response.userData.isManager)
-        localStorage.setItem("clubName", response.data.response.userData.club)
+        localStorage.setItem("isBcsf", response.data.response.userData.isBcsf);
+        localStorage.setItem(
+          "isManager",
+          response.data.response.userData.isManager
+        );
+        localStorage.setItem("clubName", response.data.response.userData.club);
       });
   };
 
   useEffect(() => {
-    // if (JSON.parse(userEmail) != null) {
-      if (userInfo) {
-        axios
-          .get(
-            `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userInfo.access_token}`,
-            {
-              headers: {
-                Authorization: `Bearer ${userInfo.access_token}`,
-                Accept: "application/json",
-              },
-            }
-          )
-          .then((response) => {
-            localStorage.setItem("userEmail", JSON.stringify(response.data));
-            fetchUserData(response.data.email)
-            navigate("/bcsf/dashboard/");
-          })
-          .catch((error) => console.log(error));
-      }
-    // }
-    // } else {
-    //   navigate("bcsf/dashboard/");
-    // }
-  }, [userInfo, navigate, userEmail]);
+    if (makePost) {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      console.log("user info", userInfo);
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userInfo.access_token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${userInfo.access_token}`,
+              Accept: "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("axios response", response);
+          localStorage.setItem("userEmail", JSON.stringify(response.data));
+          setUserEmail(response.data);
+          fetchUserData(response.data.email);
+          setGoToDashboard(true);
+          setMakePost(false);
+          navigate("/bcsf/dashboard/");
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [navigate, userInfo, makePost]);
+
+  // useEffect(() => {
+  //   // const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
+  //   if (userEmail) {
+  //     // If userEmail is present, navigate to dashboard
+  //     navigate("/bcsf/dashboard/");
+  //   }
+  // }, [navigate, userEmail]);
 
   const logoStyle = {
     width: "100px",

@@ -7,25 +7,25 @@ import SearchBar from "./SearchBar";
 import DataTable from "./DataTable";
 import ClubDirectors from "./ClubDirectors";
 import ClubProfile from "./ClubProfile";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  // let hasUser = JSON.parse(localStorage.getItem("userEmail"));
+  let hasUser = JSON.parse(localStorage.getItem("userEmail"));
 
-  // const redirect = () => {
-  //   console.log("has user", hasUser);
-  //   if (hasUser == null) {
-  //     console.log("entre");
-  //     navigate("/bcsf/");
-  //   }
-  // };
+  const redirect = () => {
+    if (hasUser == null) {
+      console.log("entre");
+      navigate("/bcsf/");
+    }
+  };
 
-  // useEffect(() => {
-  //   redirect();
-  // }, []);
+  useEffect(() => {
+    redirect();
+  }, []);
 
   useEffect(() => {
     dispatch(fetchData());
@@ -33,8 +33,6 @@ const Dashboard = () => {
   }, [dispatch]);
 
   let { data, clubData } = useSelector((state) => state.reducer);
-
-  // useEffect(() => {}, [data, clubData]);
 
   let headers = [
     "Name",
@@ -110,12 +108,6 @@ const Dashboard = () => {
   const handleAmiliaChange = (newSelectedAmilia) => {
     setSelectedAmilia(newSelectedAmilia);
   };
-
-  //   useEffect(() => {
-  //     if (data && data.length > 0 && filteredData.length === 0) {
-  //       setFilteredData(data);
-  //     }
-  //   }, [data, filteredData]);
 
   useEffect(() => {
     let newFilteredData = [...data];
