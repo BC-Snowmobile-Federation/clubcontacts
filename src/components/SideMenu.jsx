@@ -32,7 +32,7 @@ const SideMenu = ({
     localStorage.clear();
     localStorage.setItem("userEmail", null)
     localStorage.setItem("userInfo", null)
-    navigate("/bcsf/")
+    navigate("/")
   };
 
   let clubName = localStorage.getItem("clubName")

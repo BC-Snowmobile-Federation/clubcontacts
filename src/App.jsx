@@ -2,7 +2,7 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Navigate,
+  HashRouter
 } from "react-router-dom";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
@@ -13,12 +13,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path="/bcsf/" element={<Login />} />
+        <Route exact path="/" element={<Login />} />
         <Route
-          path="/bcsf/dashboard/"
-          // element={
-          //   userEmail != null ? <Dashboard /> : <Navigate to="/bcsf/" replace />
-          // }
+          path="/dashboard"
           element={<Dashboard />}
         />
       </Routes>
