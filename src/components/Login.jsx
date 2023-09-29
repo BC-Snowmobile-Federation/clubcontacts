@@ -63,7 +63,7 @@ function Login() {
           fetchUserData(response.data.email);
           setGoToDashboard(true);
           setMakePost(false);
-          navigate("/dashboard");
+          navigate("/bcsf/dashboard");
         })
         .catch((error) => console.log(error));
     }
@@ -73,7 +73,7 @@ function Login() {
     const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
     if (userEmailInStorage) {
       // If userEmail is present, navigate to dashboard
-      navigate("/dashboard");
+      navigate("/bcsf/dashboard");
     }
   }, [navigate]);
 

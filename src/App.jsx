@@ -15,7 +15,7 @@ function App() {
       <Routes>
         <Route exact path="/bcsf" element={<Login />} />
         <Route
-          path="/dashboard"
+          path="/bcsf/dashboard"
           element={<Dashboard />}
         />
       </Routes>
