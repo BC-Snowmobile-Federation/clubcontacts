@@ -1,7 +1,8 @@
+import "./DataTable.css";
 // eslint-disable-next-line
 const DataTable = ({ data, headers }) => {
   return (
-    <table id="data-table" className="w-full divide-y divide-gray-300">
+    <table id="data-table" className=" divide-y divide-gray-300">
       <thead className="bg-gray-50 min-w-auto">
         <tr>
           {/* eslint-disable-next-line */}
@@ -19,10 +20,10 @@ const DataTable = ({ data, headers }) => {
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-200 bg-white">
-          {/* eslint-disable-next-line */}
+        {/* eslint-disable-next-line */}
         {data.map((row, rowIndex) => (
           <tr key={rowIndex}>
-          {/* eslint-disable-next-line */}
+            {/* eslint-disable-next-line */}
             {headers.map((header, index) => (
               <td
                 key={index}

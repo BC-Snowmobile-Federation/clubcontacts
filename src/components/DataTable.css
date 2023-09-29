@@ -1,0 +1,30 @@
+#data-table {
+  overflow-x: auto;
+  display: block;
+}
+
+/* For Chrome, Safari, and Opera */
+#data-table::-webkit-scrollbar {
+  height: 10px; /* Horizontal scrollbar height */
+}
+
+#data-table::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#data-table::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  border-radius: 5px !important;
+  border: 2px solid transparent !important;
+  background-clip: padding-box !important;
+}
+
+#data-table::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5); /* Darker handle on hover */
+}
+
+/* For Firefox */
+#data-table {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}

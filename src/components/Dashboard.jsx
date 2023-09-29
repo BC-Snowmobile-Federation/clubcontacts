@@ -8,6 +8,7 @@ import DataTable from "./DataTable";
 import ClubDirectors from "./ClubDirectors";
 import ClubProfile from "./ClubProfile";
 import { useNavigate } from "react-router-dom";
+import Pagination from "./Pagination";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -72,6 +73,8 @@ const Dashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [btnId, setBtnId] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 13;
 
   const uniqueRoleValues = [
     // eslint-disable-next-line
@@ -163,6 +166,10 @@ const Dashboard = () => {
     return <div>Loading...</div>;
   }
 
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentData = filteredData.slice(startIndex, endIndex);
+
   return (
     <div>
       <SideMenu
@@ -225,12 +232,20 @@ const Dashboard = () => {
                             uniqueClubValues={uniqueClubValues}
                           />
                         ) : activeButton === "historical" ? (
-                          <DataTable data={filteredData} headers={headers} />
+                          <DataTable data={currentData} headers={headers} />
                         ) : null}
                       </div>
                     </div>
                   </div>
                 </div>
+                {activeButton === "historical" ? (
+                  <Pagination
+                    totalItems={filteredData.length}
+                    itemsPerPage={itemsPerPage}
+                    currentPage={currentPage}
+                    onPageChange={(page) => setCurrentPage(page)}
+                  />
+                ) : null}
               </div>
             </div>
           </div>

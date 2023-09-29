@@ -183,6 +183,9 @@ const AddDirectorModal = ({
       },
     };
 
+
+    console.log(memberData)
+
     await fetch(url, options);
   };
 

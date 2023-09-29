@@ -141,7 +141,7 @@ const MainContent = ({
           onChange={onAmiliaChange}
         >
           <option value="" disabled>
-            Status
+            Amilia
           </option>
           {amiliaOptions.map((amilia, index) => (
             <option key={index} value={amilia === "All" ? "All" : amilia}>
