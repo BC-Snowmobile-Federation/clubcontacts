@@ -189,21 +189,6 @@ const AddDirectorModal = ({
     await fetch(url, options);
   };
 
-  // useEffect(() => {
-  //   if (shouldPost && !isLoading) {
-  //     const addDirector = async () => {
-  //       setIsLoading(true);
-  //       await postDirectorData(clubName, memberData, hasManager);
-  //       dispatch(fetchData());
-  //       setShouldPost(false); // Reset the flag after making the API call
-  //       setIsLoading(false);
-  //       setIsEditing(false);
-  //       setOpenModal(false);
-  //     };
-  //     addDirector();
-  //   }
-  // }, [shouldPost, clubName, memberData, hasManager, data, isLoading, dispatch]);
-
   const [phone, setPhone] = useState("");
 
   const normalizeInput = (value, previousValue) => {

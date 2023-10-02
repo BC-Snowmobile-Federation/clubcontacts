@@ -19,7 +19,7 @@ const Dashboard = () => {
 
   const redirect = () => {
     if (hasUser == null) {
-      navigate("/bcsf");
+      navigate("/");
     }
   };
 

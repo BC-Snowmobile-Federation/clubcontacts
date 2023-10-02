@@ -32,15 +32,13 @@ const SideMenu = ({
     localStorage.clear();
     localStorage.setItem("userEmail", null)
     localStorage.setItem("userInfo", null)
-    navigate("/bcsf")
+    navigate("/")
   };
 
   let clubName = localStorage.getItem("clubName")
   let user = JSON.parse(localStorage.getItem("userEmail"))
   let activeUser = user.email;
-  // let isBcsf = localStorage.getItem("isBcsf")
-  // let isManager = localStorage.getItem("isManager")
-
+  
   const renderSvgIcon = (pathData) => {
     return (
       <svg

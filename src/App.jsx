@@ -13,9 +13,9 @@ function App() {
   return (
     <HashRouter>
       <Routes>
-        <Route exact path="/bcsf" element={<Login />} />
+        <Route exact path="/" element={<Login />} />
         <Route
-          path="/bcsf/dashboard"
+          path="/dashboard"
           element={<Dashboard />}
         />
       </Routes>
