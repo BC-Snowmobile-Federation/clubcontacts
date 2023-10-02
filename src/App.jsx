@@ -11,7 +11,7 @@ function App() {
   const userEmail = JSON.parse(localStorage.getItem("userEmail"));
   console.log("at app", userEmail);
   return (
-    <Router>
+    <HashRouter>
       <Routes>
         <Route exact path="/bcsf" element={<Login />} />
         <Route
@@ -19,7 +19,7 @@ function App() {
           element={<Dashboard />}
         />
       </Routes>
-    </Router>
+    </HashRouter>
   );
 }
 
