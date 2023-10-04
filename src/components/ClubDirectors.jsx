@@ -489,7 +489,7 @@ const MemberDetail = ({
   //   (item) => item[8] == "Active"
   // );
 
-  const defaultMemberValue = member ? `${member[0]} ${member[1]}` : "none";
+  const defaultMemberValue = member ? `${member[0]} ${member[1]}` : "";
 
   return (
     <dl className="divide-y divide-gray-500 montserrat">
@@ -639,10 +639,27 @@ const MemberCard = ({
         oldValue: oldValue,
         role: dtValue,
       };
-
-      setSelectedChanges((prev) => [...prev, changeObj]);
+      setSelectedChanges((prev) => {
+        // Check if the changeObj already exists in prev
+        if (
+          prev.some(
+            (item) =>
+              item.clubName === changeObj.clubName &&
+              item.newValue === changeObj.newValue &&
+              item.oldValue === changeObj.oldValue &&
+              item.role === changeObj.role
+          )
+        ) {
+          return prev; // If it exists, just return the previous state
+        }
+        return [...prev, changeObj]; // Else, add the new changeObj to the array
+      });
     }
   };
+
+  //     setSelectedChanges((prev) => [...prev, changeObj]);
+  //   }
+  // };
 
   const handleChangesSubmit = () => {
     setIsChangingSelect(true);
