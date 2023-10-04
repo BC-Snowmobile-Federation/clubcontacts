@@ -5,7 +5,13 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 // eslint-disable-next-line
-const EditDirectorModal = ({ member, dtValue, clubName, setOpenEditModal, setIsEditing }) => {
+const EditDirectorModal = ({
+  member,
+  dtValue,
+  clubName,
+  setOpenEditModal,
+  setIsEditing,
+}) => {
   const memberNameRef = useRef(null);
   const memberLastNameRef = useRef(null);
   const memberEmailRef = useRef(null);
@@ -52,7 +58,6 @@ const EditDirectorModal = ({ member, dtValue, clubName, setOpenEditModal, setIsE
 
   useEffect(() => {
     if (member) {
-      console.log(member[6])
       // let dateToInsert = formatDate(member[5]);
       setStartDate(new Date(member[6]));
     }
@@ -120,6 +125,35 @@ const EditDirectorModal = ({ member, dtValue, clubName, setOpenEditModal, setIsE
     }));
   }
 
+  const roles = [
+    "President",
+    "Vice President",
+    "Secretary",
+    "Treasurer",
+    "Past President",
+    "Membership Director",
+    "Director at Large",
+    "Other",
+  ];
+
+  const initialCheckboxStates = {};
+  roles.forEach((el) => {
+    initialCheckboxStates[el] = formData.memberRole == el;
+  });
+
+  const [checkboxStates, setCheckboxStates] = useState(initialCheckboxStates);
+
+  const handleCheckboxChange = (el) => {
+    setCheckboxStates((prevStates) => ({
+      ...prevStates,
+      [el]: !prevStates[el],
+    }));
+  };
+
+  let { data } = useSelector((state) => state.reducer);
+
+  const selectedRoles = data.filter(el => el[2] == formData.memberEmail && el[7] == 'Active').map(el => el[6])
+
   const handleSubmit = async () => {
     const inputRefs = [
       memberNameRef,
@@ -149,6 +183,10 @@ const EditDirectorModal = ({ member, dtValue, clubName, setOpenEditModal, setIsE
         continue;
       }
 
+      let isAnyRoleChecked = roles.some(
+        (role) => document.getElementById(role).checked
+      );
+
       if (
         element.tagName.toLowerCase() === "select" &&
         element.selectedIndex === 0
@@ -157,6 +195,9 @@ const EditDirectorModal = ({ member, dtValue, clubName, setOpenEditModal, setIsE
         hasErrors = true;
       } else if (element.type !== "checkbox" && element.value.trim() === "") {
         newErrorMessages[element.name] = `${element.name} is required`;
+        hasErrors = true;
+      } else if (!isAnyRoleChecked) {
+        newErrorMessages["Role"] = "At least one role must be selected";
         hasErrors = true;
       }
 
@@ -184,6 +225,26 @@ const EditDirectorModal = ({ member, dtValue, clubName, setOpenEditModal, setIsE
 
     if (hasErrors) return;
 
+    let checkedRolesObjects = roles
+      .filter((role) => document.getElementById(role).checked)
+      .map((role) => {
+        return { roleKey: role, value: true };
+      });
+
+    const newModifiedValues = {
+      ...modifiedValues,
+      ...checkedRolesObjects.reduce((acc, curr) => {
+        acc[curr.roleKey] = curr.value;
+        return acc;
+      }, {}),
+    };
+
+    if (!newModifiedValues.email) {
+      newModifiedValues.email = member[2];
+    }
+    
+    setModifiedValues(newModifiedValues);
+
     setActiveSaveButton(true);
     if (isLoading) return;
     setShouldPostEdition(true);
@@ -208,20 +269,29 @@ const EditDirectorModal = ({ member, dtValue, clubName, setOpenEditModal, setIsE
     await fetch(url, options);
   };
 
-    useEffect(() => {
-      if (shouldPostEdition && !isLoading) {
-        const editDirector = async () => {
-          setIsLoading(true);
-          await editDirectorData(modifiedValues);
-          dispatch(fetchData());
-          setShouldPostEdition(false); // Reset the flag after making the API call
-          setIsLoading(false);
-          setIsEditing(false)
-          setOpenEditModal(false);
-        };
-        editDirector();
-      }
-    }, [shouldPostEdition, clubName, modifiedValues, setIsEditing, setOpenEditModal, isLoading, dispatch]);
+  useEffect(() => {
+    if (shouldPostEdition && !isLoading) {
+      const editDirector = async () => {
+        setIsLoading(true);
+        await editDirectorData(modifiedValues);
+        dispatch(fetchData());
+        setShouldPostEdition(false);
+        setIsLoading(false);
+        setIsEditing(false);
+        setOpenEditModal(false);
+        setActiveSaveButton(false);
+      };
+      editDirector();
+    }
+  }, [
+    shouldPostEdition,
+    clubName,
+    modifiedValues,
+    setIsEditing,
+    setOpenEditModal,
+    isLoading,
+    dispatch,
+  ]);
 
   return (
     <div
@@ -359,34 +429,42 @@ const EditDirectorModal = ({ member, dtValue, clubName, setOpenEditModal, setIsE
               </span>
             </div>
 
-            <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
+            <div className="flex flex-col gap-3 w-full py-2 text-gray-500 px-1 outline-none ">
               <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
                 Role{" "}
               </label>
-              <select
-                ref={memberRoleRef}
-                name="Role"
-                id="editMemberRole"
-                value={formData.memberRole}
-                onChange={handleInputChange}
-                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px]"
-              >
-                <option value="" disabled selected>
-                  Select role
-                </option>
-                <option value="President">President</option>
-                <option value="Vice President">Vice President</option>
-                <option value="Secretary">Secretary</option>
-                <option value="Treasurer">Treasurer</option>
-                <option value="Past President">Past President</option>
-                <option value="Membership Director">Membership Director</option>
-                <option value="Director at Large">Director at Large</option>
-                <option value="Other">Other</option>
-              </select>
+              {roles.map((el, e) => (
+                <div
+                  key={e}
+                  className="flex mt-2 flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none"
+                >
+                  <div className="relative flex gap-x-3">
+                    <div className="flex h-6 items-center">
+                      <input
+                        ref={memberRoleRef}
+                        id={el}
+                        checked={selectedRoles.includes(el) || false} // use the specific checkbox state
+                        name="Role"
+                        type="checkbox"
+                        onChange={() => handleCheckboxChange(el)} // pass 'el' to the handler
+                        className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
+                      />
+                    </div>
+                    <div className="text-sm leading-6">
+                      <p className="text-gray-500 sm:text-2xl lg:text-base">
+                        {el}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
               <span className="text-red-500">{errorMessages["Role"]}</span>
             </div>
 
             <div className="flex mt-4 flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none">
+              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm">
+                Access{" "}
+              </label>
               <div className="relative flex gap-x-3">
                 <div className="flex h-6 items-center">
                   <input

@@ -98,7 +98,6 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
     }
 
     // If all validations pass, proceed with form submission...
-    console.log(addClubData);
     if (isLoadingAddPost) return;
     setShouldPostAdd(true);
   };

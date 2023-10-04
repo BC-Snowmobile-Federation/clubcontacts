@@ -14,7 +14,6 @@ function Login() {
 
   const login = useGoogleLogin({
     onSuccess: (response) => {
-      console.log("response here", response)
       localStorage.setItem("userInfo", JSON.stringify(response));
       setMakePost(true);
       // setUserInfo(response);
@@ -45,7 +44,6 @@ function Login() {
   useEffect(() => {
     if (makePost) {
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      console.log("user info", userInfo);
       axios
         .get(
           `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userInfo.access_token}`,
@@ -57,7 +55,6 @@ function Login() {
           }
         )
         .then((response) => {
-          console.log("axios response", response);
           localStorage.setItem("userEmail", JSON.stringify(response.data));
           setUserEmail(response.data);
           fetchUserData(response.data.email);

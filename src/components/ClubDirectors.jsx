@@ -93,7 +93,6 @@ const AddDirectorModal = ({
       let isAnyRoleChecked = roles.some(
         (role) => document.getElementById(role).checked
       );
-      console.log(isAnyRoleChecked);
 
       if (
         element.tagName.toLowerCase() === "select" &&
@@ -182,9 +181,6 @@ const AddDirectorModal = ({
         "Content-Type": "application/json",
       },
     };
-
-
-    console.log(memberData)
 
     await fetch(url, options);
   };
@@ -340,7 +336,7 @@ const AddDirectorModal = ({
               </span>
             </div>
 
-            <div className="flex flex-col gap-3 w-full py-2 text-gray-500 px-1 outline-none  ">
+            <div className="flex flex-col gap-3 w-full py-2 text-gray-500 px-1 outline-none ">
               <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
                 Role{" "}
               </label>
@@ -649,7 +645,6 @@ const MemberCard = ({
   };
 
   const handleChangesSubmit = () => {
-    console.log(selectedChanges);
     setIsChangingSelect(true);
     if (isLoadingSelect) return;
     setShouldChange(true);

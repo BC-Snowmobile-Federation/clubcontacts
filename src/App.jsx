@@ -8,8 +8,6 @@ import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 
 function App() {
-  const userEmail = JSON.parse(localStorage.getItem("userEmail"));
-  console.log("at app", userEmail);
   return (
     <HashRouter>
       <Routes>
