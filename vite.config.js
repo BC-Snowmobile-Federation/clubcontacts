@@ -5,7 +5,9 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [react()],
   // base: "/bcsf/"
-  headers: {
-    'Content-Security-Policy': "default-src 'none'; worker-src 'self' blob:",
+  server: {
+    headers: {
+      'Content-Security-Policy': "default-src 'none'; worker-src 'self' blob:",
+    },
   },
 })
