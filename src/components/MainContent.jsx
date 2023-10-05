@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import "./Arrow.css";
 
 const MainContent = ({
   // eslint-disable-next-line
@@ -87,7 +88,7 @@ const MainContent = ({
         {isBcsf && (
           <select
             id="historicalClubSelect"
-            className="px-4 rounded-full bg-slate-200 border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+            className="px-4 rounded-full bg-slate-200 border-0 arrowSelect appearance-none pr-8 focus:outline-none focus:border-none text-sm"
             value={selectedClub}
             onChange={onClubChange}
           >
@@ -104,7 +105,7 @@ const MainContent = ({
 
         <select
           id="roleSelect"
-          className="px-4 rounded-full bg-slate-200 border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+          className="px-4 rounded-full bg-slate-200 border-0 arrowSelect appearance-none pr-8 focus:outline-none focus:border-none text-sm"
           value={selectedRole}
           onChange={onRoleChange}
         >
@@ -120,7 +121,7 @@ const MainContent = ({
 
         <select
           id="statusSelect"
-          className="px-4 rounded-full bg-slate-200 border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+          className="px-4 rounded-full bg-slate-200 arrowSelect border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
           value={selectedStatus}
           onChange={onStatusChange}
         >
@@ -136,7 +137,7 @@ const MainContent = ({
 
         <select
           id="amiliaSelect"
-          className="px-4 rounded-full bg-slate-200 border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+          className="px-4 rounded-full bg-slate-200 arrowSelect border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
           value={selectedAmilia}
           onChange={onAmiliaChange}
         >

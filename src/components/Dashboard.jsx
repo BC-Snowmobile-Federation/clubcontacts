@@ -9,6 +9,7 @@ import ClubDirectors from "./ClubDirectors";
 import ClubProfile from "./ClubProfile";
 import { useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
+import Spinner from "./Spinner";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -162,7 +163,11 @@ const Dashboard = () => {
   ]);
 
   if (!data || data.length < 1) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center m-auto items-center">
+        <Spinner />
+      </div>
+    );
   }
 
   const startIndex = (currentPage - 1) * itemsPerPage;

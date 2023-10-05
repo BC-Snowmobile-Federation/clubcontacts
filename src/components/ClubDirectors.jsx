@@ -142,10 +142,13 @@ const AddDirectorModal = ({
         })
         .filter((data) => data !== null);
 
+      let isClubAdmin = managerAccessRef.current.checked;
+
       const localHasManager = formDataForRole.pop();
       const localMemberData = [...formDataForRole];
       localMemberData.splice(5, 0, startDate);
       localMemberData.splice(7, 0, "Active");
+      localMemberData.push(isClubAdmin);
 
       setIsLoading(true);
       setActiveSaveButton(true);
@@ -167,7 +170,7 @@ const AddDirectorModal = ({
   const postDirectorData = async (clubName, memberData, hasManager) => {
     let url =
       "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec"; // Your URL here
-
+    console.log(memberData)
     const options = {
       method: "post",
       mode: "no-cors",
@@ -912,7 +915,7 @@ const ClubDirectors = ({
               </div>
               <select
                 id="clubSelect"
-                className="px-2 rounded-full bg-transparent appearance-none border-0 pr-8 focus:outline-none focus:ring-0 focus:border-none text-sm"
+                className="px-2 rounded-full statusSelect bg-transparent appearance-none border-0 pr-8 focus:outline-none focus:ring-0 focus:border-none text-sm"
                 onChange={handleClubChange}
               >
                 <option value="">All Clubs</option>

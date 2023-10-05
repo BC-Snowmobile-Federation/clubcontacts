@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { fetchClubData } from "../../redux/slice";
 import { useDispatch } from "react-redux";
 import AddClubModal from "./AddClubModal";
+import "./Arrow.css";
 // eslint-disable-next-line
 function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   function formatDate(date) {
@@ -161,7 +162,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                   </div>
                   <select
                     id="clubSelect"
-                    className="px-2 rounded-full bg-transparent appearance-none border-0 pr-8 focus:outline-none focus:ring-0 focus:border-none text-sm"
+                    className="px-2 rounded-full statusSelect bg-transparent appearance-none border-0 pr-8 focus:outline-none focus:ring-0 focus:border-none text-sm"
                     onChange={handleClubChange}
                   >
                     <option value="">All Clubs</option>
