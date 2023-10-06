@@ -22,7 +22,7 @@ const EditDirectorModal = ({
   const memberRoleRef = useRef(null);
   const ameliaAdminRef = useRef(null);
   const managerAccessRef = useRef(null);
-  const confirmModalRef = useRef(null);
+  const editModalRef = useRef(null);
   const [errorMessages, setErrorMessages] = useState({});
   const [shouldPostEdition, setShouldPostEdition] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +49,7 @@ const EditDirectorModal = ({
 
   function formatDate(d) {
     const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0"); // +1 because months are 0-indexed
+    const month = String(d.getMonth() + 1).padStart(2, "0"); 
     const year = d.getFullYear();
 
     return `${month}/${day}/${year}`;
@@ -58,11 +58,9 @@ const EditDirectorModal = ({
   const handleCloseModal = () => {
     if (confirmClose == false) {
       setConfirmClose(true);
+      // editModalRef.current.scroll(100, 0);
+      // window.scroll(top: 10)
     }
-    // if (closeModalConfirmed == true) {
-    //   setOpenEditModal(false);
-    //   setIsEditing(false);
-    // }
   };
 
   useEffect(() => {
@@ -306,6 +304,7 @@ const EditDirectorModal = ({
 
   return (
     <div
+    // ref={editModalRef}
       id="editMemberModal"
       className="relative z-10 ml-[40px]"
       aria-labelledby="modal-title"
@@ -319,6 +318,7 @@ const EditDirectorModal = ({
             {confirmClose && (
               <div>
                 <ConfirmClose
+                  confirmClose={confirmClose}
                   setConfirmClose={setConfirmClose}
                   setCloseModalConfirmed={setCloseModalConfirmed}
                   setOpenEditModal={setOpenEditModal}
