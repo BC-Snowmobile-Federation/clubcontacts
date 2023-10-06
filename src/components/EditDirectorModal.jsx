@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../../redux/slice";
 import DatePicker from "react-datepicker";
+import ConfirmClose from "./ConfirmClose.jsx";
 import "react-datepicker/dist/react-datepicker.css";
 
 // eslint-disable-next-line
@@ -21,6 +22,7 @@ const EditDirectorModal = ({
   const memberRoleRef = useRef(null);
   const ameliaAdminRef = useRef(null);
   const managerAccessRef = useRef(null);
+  const confirmModalRef = useRef(null);
   const [errorMessages, setErrorMessages] = useState({});
   const [shouldPostEdition, setShouldPostEdition] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +31,8 @@ const EditDirectorModal = ({
   const [dateSelected, setDateSelected] = useState(false);
   const [modifiedValues, setModifiedValues] = useState({});
   const [dateModified, setDateModified] = useState(false);
+  const [confirmClose, setConfirmClose] = useState(false);
+  const [closeModalConfirmed, setCloseModalConfirmed] = useState(false);
 
   const [formData, setFormData] = useState({
     memberName: member[0] || "",
@@ -52,8 +56,13 @@ const EditDirectorModal = ({
   }
 
   const handleCloseModal = () => {
-    setOpenEditModal(false);
-    setIsEditing(false);
+    if (confirmClose == false) {
+      setConfirmClose(true);
+    }
+    // if (closeModalConfirmed == true) {
+    //   setOpenEditModal(false);
+    //   setIsEditing(false);
+    // }
   };
 
   useEffect(() => {
@@ -68,7 +77,7 @@ const EditDirectorModal = ({
         email: member[2],
       }));
     }
-  }, [member, dateModified, startDate]);
+  }, [member, dateModified, startDate, confirmClose]);
 
   function handleInputChange(event) {
     const { name, value, type, checked } = event.target;
@@ -152,7 +161,9 @@ const EditDirectorModal = ({
 
   let { data } = useSelector((state) => state.reducer);
 
-  const selectedRoles = data.filter(el => el[2] == formData.memberEmail && el[7] == 'Active').map(el => el[6])
+  const selectedRoles = data
+    .filter((el) => el[2] == formData.memberEmail && el[7] == "Active")
+    .map((el) => el[6]);
 
   const handleSubmit = async () => {
     const inputRefs = [
@@ -242,7 +253,7 @@ const EditDirectorModal = ({
     if (!newModifiedValues.email) {
       newModifiedValues.email = member[2];
     }
-    
+
     setModifiedValues(newModifiedValues);
 
     setActiveSaveButton(true);
@@ -305,6 +316,16 @@ const EditDirectorModal = ({
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all w-[600px] sm:my-8 sm:p-6">
+            {confirmClose && (
+              <div>
+                <ConfirmClose
+                  setConfirmClose={setConfirmClose}
+                  setCloseModalConfirmed={setCloseModalConfirmed}
+                  setOpenEditModal={setOpenEditModal}
+                  setIsEditing={setIsEditing}
+                />
+              </div>
+            )}
             <div className="mt-3 text-center sm:mt-5 text-sm montserrat">
               <h3
                 className=" font-semibold lg:text-sm leading-6 text-gray-900"
@@ -520,7 +541,7 @@ const EditDirectorModal = ({
                 disabled={activeSaveButton}
                 onClick={handleSubmit}
                 id="submitAddMember"
-                type="button"
+                type="submit"
                 className={
                   activeSaveButton
                     ? "w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm hover:text-[#535787]"
