@@ -26,8 +26,36 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   const [postDeleteClub, setPostDeleteClub] = useState(false);
   const [isLoadingPost, setIsLoadingPost] = useState(false);
   const [openAddClubModal, setOpenAddClubModal] = useState(false);
+  const [editingClub, setEditingClub] = useState(null);
+  const [editedData, setEditedData] = useState({});
+  const [isLoadingEditClub, setIsLoadingEditClub] = useState(false);
+  const [postingEditClub, setPostingEditClub] = useState(false);
+
+  const handleEditClick = (clubName) => {
+    setEditingClub(clubName);
+    setMenuVisible(false);
+  };
 
   const dispatch = useDispatch();
+
+  const postEditClub = async (clubName, editedData) => {
+    let url =
+      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec"; // Your URL here
+    const options = {
+      method: "post",
+      mode: "no-cors",
+      body: JSON.stringify({
+        action: "editClubData",
+        changes: editedData,
+        clubName: clubName,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    await fetch(url, options);
+  };
 
   const deleteClub = async (clubName) => {
     let url = `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=deleteClub&clubName=${clubName}`;
@@ -60,8 +88,23 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
         dispatch(fetchClubData());
         setPostDeleteClub(false);
         setIsLoadingPost(false);
+        setMenuVisible(false);
       };
       deletePost();
+    }
+
+    if (postingEditClub == true && !isLoadingEditClub) {
+      const editingClubData = async () => {
+        setIsLoadingEditClub(true);
+        await postEditClub(editingClub, editedData);
+        dispatch(fetchClubData());
+        setEditingClub(null);
+        setPostingEditClub(false);
+        setIsLoadingEditClub(false);
+        setMenuVisible(false);
+        // postEditClub(false);
+      };
+      editingClubData();
     }
   }, [
     searchTerm,
@@ -70,6 +113,10 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     clubToDelete,
     postDeleteClub,
     isLoadingPost,
+    editingClub,
+    editedData,
+    isLoadingEditClub,
+    postingEditClub,
     dispatch,
   ]);
 
@@ -77,8 +124,27 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     setSelectedClub(e.target.value);
   };
 
+  const handleSaveChanges = () => {
+    console.log("club", editingClub);
+    console.log(editedData);
+    setPostingEditClub(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingClub(null);
+    setMenuVisible(false);
+  };
+
+  function handleInputChange(label, value) {
+    setEditedData((prevData) => ({
+      ...prevData,
+      [label]: value,
+    }));
+  }
+
   const handleOpenMenu = (clubname) => {
     if (menuVisible == false) {
+      setIsLoadingEditClub(false);
       setMenuVisible(true);
       setClubMenuOpen(clubname);
     } else {
@@ -250,18 +316,83 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                     }}
                                   ></div>
                                 </div>
-                              ) : (
-                                <button
-                                  className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
-                                  role="menuitem"
-                                  onClick={() => handleDeleteClub(club[0])}
-                                  tabIndex="-1"
-                                  id="options-menu-{index}-item-1"
-                                  data-club-name="{club[0]}"
+                              ) : isLoadingEditClub ? (
+                                <div
+                                  className="flex justify-center items-center"
+                                  style={{ marginTop: "30px", height: "5px" }}
                                 >
-                                  Delete
-                                  <span className="sr-only">, {club[0]}</span>
-                                </button>
+                                  <div
+                                    className="spinner border-t-2 border-solid rounded-full animate-spin"
+                                    style={{
+                                      borderColor: "#303030",
+                                      borderRightColor: "transparent",
+                                      width: "1rem",
+                                      height: "1rem",
+                                    }}
+                                  ></div>
+                                </div>
+                              ) : (
+                                <div>
+                                  {editingClub === club[0] ? (
+                                    <>
+                                      <button
+                                        className="block px-3 py-1 text-sm leading-6 text-gray-900"
+                                        role="menuitem"
+                                        onClick={() =>
+                                          handleSaveChanges(club[0])
+                                        }
+                                        tabIndex="-1"
+                                      >
+                                        Save
+                                        <span className="sr-only">
+                                          , {club[0]}
+                                        </span>
+                                      </button>
+                                      <button
+                                        className="block px-3 py-1 text-sm leading-6 text-gray-900"
+                                        role="menuitem"
+                                        onClick={handleCancelEdit}
+                                        tabIndex="-1"
+                                      >
+                                        Cancel
+                                        <span className="sr-only">
+                                          , {club[0]}
+                                        </span>
+                                      </button>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <button
+                                        className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
+                                        role="menuitem"
+                                        onClick={() =>
+                                          handleDeleteClub(club[0])
+                                        }
+                                        tabIndex="-1"
+                                        id={`options-menu-${index}-item-1`}
+                                        data-club-name="{club[0]}"
+                                      >
+                                        Delete
+                                        <span className="sr-only">
+                                          , {club[0]}
+                                        </span>
+                                      </button>
+                                      <button
+                                        className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
+                                        role="menuitem"
+                                        onClick={() => handleEditClick(club[0])}
+                                        tabIndex="-1"
+                                        id={`options-menu-${index}-item-2`}
+                                        data-club-name="{club[0]}"
+                                      >
+                                        Edit
+                                        <span className="sr-only">
+                                          , {club[0]}
+                                        </span>
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
                               )}
                             </div>
                           ) : (
@@ -291,103 +422,259 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                           <dt className="text-gray-500">
                             Club Mailing Address
                           </dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {club[1]}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club Mailing Address",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[1]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[1]}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club Tourism Region</dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {club[2]}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club Tourism Region",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[2]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[2]}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club Main Phone #</dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {club[3]}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club Main Phone",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[3]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[3]}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club General Email</dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {club[4]}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club General Email",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[4]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[4]}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club Website</dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {club[5]}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club Website",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[5]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[5]}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">
                             Club BC Society Number
                           </dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {club[6]}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club BC Society Number",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[6]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[6]}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">
                             Financial Year End Date
                           </dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {formatDate(club[7])}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Financial Year End Date",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={formatDate(club[7])}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {formatDate(club[7])}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club GST Number</dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {club[8]}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club GST Number",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[8]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[8]}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club PST Number</dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {club[9]}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club PST Number",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[9]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[9]}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club Facebook</dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {club[10]}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club Facebook",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[10]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[10]}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club Instagram</dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {club[11]}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club Instagram",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[11]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[11]}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club Tik Tok</dt>
-                          <dd className="flex items-start gap-x-2">
-                            <div className="font-medium text-gray-900">
-                              {club[12]}
-                            </div>
-                          </dd>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club Tik Tok",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[12]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[12]}
+                              </div>
+                            </dd>
+                          )}
                         </div>
                       </dl>
                     </li>
