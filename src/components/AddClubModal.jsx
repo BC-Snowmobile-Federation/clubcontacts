@@ -67,9 +67,6 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
       errors["newClubFinancialYearEndDate"] =
         "Club Financial Year End Date is required";
     }
-    if (!/^[\w.-]+@[\w.-]+\.\w+$/.test(newClubMailingAddress)) {
-      errors["newClubMailingAddress"] = "Please enter a valid email";
-    }
     if (!/^[\w.-]+@[\w.-]+\.\w+$/.test(newClubGeneralEmail)) {
       errors["newClubGeneralEmail"] = "Please enter a valid email";
     }
@@ -152,7 +149,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex min-h-full items-end justify-center ml-[40px] p-4 text-center sm:items-center sm:p-0">
-          <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all w-[900px] sm:my-8 sm:p-6">
+          <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all w-[600px] sm:my-8 sm:p-6">
             <div className="mt-3 text-center sm:mt-5 text-sm montserrat">
               <h3
                 className=" font-semibold lg:text-sm leading-6 text-gray-900"

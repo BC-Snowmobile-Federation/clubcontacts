@@ -170,7 +170,7 @@ const AddDirectorModal = ({
   const postDirectorData = async (clubName, memberData, hasManager) => {
     let url =
       "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec"; // Your URL here
-    console.log(memberData)
+    console.log(memberData);
     const options = {
       method: "post",
       mode: "no-cors",
@@ -488,10 +488,6 @@ const MemberDetail = ({
     (item) => item[7] === dtValue && item[3] === clubName
   );
 
-  // const activeMatchingMember = matchingMembers.find(
-  //   (item) => item[8] == "Active"
-  // );
-
   const defaultMemberValue = member ? `${member[0]} ${member[1]}` : "";
 
   return (
@@ -643,7 +639,6 @@ const MemberCard = ({
         role: dtValue,
       };
       setSelectedChanges((prev) => {
-        // Check if the changeObj already exists in prev
         if (
           prev.some(
             (item) =>
@@ -653,16 +648,12 @@ const MemberCard = ({
               item.role === changeObj.role
           )
         ) {
-          return prev; // If it exists, just return the previous state
+          return prev;
         }
-        return [...prev, changeObj]; // Else, add the new changeObj to the array
+        return [...prev, changeObj];
       });
     }
   };
-
-  //     setSelectedChanges((prev) => [...prev, changeObj]);
-  //   }
-  // };
 
   const handleChangesSubmit = () => {
     setIsChangingSelect(true);
@@ -761,25 +752,6 @@ const MemberCard = ({
         <div className="flex space-x-4">
           {isEditing && editSelectedClub == clubName ? (
             <>
-              {/* {isChangingSelect ? (
-                <button
-                  className="add-director-button hidden bg-transparent"
-                  onClick={handleOpenModal}
-                >
-                  <p className="font-semibold text-base text-[#535787] cursor-pointer">
-                    Add Director
-                  </p>
-                </button>
-              ) : (
-                <button
-                  className="add-director-button bg-transparent"
-                  onClick={handleOpenModal}
-                >
-                  <p className="font-semibold text-base text-[#535787] cursor-pointer">
-                    Add Director
-                  </p>
-                </button>
-              )} */}
               {isChangingSelect ? (
                 <div className="mt-[2px]">
                   <div
@@ -915,7 +887,7 @@ const ClubDirectors = ({
               </div>
               <select
                 id="clubSelect"
-                className="px-2 rounded-full statusSelect bg-transparent appearance-none border-0 pr-8 focus:outline-none focus:ring-0 focus:border-none text-sm"
+                className="px-2 rounded-full w-[205px] statusSelect bg-transparent appearance-none border-0 pr-8 focus:outline-none focus:ring-0 focus:border-none text-sm"
                 onChange={handleClubChange}
               >
                 <option value="">All Clubs</option>
