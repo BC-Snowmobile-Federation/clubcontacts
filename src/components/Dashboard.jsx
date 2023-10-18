@@ -69,7 +69,7 @@ const Dashboard = () => {
   const [selectedClub, setSelectedClub] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedAmilia, setSelectedAmilia] = useState("All");
-  const [activeButton, setActiveButton] = useState("historical");
+  const [activeButton, setActiveButton] = useState("clubsProfile");
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [btnId, setBtnId] = useState("");

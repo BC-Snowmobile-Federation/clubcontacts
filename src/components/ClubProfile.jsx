@@ -140,6 +140,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
       ...prevData,
       [label]: value,
     }));
+    console.log(label, value);
   }
 
   const handleOpenMenu = (clubname) => {
@@ -228,7 +229,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                   </div>
                   <select
                     id="clubSelect"
-                    className="px-2 rounded-full statusSelect bg-transparent appearance-none border-0 pr-8 focus:outline-none focus:ring-0 focus:border-none text-sm"
+                    className="px-2 rounded-full w-[210px] statusSelect bg-transparent appearance-none border-0 pr-8 focus:outline-none focus:ring-0 focus:border-none text-sm"
                     onChange={handleClubChange}
                   >
                     <option value="">All Clubs</option>
@@ -275,93 +276,88 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                           {club[0]}
                         </div>
                         <div className="relative ml-auto">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenMenu(club[0])}
-                            className="menu-button -m-2.5 block p-2.5 text-gray-400 hover:text-gray-500"
-                            id="options-menu-{index}-button"
-                            aria-expanded="false"
-                            aria-haspopup="true"
-                          >
-                            <span className="sr-only">Open options</span>
-                            <svg
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              aria-hidden="true"
-                            >
-                              <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
-                            </svg>
-                          </button>
-                          {menuVisible & (club[0] == clubMenuOpen) ? (
-                            <div
-                              className="dropdown-menu absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
-                              role="menu"
-                              aria-orientation="vertical"
-                              aria-labelledby="options-menu-{index}-button"
-                              tabIndex="-1"
-                            >
-                              {isLoadingPost ? (
+                          {editingClub === club[0] ? (
+                            isLoadingEditClub ? (
+                              <div
+                                className="flex justify-center items-center"
+                                style={{ marginTop: "30px", height: "5px" }}
+                              >
                                 <div
-                                  className="flex justify-center items-center"
-                                  style={{ marginTop: "30px", height: "5px" }}
+                                  className="spinner border-t-2 border-solid rounded-full animate-spin"
+                                  style={{
+                                    borderColor: "#303030",
+                                    borderRightColor: "transparent",
+                                    width: "1rem",
+                                    height: "1rem",
+                                  }}
+                                ></div>
+                              </div>
+                            ) : (
+                              <>
+                                <button
+                                  className="font-semibold text-base text-[#535787] cursor-pointer bg-transparent"
+                                  onClick={() => handleSaveChanges(club[0])}
                                 >
-                                  <div
-                                    className="spinner border-t-2 border-solid rounded-full animate-spin"
-                                    style={{
-                                      borderColor: "#303030",
-                                      borderRightColor: "transparent",
-                                      width: "1rem",
-                                      height: "1rem",
-                                    }}
-                                  ></div>
-                                </div>
-                              ) : isLoadingEditClub ? (
+                                  Save
+                                  <span className="sr-only">, {club[0]}</span>
+                                </button>
+                                <button
+                                  className="font-semibold text-base text-[#535787] cursor-pointer bg-transparent ml-6"
+                                  onClick={handleCancelEdit}
+                                >
+                                  Cancel
+                                  <span className="sr-only">, {club[0]}</span>
+                                </button>
+                              </>
+                            )
+                          ) : (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleOpenMenu(club[0])}
+                                className="menu-button -m-2.5 block p-2.5 text-gray-400 hover:text-gray-500"
+                                id={`options-menu-${index}-button`}
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                              >
+                                <span className="sr-only">Open options</span>
+                                <svg
+                                  className="h-5 w-5"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
+                                </svg>
+                              </button>
+                              {menuVisible && club[0] === clubMenuOpen && (
                                 <div
-                                  className="flex justify-center items-center"
-                                  style={{ marginTop: "30px", height: "5px" }}
+                                  className="dropdown-menu absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                                  role="menu"
+                                  aria-orientation="vertical"
+                                  aria-labelledby={`options-menu-${index}-button`}
+                                  tabIndex="-1"
                                 >
-                                  <div
-                                    className="spinner border-t-2 border-solid rounded-full animate-spin"
-                                    style={{
-                                      borderColor: "#303030",
-                                      borderRightColor: "transparent",
-                                      width: "1rem",
-                                      height: "1rem",
-                                    }}
-                                  ></div>
-                                </div>
-                              ) : (
-                                <div>
-                                  {editingClub === club[0] ? (
-                                    <>
-                                      <button
-                                        className="block px-3 py-1 text-sm leading-6 text-gray-900"
-                                        role="menuitem"
-                                        onClick={() =>
-                                          handleSaveChanges(club[0])
-                                        }
-                                        tabIndex="-1"
-                                      >
-                                        Save
-                                        <span className="sr-only">
-                                          , {club[0]}
-                                        </span>
-                                      </button>
-                                      <button
-                                        className="block px-3 py-1 text-sm leading-6 text-gray-900"
-                                        role="menuitem"
-                                        onClick={handleCancelEdit}
-                                        tabIndex="-1"
-                                      >
-                                        Cancel
-                                        <span className="sr-only">
-                                          , {club[0]}
-                                        </span>
-                                      </button>
-                                    </>
+                                  {isLoadingPost || isLoadingEditClub ? (
+                                    <div
+                                      className="flex justify-center items-center"
+                                      style={{
+                                        marginTop: "30px",
+                                        height: "5px",
+                                      }}
+                                    >
+                                      <div
+                                        className="spinner border-t-2 border-solid rounded-full animate-spin"
+                                        style={{
+                                          borderColor: "#303030",
+                                          borderRightColor: "transparent",
+                                          width: "1rem",
+                                          height: "1rem",
+                                        }}
+                                      ></div>
+                                    </div>
                                   ) : (
-                                    <>
+                                    <div>
                                       <button
                                         className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
                                         role="menuitem"
@@ -370,7 +366,6 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                         }
                                         tabIndex="-1"
                                         id={`options-menu-${index}-item-1`}
-                                        data-club-name="{club[0]}"
                                       >
                                         Delete
                                         <span className="sr-only">
@@ -383,37 +378,17 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                         onClick={() => handleEditClick(club[0])}
                                         tabIndex="-1"
                                         id={`options-menu-${index}-item-2`}
-                                        data-club-name="{club[0]}"
                                       >
                                         Edit
                                         <span className="sr-only">
                                           , {club[0]}
                                         </span>
                                       </button>
-                                    </>
+                                    </div>
                                   )}
                                 </div>
                               )}
-                            </div>
-                          ) : (
-                            <div
-                              className="hidden dropdown-menu absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
-                              role="menu"
-                              aria-orientation="vertical"
-                              aria-labelledby="options-menu-{index}-button"
-                              tabIndex="-1"
-                            >
-                              <button
-                                className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
-                                role="menuitem"
-                                tabIndex="-1"
-                                id="options-menu-{index}-item-1"
-                                data-club-name="{club[0]}"
-                              >
-                                Delete
-                                <span className="sr-only">, {club[0]}</span>
-                              </button>
-                            </div>
+                            </>
                           )}
                         </div>
                       </div>
@@ -444,7 +419,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club Tourism Region</dt>
                           {editingClub === club[0] ? (
-                            <input
+                            <select
                               className="border text-sm rounded-full w-[180px] p-1"
                               onChange={(e) =>
                                 handleInputChange(
@@ -453,7 +428,27 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 )
                               }
                               defaultValue={club[2]}
-                            />
+                            >
+                              <option selected disabled value="">
+                                Select club tourism region
+                              </option>
+                              <option value="Cariboo Chilcotin Coast">
+                                Cariboo Chilcotin Coast
+                              </option>
+                              <option value="Northern">Northern</option>
+                              <option value="Kootenay Rockies">
+                                Kootenay Rockies
+                              </option>
+                              <option value="Thompson Okanagan">
+                                Thompson Okanagan
+                              </option>
+                              <option value="Vancouver Island">
+                                Vancouver Island
+                              </option>
+                              <option value="Vancouver Coast">
+                                Vancouver Coast
+                              </option>
+                            </select>
                           ) : (
                             <dd className="flex items-start gap-x-2">
                               <div className="font-medium text-gray-900">
