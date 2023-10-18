@@ -32,12 +32,13 @@ function Login() {
         `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=login&userEmail=${userEmail}`
       )
       .then((response) => {
-        localStorage.setItem("isBcsf", response.data.response.userData.isBcsf);
+        localStorage.setItem("isBcsf", JSON.stringify(response.data.response.userData.isBcsf));
         localStorage.setItem(
           "isManager",
           response.data.response.userData.isManager
         );
-        localStorage.setItem("clubName", response.data.response.userData.club);
+        localStorage.setItem("clubName", JSON.stringify(response.data.response.userData.club));
+        localStorage.setItem("activeUser", userEmail);
       });
   };
 

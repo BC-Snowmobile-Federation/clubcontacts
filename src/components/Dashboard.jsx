@@ -56,12 +56,13 @@ const Dashboard = () => {
     return [...before, item9, ...after];
   });
 
-  let isBcsf = localStorage.getItem("isBcsf");
+  let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
   let isManager = localStorage.getItem("isManager");
+  let clubName = localStorage.getItem("clubName");
 
-  const rolePosition = isBcsf ? 7 : 6;
-  const statusPosition = isBcsf ? 8 : 7;
-  const amiliaPosition = isBcsf ? 9 : 8;
+  const rolePosition = 7;
+  const statusPosition = 8;
+  const amiliaPosition = 9;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState(data || []);

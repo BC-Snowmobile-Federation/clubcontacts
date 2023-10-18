@@ -8,6 +8,9 @@ import SaveChangesModal from "./SaveChangesModal";
 
 const groupDataById = (data) => {
   return data.reduce((groups, item) => {
+    let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
+    let club = JSON.parse(localStorage.getItem("clubName"));
+    item[3] = Boolean(isBcsf) == false ? club : item[3]
     const id = item[3];
     if (!groups[id]) {
       groups[id] = [];
@@ -170,7 +173,6 @@ const AddDirectorModal = ({
   const postDirectorData = async (clubName, memberData, hasManager) => {
     let url =
       "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec"; // Your URL here
-    console.log(memberData);
     const options = {
       method: "post",
       mode: "no-cors",

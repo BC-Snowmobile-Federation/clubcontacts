@@ -35,7 +35,7 @@ const SideMenu = ({
     navigate("/")
   };
 
-  let clubName = localStorage.getItem("clubName")
+  let clubName = JSON.parse(localStorage.getItem("clubName"))
   let user = JSON.parse(localStorage.getItem("userEmail"))
   let activeUser = user.email;
   

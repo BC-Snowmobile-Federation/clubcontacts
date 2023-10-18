@@ -125,8 +125,6 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   };
 
   const handleSaveChanges = () => {
-    console.log("club", editingClub);
-    console.log(editedData);
     setPostingEditClub(true);
   };
 
@@ -140,7 +138,6 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
       ...prevData,
       [label]: value,
     }));
-    console.log(label, value);
   }
 
   const handleOpenMenu = (clubname) => {
@@ -166,9 +163,11 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     // }
   };
 
+  let isManager = localStorage.getItem('isManager') == 'MANAGER' ? true : false;
+
   return (
     <div>
-      {isBcsf ? (
+      {isBcsf && isManager ? (
         <>
           <div className="flex justify-end">
             <button
@@ -275,6 +274,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                         <div className="text-base font-semibold leading-6 text-[#243746]">
                           {club[0]}
                         </div>
+                        {isManager ? (
                         <div className="relative ml-auto">
                           {editingClub === club[0] ? (
                             isLoadingEditClub ? (
@@ -391,6 +391,9 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </>
                           )}
                         </div>
+                        ) : (
+                          <></>
+                        )}
                       </div>
                       <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
                         <div className="flex justify-between gap-x-4 py-3">

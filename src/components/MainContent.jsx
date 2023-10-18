@@ -28,7 +28,7 @@ const MainContent = ({
   // eslint-disable-next-line
   uniqueAmiliaValues,
 }) => {
-  let { isBcsf } = useSelector((state) => state.reducer);
+  let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
 
   // eslint-disable-next-line
   const [roleOptions, setRoleOptions] = useState(["All", ...uniqueRoleValues]);
@@ -64,8 +64,6 @@ const MainContent = ({
     const newAmilia = e.target.value;
     handleAmiliaChange(newAmilia);
   };
-
-  isBcsf = true;
 
   return (
     <div className="flex items-center justify-center">
