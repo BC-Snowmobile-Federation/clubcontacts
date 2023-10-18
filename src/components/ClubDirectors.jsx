@@ -9,7 +9,7 @@ import SaveChangesModal from "./SaveChangesModal";
 const groupDataById = (data) => {
   return data.reduce((groups, item) => {
     let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
-    let club = JSON.parse(localStorage.getItem("clubName"));
+    let club = localStorage.getItem("clubName");
     item[3] = Boolean(isBcsf) == false ? club : item[3]
     const id = item[3];
     if (!groups[id]) {

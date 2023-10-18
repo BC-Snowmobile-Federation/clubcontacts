@@ -37,7 +37,7 @@ function Login() {
           "isManager",
           response.data.response.userData.isManager
         );
-        localStorage.setItem("clubName", JSON.stringify(response.data.response.userData.club));
+        localStorage.setItem("clubName", response.data.response.userData.club);
         localStorage.setItem("activeUser", userEmail);
       });
   };
