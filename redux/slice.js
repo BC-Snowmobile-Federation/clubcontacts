@@ -28,6 +28,11 @@ export const fetchClubData = createAsyncThunk("getData/fetchClubData", async () 
   return data.response;
 });
 
+export const clear = createAsyncThunk("getData/clear", async () => {
+  return localStorage.clear();
+});
+
+
 const appReducer = createSlice({
   name: "getData",
   initialState,
@@ -55,6 +60,11 @@ const appReducer = createSlice({
     });
     builder.addCase(fetchClubData.fulfilled, (state, action) => {
       state.clubData = action.payload;
+    });
+    builder.addCase(clear.fulfilled, (state, action) => {
+      state.data = [];
+      state.allData = [];
+      state.clubData = [];
     });
   },
 });

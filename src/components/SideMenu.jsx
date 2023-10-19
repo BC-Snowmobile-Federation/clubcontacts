@@ -1,5 +1,7 @@
 import { googleLogout } from "@react-oauth/google";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { clear } from "../../redux/slice";
 
 const SideMenu = ({
   // eslint-disable-next-line
@@ -18,6 +20,8 @@ const SideMenu = ({
 
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   function handleChangeSection(id) {
     if (isEditing) {
       setShowModal(true)
@@ -32,6 +36,7 @@ const SideMenu = ({
     localStorage.clear();
     localStorage.setItem("userEmail", null)
     localStorage.setItem("userInfo", null)
+    dispatch(clear());
     navigate("/")
   };
 

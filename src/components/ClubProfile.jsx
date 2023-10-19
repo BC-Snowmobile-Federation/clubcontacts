@@ -156,14 +156,10 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   };
 
   const handleOpenAddClubModal = () => {
-    // if (openAddClubModal == false) {
     setOpenAddClubModal(true);
-    // } else {
-    //   setOpenAddClubModal(false)
-    // }
   };
 
-  let isManager = localStorage.getItem('isManager') == 'MANAGER' ? true : false;
+  let isManager = localStorage.getItem("isManager") == "MANAGER" ? true : false;
 
   return (
     <div>
@@ -275,122 +271,126 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                           {club[0]}
                         </div>
                         {isManager ? (
-                        <div className="relative ml-auto">
-                          {editingClub === club[0] ? (
-                            isLoadingEditClub ? (
-                              <div
-                                className="flex justify-center items-center"
-                                style={{ marginTop: "30px", height: "5px" }}
-                              >
+                          <div className="relative ml-auto">
+                            {editingClub === club[0] ? (
+                              isLoadingEditClub ? (
                                 <div
-                                  className="spinner border-t-2 border-solid rounded-full animate-spin"
-                                  style={{
-                                    borderColor: "#303030",
-                                    borderRightColor: "transparent",
-                                    width: "1rem",
-                                    height: "1rem",
-                                  }}
-                                ></div>
-                              </div>
+                                  className="flex justify-center items-center"
+                                  style={{ marginTop: "30px", height: "5px" }}
+                                >
+                                  <div
+                                    className="spinner border-t-2 border-solid rounded-full animate-spin"
+                                    style={{
+                                      borderColor: "#303030",
+                                      borderRightColor: "transparent",
+                                      width: "1rem",
+                                      height: "1rem",
+                                    }}
+                                  ></div>
+                                </div>
+                              ) : (
+                                <>
+                                  <button
+                                    className="font-semibold text-base text-[#535787] cursor-pointer bg-transparent"
+                                    onClick={() => handleSaveChanges(club[0])}
+                                  >
+                                    Save
+                                    <span className="sr-only">, {club[0]}</span>
+                                  </button>
+                                  <button
+                                    className="font-semibold text-base text-[#535787] cursor-pointer bg-transparent ml-6"
+                                    onClick={handleCancelEdit}
+                                  >
+                                    Cancel
+                                    <span className="sr-only">, {club[0]}</span>
+                                  </button>
+                                </>
+                              )
                             ) : (
                               <>
                                 <button
-                                  className="font-semibold text-base text-[#535787] cursor-pointer bg-transparent"
-                                  onClick={() => handleSaveChanges(club[0])}
+                                  type="button"
+                                  onClick={() => handleOpenMenu(club[0])}
+                                  className="menu-button -m-2.5 block p-2.5 text-gray-400 hover:text-gray-500"
+                                  id={`options-menu-${index}-button`}
+                                  aria-expanded="false"
+                                  aria-haspopup="true"
                                 >
-                                  Save
-                                  <span className="sr-only">, {club[0]}</span>
+                                  <span className="sr-only">Open options</span>
+                                  <svg
+                                    className="h-5 w-5"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                  >
+                                    <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
+                                  </svg>
                                 </button>
-                                <button
-                                  className="font-semibold text-base text-[#535787] cursor-pointer bg-transparent ml-6"
-                                  onClick={handleCancelEdit}
-                                >
-                                  Cancel
-                                  <span className="sr-only">, {club[0]}</span>
-                                </button>
-                              </>
-                            )
-                          ) : (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() => handleOpenMenu(club[0])}
-                                className="menu-button -m-2.5 block p-2.5 text-gray-400 hover:text-gray-500"
-                                id={`options-menu-${index}-button`}
-                                aria-expanded="false"
-                                aria-haspopup="true"
-                              >
-                                <span className="sr-only">Open options</span>
-                                <svg
-                                  className="h-5 w-5"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                  aria-hidden="true"
-                                >
-                                  <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
-                                </svg>
-                              </button>
-                              {menuVisible && club[0] === clubMenuOpen && (
-                                <div
-                                  className="dropdown-menu absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
-                                  role="menu"
-                                  aria-orientation="vertical"
-                                  aria-labelledby={`options-menu-${index}-button`}
-                                  tabIndex="-1"
-                                >
-                                  {isLoadingPost || isLoadingEditClub ? (
-                                    <div
-                                      className="flex justify-center items-center"
-                                      style={{
-                                        marginTop: "30px",
-                                        height: "5px",
-                                      }}
-                                    >
+                                {menuVisible && club[0] === clubMenuOpen && (
+                                  <div
+                                    className="dropdown-menu absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                                    role="menu"
+                                    aria-orientation="vertical"
+                                    aria-labelledby={`options-menu-${index}-button`}
+                                    tabIndex="-1"
+                                  >
+                                    {isLoadingPost || isLoadingEditClub ? (
                                       <div
-                                        className="spinner border-t-2 border-solid rounded-full animate-spin"
+                                        className="flex justify-center items-center"
                                         style={{
-                                          borderColor: "#303030",
-                                          borderRightColor: "transparent",
-                                          width: "1rem",
-                                          height: "1rem",
+                                          marginTop: "30px",
+                                          height: "5px",
                                         }}
-                                      ></div>
-                                    </div>
-                                  ) : (
-                                    <div>
-                                      <button
-                                        className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
-                                        role="menuitem"
-                                        onClick={() =>
-                                          handleDeleteClub(club[0])
-                                        }
-                                        tabIndex="-1"
-                                        id={`options-menu-${index}-item-1`}
                                       >
-                                        Delete
-                                        <span className="sr-only">
-                                          , {club[0]}
-                                        </span>
-                                      </button>
-                                      <button
-                                        className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
-                                        role="menuitem"
-                                        onClick={() => handleEditClick(club[0])}
-                                        tabIndex="-1"
-                                        id={`options-menu-${index}-item-2`}
-                                      >
-                                        Edit
-                                        <span className="sr-only">
-                                          , {club[0]}
-                                        </span>
-                                      </button>
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </div>
+                                        <div
+                                          className="spinner border-t-2 border-solid rounded-full animate-spin"
+                                          style={{
+                                            borderColor: "#303030",
+                                            borderRightColor: "transparent",
+                                            width: "1rem",
+                                            height: "1rem",
+                                          }}
+                                        ></div>
+                                      </div>
+                                    ) : (
+                                      <div>
+                                        {isBcsf && (
+                                          <button
+                                            className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
+                                            role="menuitem"
+                                            onClick={() =>
+                                              handleDeleteClub(club[0])
+                                            }
+                                            tabIndex="-1"
+                                            id={`options-menu-${index}-item-1`}
+                                          >
+                                            Delete
+                                            <span className="sr-only">
+                                              , {club[0]}
+                                            </span>
+                                          </button>
+                                        )}
+                                        <button
+                                          className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
+                                          role="menuitem"
+                                          onClick={() =>
+                                            handleEditClick(club[0])
+                                          }
+                                          tabIndex="-1"
+                                          id={`options-menu-${index}-item-2`}
+                                        >
+                                          Edit
+                                          <span className="sr-only">
+                                            , {club[0]}
+                                          </span>
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </div>
                         ) : (
                           <></>
                         )}
