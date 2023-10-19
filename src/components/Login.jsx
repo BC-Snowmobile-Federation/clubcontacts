@@ -3,6 +3,9 @@ import axios from "axios";
 import { useGoogleLogin, googleLogout } from "@react-oauth/google";
 import ErrorLoginModal from "./ErrorLoginModal";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchClubData } from "../../redux/slice";
+import Spinner from "./Spinner";
 
 function Login() {
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -26,13 +29,18 @@ function Login() {
     localStorage.clear();
   };
 
+  const [isUserBcsf, setIsUserBcsf] = useState(null);
+  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
+
   const fetchUserData = (userEmail) => {
-    axios
+    return axios
       .get(
         `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=login&userEmail=${userEmail}`
       )
       .then((response) => {
-        localStorage.setItem("isBcsf", JSON.stringify(response.data.response.userData.isBcsf));
+        setIsLoadingLogin(true);
+        setIsUserBcsf(response.data.response.userData.isBcsf);
+        localStorage.setItem("isBcsf", response.data.response.userData.isBcsf);
         localStorage.setItem(
           "isManager",
           response.data.response.userData.isManager
@@ -58,14 +66,19 @@ function Login() {
         .then((response) => {
           localStorage.setItem("userEmail", JSON.stringify(response.data));
           setUserEmail(response.data);
-          fetchUserData(response.data.email);
-          setGoToDashboard(true);
-          setMakePost(false);
-          navigate("/dashboard");
+          return fetchUserData(response.data.email);
+        })
+        .then(() => {
+          if (isUserBcsf !== null) {
+            setIsLoadingLogin(false);
+            setMakePost(false);
+            setGoToDashboard(true);
+            navigate("/dashboard");
+          }
         })
         .catch((error) => console.log(error));
     }
-  }, [navigate, userInfo, makePost]);
+  }, [navigate, userInfo, makePost, isUserBcsf]);
 
   useEffect(() => {
     const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
@@ -79,6 +92,14 @@ function Login() {
     width: "100px",
     height: "auto",
   };
+
+  if (isLoadingLogin) {
+    return (
+      <div className="flex justify-center m-auto items-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 items-center justify-center">

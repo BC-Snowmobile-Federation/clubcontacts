@@ -19,12 +19,15 @@ export const fetchData = createAsyncThunk("getData/fetchData", async () => {
 
 export const fetchClubData = createAsyncThunk("getData/fetchClubData", async () => {
   let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
+  console.log("isbcsf", isBcsf)
   let email = JSON.parse(localStorage.getItem("userEmail"));
   let user = email.email;
   let url =
     "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=fetchClubsProfileData&isBcsf=" + isBcsf + "&user=" + user;
+    console.log('url', url)
   const response = await fetch(url);
   const data = await response.json();
+  console.log('at fetch', data.response)
   return data.response;
 });
 
