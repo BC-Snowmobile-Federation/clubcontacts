@@ -5,19 +5,25 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import EditDirectorModal from "./EditDirectorModal";
 import SaveChangesModal from "./SaveChangesModal";
+import NonData from "./NonData";
 
 const groupDataById = (data) => {
-  return data.reduce((groups, item) => {
-    let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
+  if (data.length >= 1) {
+    return data.reduce((groups, item) => {
+      let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
+      let club = localStorage.getItem("clubName");
+      item[3] = Boolean(isBcsf) == false ? club : item[3];
+      const id = item[3];
+      if (!groups[id]) {
+        groups[id] = [];
+      }
+      groups[id].push(item);
+      return groups;
+    }, {});
+  } else {
     let club = localStorage.getItem("clubName");
-    item[3] = Boolean(isBcsf) == false ? club : item[3]
-    const id = item[3];
-    if (!groups[id]) {
-      groups[id] = [];
-    }
-    groups[id].push(item);
-    return groups;
-  }, {});
+    return { [club]: [["", "", "", club, "", "", "", "", "", "", ""]] };
+  }
 };
 // eslint-disable-next-line
 const AddDirectorModal = ({
@@ -477,7 +483,7 @@ const MemberDetail = ({
   data, // eslint-disable-next-line
   editSelectedClub, // eslint-disable-next-line
   handleChangesSubmit, // eslint-disable-next-line
-  handleSelectChange,
+  handleSelectChange, // eslint-disable-next-line
   handleOpenModal,
 }) => {
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -540,7 +546,7 @@ const MemberDetail = ({
                     value={`${item[0]} ${item[1]}`}
                   >{`${item[0]} ${item[1]}`}</option>
                 ))}
-                <option value="openAddModal">Add director</option>
+                <option value="openAddModal" onClick={handleOpenModal}>Add director</option>
               </select>
             </dd>
           ) : member ? (
@@ -844,6 +850,8 @@ const ClubDirectors = ({
     return selectedClubName;
   };
 
+  console.log(openModal)
+
   return (
     <div className="flex-col flex items-center justify-center">
       {isBcsf ? (
@@ -952,12 +960,26 @@ const ClubDirectors = ({
           id="container"
           className="flex-col mt-12 justify-center items-center"
         >
+          {openModal ? (
+              <AddDirectorModal
+                handleCloseModal={handleCloseModal}
+                submitAddDirector={submitAddDirector}
+                data={data}
+                setIsEditing={setIsEditing}
+                setOpenModal={setOpenModal}
+              />
+            ) : (
+              <></>
+            )}
           {Object.values(groups).map((clubData, index) => (
             <MemberCard
               key={`${index}-${clubData[0][3]}`}
               clubData={clubData}
               isManager={isManager}
               setOpenModal={setOpenModal}
+              setSelectedClubName={setSelectedClubName}
+              version={version}
+              isEditing={isEditing}
               setIsEditing={setIsEditing}
               data={data}
               showModal={showModal}

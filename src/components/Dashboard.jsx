@@ -163,7 +163,7 @@ const Dashboard = () => {
     amiliaPosition,
   ]);
 
-  if (!data || data.length < 1 || !clubData || clubData.length < 1) {
+  if (!clubData || clubData.length < 1) {
     return (
       <div className="flex justify-center m-auto items-center">
         <Spinner />

@@ -38,15 +38,29 @@ function Login() {
         `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=login&userEmail=${userEmail}`
       )
       .then((response) => {
-        setIsLoadingLogin(true);
-        setIsUserBcsf(response.data.response.userData.isBcsf);
-        localStorage.setItem("isBcsf", response.data.response.userData.isBcsf);
-        localStorage.setItem(
-          "isManager",
-          response.data.response.userData.isManager
-        );
-        localStorage.setItem("clubName", response.data.response.userData.club);
-        localStorage.setItem("activeUser", userEmail);
+        console.log(response);
+        const userData = response.data?.response?.userData;
+        console.log(userData)
+
+        if (userData.club) {
+          setIsLoadingLogin(true);
+          setIsUserBcsf(response.data.response.userData.isBcsf);
+          localStorage.setItem(
+            "isBcsf",
+            response.data.response.userData.isBcsf
+          );
+          localStorage.setItem(
+            "isManager",
+            response.data.response.userData.isManager
+          );
+          localStorage.setItem(
+            "clubName",
+            response.data.response.userData.club
+          );
+          localStorage.setItem("activeUser", userEmail);
+        } else {
+          setShowErrorModal(true);
+        }
       });
   };
 
@@ -83,7 +97,6 @@ function Login() {
   useEffect(() => {
     const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
     if (userEmailInStorage) {
-      // If userEmail is present, navigate to dashboard
       navigate("/dashboard");
     }
   }, [navigate]);
