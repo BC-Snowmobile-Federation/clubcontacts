@@ -41,8 +41,8 @@ const EditDirectorModal = ({
     memberPhoneNumber: member[4] || "",
     memberGender: member[5] || "",
     memberRole: member[7] || "",
-    memberAdmin: member[8] || "",
-    memberManager: member[9] || "",
+    memberAdmin: member[9] || "",
+    memberManager: member[10] || "",
   });
 
   const dispatch = useDispatch();
@@ -493,7 +493,7 @@ const EditDirectorModal = ({
                     id="editMemberAmeliaAdmin"
                     name="Is Amilia admin"
                     type="checkbox"
-                    value={formData.memberAdmin}
+                    checked={formData.memberAdmin == 'true' ? true : false}
                     onChange={handleInputChange}
                     className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
                   />
@@ -517,7 +517,7 @@ const EditDirectorModal = ({
                     id="editManagerAccess"
                     name="Club admin"
                     type="checkbox"
-                    value={formData.memberManager}
+                    checked={formData.memberManager == 'true' ? true : false}
                     onChange={handleInputChange}
                     className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
                   />

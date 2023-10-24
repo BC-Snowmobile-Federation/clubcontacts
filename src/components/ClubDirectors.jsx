@@ -849,9 +849,7 @@ const ClubDirectors = ({
   const submitAddDirector = () => {
     return selectedClubName;
   };
-
-  console.log(openModal)
-
+  
   return (
     <div className="flex-col flex items-center justify-center">
       {isBcsf ? (
