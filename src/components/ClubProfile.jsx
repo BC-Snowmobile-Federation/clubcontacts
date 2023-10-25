@@ -674,6 +674,27 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </dd>
                           )}
                         </div>
+                        <div className="flex justify-between gap-x-4 py-3">
+                          <dt className="text-gray-500">Club YouTube Channel</dt>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club YouTube Channel",
+                                  e.target.value
+                                )
+                              }
+                              defaultValue={club[13]}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[13]}
+                              </div>
+                            </dd>
+                          )}
+                        </div>
                       </dl>
                     </li>
                   );

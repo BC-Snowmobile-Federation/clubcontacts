@@ -16,6 +16,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
   const newClubFacebookRef = useRef();
   const newClubInstragramRef = useRef();
   const newClubTikTokRef = useRef();
+  const newClubYouTubeRef = useRef();
 
   const [errorMessages, setErrorMessages] = useState({});
   const [addClubData, setAddClubData] = useState([]);
@@ -40,6 +41,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
     const newClubFacebook = newClubFacebookRef.current.value;
     const newClubInstragram = newClubInstragramRef.current.value;
     const newClubTikTok = newClubTikTokRef.current.value;
+    const newClubYouTube = newClubYouTubeRef.current.value;
 
     // Validation logic
     if (!newClubName) {
@@ -90,6 +92,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
         newClubFacebook,
         newClubInstragram,
         newClubTikTok,
+        newClubYouTube,
         "Active"
       ]);
     }
@@ -368,6 +371,20 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
                 ref={newClubTikTokRef}
                 name="newClubTikTok"
                 id="newClubTikTok"
+                type="text"
+                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
+                placeholder="Insert url"
+              />
+            </div>
+
+            <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
+              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm">
+                Club Tik Tok{" "}
+              </label>
+              <input
+                ref={newClubYouTubeRef}
+                name="newClubYoutube"
+                id="newClubYoutube"
                 type="text"
                 className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
                 placeholder="Insert url"
