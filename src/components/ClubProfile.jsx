@@ -165,36 +165,30 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     let newValue = value;
     let labelToChange = label
     let addressArray = ["","",""];
+    if("Club Mailing Address" in editedData){
+        const splittedMailingAddress = editedData["Club Mailing Address"].split(";");
+        console.log(splittedMailingAddress);
+        addressArray[0] = splittedMailingAddress[0] || club[15] || "";
+        addressArray[1] = splittedMailingAddress[1] || club[16] || "";
+        addressArray[2] = splittedMailingAddress[2] || club[17] || "";
+    }
     if(label == "Club Mailing Address"){
       addressArray[0] = value;
-      if(club.length > 16){
-        addressArray[1] = club[16]
-      } 
-      if(club.length > 17){
-        addressArray[2] = club[17]
-      } 
-      newValue = addressArray.join(";");
-      labelToChange = "Club Mailing Address";
+      newValue = addressArray.join(";")
+      labelToChange = "Club Mailing Address"
+    }else if(label == "Club Mailing Town"){
+      addressArray[1] = value;
+      newValue = addressArray.join(";")
+      labelToChange = "Club Mailing Address"
+    }if(label == "Club Mailing Province"){
+      addressArray[2] = value;
+      newValue = addressArray.join(";")
+      labelToChange = "Club Mailing Address"
     }
+    console.log(newValue)
 
-    if(label == "Club Mailing Town"){
-      addressArray[0] = club[15];
-      addressArray[1] = value 
-      if(club.length > 17){
-        addressArray[2] = club[17]
-      } 
-      newValue = addressArray.join(";");
-      labelToChange = "Club Mailing Address";
-    }
 
-    if(label == "Club Mailing Province"){
-      addressArray[0] = club[15];
-      addressArray[0] = club[16];
-      addressArray[0] = value;
-      newValue = addressArray.join(";");
-      labelToChange = "Club Mailing Address";
-    }
-
+   
     setEditedData((prevData) => ({
       ...prevData,
       [labelToChange]: newValue,
