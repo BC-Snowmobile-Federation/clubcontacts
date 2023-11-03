@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { fetchClubData } from "../../redux/slice";
 import { useDispatch } from "react-redux";
 import AddClubModal from "./AddClubModal";
+import DatePicker from "react-datepicker";
+
 import "./Arrow.css";
 // eslint-disable-next-line
 function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
@@ -30,10 +32,21 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   const [editedData, setEditedData] = useState({});
   const [isLoadingEditClub, setIsLoadingEditClub] = useState(false);
   const [postingEditClub, setPostingEditClub] = useState(false);
+  const [editedDate, setEditedDate] = useState(null)
+
+
 
   const handleEditClick = (clubName) => {
     setEditingClub(clubName);
     setMenuVisible(false);
+    //club[7] != "" && club[7] != null ? new Date(club[7]) : null
+    for(let i = 0; i < filteredClubs.length; i++){
+      if(filteredClubs[i][0] == clubName){
+        if(filteredClubs[i][7] && filteredClubs[i][7] != ""){
+          setEditedDate(new Date(filteredClubs[i][7]));
+        }
+      }
+    }
   };
 
   const dispatch = useDispatch();
@@ -55,6 +68,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     };
 
     await fetch(url, options);
+    
   };
 
   const deleteClub = async (clubName) => {
@@ -67,7 +81,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
 
   useEffect(() => {
     // Apply search and select filters here
-    let filtered = clubData;
+    let filtered = JSON.parse(JSON.stringify(clubData));
 
     if (searchTerm) {
       filtered = filtered.filter((club) =>
@@ -78,7 +92,20 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     if (selectedClub) {
       filtered = filtered.filter((club) => club[0] === selectedClub);
     }
+    filtered.forEach((c) => {
+      const addressSplitted = c[1].split(";");
 
+      c.push(addressSplitted[0])
+      if(addressSplitted.length > 1){
+        c.push(addressSplitted[1])
+      }
+      if(addressSplitted.length > 2){
+        c.push(addressSplitted[2])
+      }
+    })
+    if(filtered.length != 0){
+      console.log(filtered[0].length)
+    }
     setFilteredClubs(filtered);
 
     if (postDeleteClub == true && !isLoadingPost) {
@@ -117,6 +144,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     editedData,
     isLoadingEditClub,
     postingEditClub,
+    editedDate,
     dispatch,
   ]);
 
@@ -133,10 +161,43 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     setMenuVisible(false);
   };
 
-  function handleInputChange(label, value) {
+  function handleInputChange(label, value, club = null) {
+    let newValue = value;
+    let labelToChange = label
+    let addressArray = ["","",""];
+    if(label == "Club Mailing Address"){
+      addressArray[0] = value;
+      if(club.length > 16){
+        addressArray[1] = club[16]
+      } 
+      if(club.length > 17){
+        addressArray[2] = club[17]
+      } 
+      newValue = addressArray.join(";");
+      labelToChange = "Club Mailing Address";
+    }
+
+    if(label == "Club Mailing Town"){
+      addressArray[0] = club[15];
+      addressArray[1] = value 
+      if(club.length > 17){
+        addressArray[2] = club[17]
+      } 
+      newValue = addressArray.join(";");
+      labelToChange = "Club Mailing Address";
+    }
+
+    if(label == "Club Mailing Province"){
+      addressArray[0] = club[15];
+      addressArray[0] = club[16];
+      addressArray[0] = value;
+      newValue = addressArray.join(";");
+      labelToChange = "Club Mailing Address";
+    }
+
     setEditedData((prevData) => ({
       ...prevData,
-      [label]: value,
+      [labelToChange]: newValue,
     }));
   }
 
@@ -160,7 +221,6 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   };
 
   let isManager = localStorage.getItem("isManager") == "MANAGER" ? true : false;
-
   return (
     <div>
       {isBcsf && isManager ? (
@@ -406,15 +466,64 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                               onChange={(e) =>
                                 handleInputChange(
                                   "Club Mailing Address",
-                                  e.target.value
+                                  e.target.value,
+                                  club
                                 )
                               }
-                              defaultValue={club[1]}
+                              defaultValue={club[15] || ""}
                             />
                           ) : (
                             <dd className="flex items-start gap-x-2">
                               <div className="font-medium text-gray-900">
-                                {club[1]}
+                                {club[15] || ""}
+                              </div>
+                            </dd>
+                          )}
+                        </div>
+                        <div className="flex justify-between gap-x-4 py-3">
+                          <dt className="text-gray-500">
+                            Club Mailing Town
+                          </dt>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club Mailing Town",
+                                  e.target.value,
+                                  club
+                                )
+                              }
+                              defaultValue={club[16] || ""}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[16] || ""}
+                              </div>
+                            </dd>
+                          )}
+                        </div>
+                        <div className="flex justify-between gap-x-4 py-3">
+                          <dt className="text-gray-500">
+                            Club Mailing Province
+                          </dt>
+                          {editingClub === club[0] ? (
+                            <input
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              onChange={(e) =>
+                                handleInputChange(
+                                  "Club Mailing Province",
+                                  e.target.value,
+                                  club
+                                )
+                              }
+                              defaultValue={club[17] || ""}
+                            />
+                          ) : (
+                            <dd className="flex items-start gap-x-2">
+                              <div className="font-medium text-gray-900">
+                                {club[17] || ""}
                               </div>
                             </dd>
                           )}
@@ -551,15 +660,19 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             Financial Year End Date
                           </dt>
                           {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
+                            <DatePicker
+                              name="Financial Year End Date"
+                              type="text"
+                              selected={editedDate}
+                              onChange={(date) => {
+                                setEditedDate(date)
                                 handleInputChange(
                                   "Financial Year End Date",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={formatDate(club[7])}
+                                  formatDate(date)
+                                ) // Set dateModified to true
+                              }}
+                              className="border text-sm rounded-full w-[180px] p-1"
+                              placeholderText="Insert effective date"
                             />
                           ) : (
                             <dd className="flex items-start gap-x-2">
