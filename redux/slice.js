@@ -29,6 +29,7 @@ export const fetchClubData = createAsyncThunk("getData/fetchClubData", async () 
   return data.response;
 });
 
+
 export const clear = createAsyncThunk("getData/clear", async () => {
   return localStorage.clear();
 });
