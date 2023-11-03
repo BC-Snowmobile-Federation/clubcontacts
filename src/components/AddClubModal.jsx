@@ -399,7 +399,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
                 id="submitAddClub"
                 onClick={handleSubmit}
                 type="button"
-                className="w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm hover:text-[#535787]"
+                className="w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787] hover:text-[#535787]"
               >
                 {isLoadingAddPost ? (
                   <div
@@ -419,7 +419,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
                 id="closeAddClubModal"
                 type="button"
                 onClick={() => setOpenAddClubModal(false)}
-                className="w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787]"
+                className="w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm"
               >
                 Cancel
               </button>

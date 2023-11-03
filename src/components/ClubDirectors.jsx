@@ -434,8 +434,8 @@ const AddDirectorModal = ({
                 type="button"
                 className={
                   activeSaveButton
-                    ? "w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm hover:text-[#535787]"
-                    : "w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm"
+                    ? "w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787] hover:text-[#535787]"
+                    : "w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787]"
                 }
               >
                 {isLoading ? (
@@ -458,7 +458,7 @@ const AddDirectorModal = ({
                 onClick={handleCloseModal}
                 id="closeAddModal"
                 type="button"
-                className="w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787]"
+                className="w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm"
               >
                 Close
               </button>
@@ -826,10 +826,12 @@ const ClubDirectors = ({
   data = data.map((row) => {
     const item9 = row[11];
     const before = row.slice(0, 3);
-    const after = row.slice(3, 10);
+    const after = row.slice(3, 13);
     return [...before, item9, ...after];
   });
+  //console.log(data)
   const groups = groupDataById(data);
+  //console.log(groups)
   const [selectedClub, setSelectedClub] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [openModal, setOpenModal] = useState(false);
