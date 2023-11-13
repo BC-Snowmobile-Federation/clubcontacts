@@ -163,13 +163,15 @@ const Dashboard = () => {
     amiliaPosition,
   ]);
 
-  if (!clubData || clubData.length < 1) {
-    return (
-      <div className="flex justify-center m-auto items-center">
-        <Spinner />
-      </div>
-    );
-  }
+  console.log(clubData)
+
+  // if (!clubData || clubData.length < 1) {
+  //   return (
+  //     <div className="flex justify-center m-auto items-center">
+  //       <Spinner />
+  //     </div>
+  //   );
+  // }
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
