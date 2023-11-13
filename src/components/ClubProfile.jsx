@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import { fetchClubData } from "../../redux/slice";
 import { useDispatch } from "react-redux";
