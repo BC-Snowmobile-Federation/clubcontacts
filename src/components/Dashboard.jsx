@@ -9,7 +9,7 @@ import ClubDirectors from "./ClubDirectors";
 import ClubProfile from "./ClubProfile";
 import { useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
-import Spinner from "./Spinner";
+// import Spinner from "./Spinner";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -162,8 +162,6 @@ const Dashboard = () => {
     statusPosition,
     amiliaPosition,
   ]);
-
-  console.log(clubData)
 
   // if (!clubData || clubData.length < 1) {
   //   return (

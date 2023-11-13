@@ -33,7 +33,6 @@ const EditDirectorModal = ({
   const [dateModified, setDateModified] = useState(false);
   const [confirmClose, setConfirmClose] = useState(false);
   const [closeModalConfirmed, setCloseModalConfirmed] = useState(false);
-
   const [formData, setFormData] = useState({
     memberName: member[0] || "",
     memberLastName: member[1] || "",
@@ -42,7 +41,8 @@ const EditDirectorModal = ({
     memberGender: member[5] || "",
     memberRole: member[7] || "",
     memberAdmin: member[9] || "",
-    memberManager: member[10] || "",
+    memberManager: member[13] != undefined ? member[13]=="MANAGER" : "",
+    //member[13] != undefined ? member[13]=="MANAGER" :""
   });
 
   const dispatch = useDispatch();
@@ -216,10 +216,10 @@ const EditDirectorModal = ({
         element.id === "phoneNumberInput"
       ) {
         // Adjust the condition as per the name or id of your phone number input
-        const phoneNumberPattern = /^\(\d{3}\)\d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
+        const phoneNumberPattern = /^\(\d{3}\) \d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
         if (!phoneNumberPattern.test(element.value)) {
           newErrorMessages[element.name] =
-            "Phone number format should be (xxx)yyy-zzzz";
+            "Phone number format should be (xxx) yyy-zzzz";
           hasErrors = true;
         }
       }
@@ -517,7 +517,7 @@ const EditDirectorModal = ({
                     id="editManagerAccess"
                     name="Club admin"
                     type="checkbox"
-                    checked={formData.memberManager == 'true' ? true : false}
+                    checked={formData.memberManager}
                     onChange={handleInputChange}
                     className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
                   />
@@ -544,8 +544,8 @@ const EditDirectorModal = ({
                 type="submit"
                 className={
                   activeSaveButton
-                    ? "w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm hover:text-[#535787]"
-                    : "w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm"
+                    ? "w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787] hover:text-[#535787]"
+                    : "w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787]"
                 }
               >
                 {isLoading ? (
@@ -568,7 +568,9 @@ const EditDirectorModal = ({
                 onClick={handleCloseModal}
                 id="closeAddModal"
                 type="button"
-                className="w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787]"
+                className="
+                w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm
+                "
               >
                 Close
               </button>
