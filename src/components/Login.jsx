@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchClubData } from "../../redux/slice";
 import Spinner from "./Spinner";
+import RequestAccessForm from "./RequestAccess";
 
 function Login() {
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -13,6 +14,7 @@ function Login() {
   const [userEmail, setUserEmail] = useState([]);
   const [makePost, setMakePost] = useState(false);
   const [goToDashboard, setGoToDashboard] = useState(false);
+  const [requestModal, setRequestModal] = useState(false);
   const navigate = useNavigate();
 
   const login = useGoogleLogin({
@@ -115,6 +117,10 @@ function Login() {
     );
   }
 
+  function handleRequestAccess() {
+    setRequestModal(true);
+  }
+
   return (
     <div className="flex flex-col h-screen bg-gray-100 items-center justify-center">
       <div className="bg-white shadow-xl h-[30rem] rounded-lg p-6">
@@ -200,12 +206,15 @@ function Login() {
           </button>
           <button
             id="requestAccess"
-            onClick={logOut}
+            onClick={handleRequestAccess}
             className="relative flex mt-4 justify-center items-center montserrat w-60 h-[42px] bg-[#243746] text-white border border-gray-300 rounded-full shadow-md px-6 py-2 text-sm font-medium hover:bg-[#4F5664] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
           >
             Request access
           </button>
         </div>
+        {requestModal ? (
+          <RequestAccessForm setRequestModal={setRequestModal} />
+        ) : null}
         {showErrorModal ? (
           <ErrorLoginModal setShowErrorModal={setShowErrorModal} />
         ) : null}

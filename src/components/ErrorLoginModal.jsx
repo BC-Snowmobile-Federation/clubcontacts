@@ -21,9 +21,9 @@ const ErrorLoginModal = ({ setShowErrorModal }) => {
                 className=" font-semibold lg:text-base leading-6 text-gray-900"
                 id="modal-title"
               >
-                An error ocurred.
+                Access denied.
               </h3>
-              <p className="text-base">Please, try again later.</p>
+              <p className="text-base">Please, request access to login.</p>
             </div>
             <div className="mt-5 flex justify-center">
               <button
