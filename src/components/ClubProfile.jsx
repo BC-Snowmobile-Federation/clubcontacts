@@ -3,8 +3,23 @@ import { fetchClubData } from "../../redux/slice";
 import { useDispatch } from "react-redux";
 import AddClubModal from "./AddClubModal";
 import "./Arrow.css";
+import { useNavigate } from "react-router-dom";
 // eslint-disable-next-line
 function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
+  // const navigate = useNavigate();
+
+  // let hasUser = JSON.parse(localStorage.getItem("userEmail"));
+
+  // const redirect = () => {
+  //   if (hasUser == null) {
+  //     navigate("/");
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   redirect();
+  // }, []);
+
   function formatDate(date) {
     const d = new Date(date);
     let month = "" + (d.getMonth() + 1);
@@ -32,6 +47,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   const [postingEditClub, setPostingEditClub] = useState(false);
 
   let initialClubName = localStorage.getItem("clubName");
+  // let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
 
   const handleEditClick = (clubName) => {
     setEditingClub(clubName);
@@ -260,7 +276,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                   : "flex justify-center items-center"
               }
             >
-              {filteredClubs && filteredClubs.length > 0 ? (
+              {filteredClubs && filteredClubs.length > 0 || isBcsf ? (
                 // eslint-disable-next-line
                 filteredClubs.map((club, index) => (
                   <li

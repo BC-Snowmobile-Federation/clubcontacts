@@ -16,17 +16,17 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
 
-  let hasUser = JSON.parse(localStorage.getItem("userEmail"));
+  let hasUser = localStorage.getItem("activeUser")
 
   const redirect = () => {
-    if (hasUser == null) {
+    if (hasUser == null || !hasUser) {
       navigate("/");
     }
   };
 
   useEffect(() => {
     redirect();
-  }, []);
+  }, [hasUser]);
 
   useEffect(() => {
     dispatch(fetchData());

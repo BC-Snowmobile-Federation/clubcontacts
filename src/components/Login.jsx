@@ -96,7 +96,8 @@ function Login() {
 
   useEffect(() => {
     const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
-    if (userEmailInStorage) {
+    let hasUser = localStorage.getItem("activeUser");
+    if (userEmailInStorage && hasUser) {
       navigate("/dashboard");
     }
   }, [navigate]);
