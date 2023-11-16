@@ -448,6 +448,9 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             <option selected disabled value="">
                               Select club tourism region
                             </option>
+                            <option value="">
+                              None
+                            </option>
                             <option value="Cariboo Chilcotin Coast">
                               Cariboo Chilcotin Coast
                             </option>
@@ -569,12 +572,12 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 e.target.value
                               )
                             }
-                            defaultValue={formatDate(club[7])}
+                            defaultValue={club[7] ? formatDate(club[7]) : ""}
                           />
                         ) : (
                           <dd className="flex items-start gap-x-2">
                             <div className="font-medium text-gray-900">
-                              {formatDate(club[7])}
+                              {club[7] ? formatDate(club[7]) : ""}
                             </div>
                           </dd>
                         )}
