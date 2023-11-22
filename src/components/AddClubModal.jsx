@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { fetchClubData } from "../../redux/slice";
+import { fetchClubData, fetchData } from "../../redux/slice";
+import AddGWSGroup from "./AddGWSGroup";
 
 const AddClubModal = ({ setOpenAddClubModal }) => {
   const newClubNameRef = useRef();
@@ -22,10 +23,22 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
   const [addClubData, setAddClubData] = useState([]);
   const [shouldPostAdd, setShouldPostAdd] = useState(false);
   const [isLoadingAddPost, setIsLoadingAddPost] = useState(false);
+  const [addGwsGroup, setAddGwsGroup] = useState(false);
+  const [addedGws, setAddedGws] = useState(false);
 
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
+    checkGWSGroup().then((resp) => {
+      if (!resp.includes("No GWS Group")) {
+        postClub();
+      } else {
+        setAddGwsGroup(true);
+      }
+    })
+  };
+
+  function postClub() {
     let errors = {};
     const newClubName = newClubNameRef.current.value;
     const newClubMailingAddress = newClubMailingAddressRef.current.value;
@@ -93,14 +106,24 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
         newClubInstragram,
         newClubTikTok,
         newClubYouTube,
-        "Active"
+        "Active",
       ]);
     }
 
     // If all validations pass, proceed with form submission...
     if (isLoadingAddPost) return;
     setShouldPostAdd(true);
-  };
+  }
+
+  async function checkGWSGroup() {
+    let url =
+      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=getGwsGroups&clubName=" +
+      encodeURI(newClubNameRef.current.value);
+
+    let response = await fetch(url);
+    let json = await response.json();
+    return json.response;
+  }
 
   const postAddClub = async (data) => {
     let url =
@@ -126,7 +149,9 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
       const addClub = async () => {
         setIsLoadingAddPost(true);
         await postAddClub(addClubData);
+        setAddedGws(false);
         dispatch(fetchClubData());
+        dispatch(fetchData());
         setShouldPostAdd(false);
         setIsLoadingAddPost(false);
         setOpenAddClubModal(false);
@@ -134,6 +159,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
       addClub();
     }
   }, [
+    addedGws,
     shouldPostAdd,
     addClubData,
     isLoadingAddPost,
@@ -149,6 +175,15 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
       role="dialog"
       aria-modal="true"
     >
+      {addGwsGroup && (
+        <AddGWSGroup
+          setAddGwsGroup={setAddGwsGroup}
+          clubName={newClubNameRef.current.value}
+          setAddedGws={setAddedGws}
+          postClub={postClub}
+        />
+      )}
+
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex min-h-full items-end justify-center ml-[40px] p-4 text-center sm:items-center sm:p-0">

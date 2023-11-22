@@ -41,7 +41,7 @@ const EditDirectorModal = ({
     memberGender: member[5] || "",
     memberRole: member[7] || "",
     memberAdmin: member[9] || "",
-    memberManager: member[13] != undefined ? member[13]=="MANAGER" : "",
+    memberManager: member[13] != undefined ? member[13] == "MANAGER" : "",
     //member[13] != undefined ? member[13]=="MANAGER" :""
   });
 
@@ -49,7 +49,7 @@ const EditDirectorModal = ({
 
   function formatDate(d) {
     const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0"); 
+    const month = String(d.getMonth() + 1).padStart(2, "0");
     const year = d.getFullYear();
 
     return `${month}/${day}/${year}`;
@@ -148,12 +148,21 @@ const EditDirectorModal = ({
     initialCheckboxStates[el] = formData.memberRole == el;
   });
 
+  // const [checkboxStates, setCheckboxStates] = useState(initialCheckboxStates);
+
+  // const handleCheckboxChange = (el) => {
+  //   setCheckboxStates((prevStates) => ({
+  //     ...prevStates,
+  //     [el]: !prevStates[el],
+  //   }));
+  // };
+
   const [checkboxStates, setCheckboxStates] = useState(initialCheckboxStates);
 
-  const handleCheckboxChange = (el) => {
+  const handleCheckboxChange = (roleName) => {
     setCheckboxStates((prevStates) => ({
       ...prevStates,
-      [el]: !prevStates[el],
+      [roleName]: !prevStates[roleName],
     }));
   };
 
@@ -304,7 +313,7 @@ const EditDirectorModal = ({
 
   return (
     <div
-    // ref={editModalRef}
+      // ref={editModalRef}
       id="editMemberModal"
       className="relative z-10 ml-[40px]"
       aria-labelledby="modal-title"
@@ -454,26 +463,30 @@ const EditDirectorModal = ({
               <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
                 Role{" "}
               </label>
-              {roles.map((el, e) => (
+              {roles.map((role, index) => (
                 <div
-                  key={e}
+                  key={index}
                   className="flex mt-2 flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none"
                 >
                   <div className="relative flex gap-x-3">
                     <div className="flex h-6 items-center">
                       <input
                         ref={memberRoleRef}
-                        id={el}
-                        checked={selectedRoles.includes(el) || false} // use the specific checkbox state
+                        id={role}
+                        // checked={selectedRoles.includes(el) || false} // use the specific checkbox state
+                        // name="Role"
+                        // type="checkbox"
+                        // onChange={() => handleCheckboxChange(el)} // pass 'el' to the handler
+                        checked={checkboxStates[role]} // Use the state to set the checked property
                         name="Role"
                         type="checkbox"
-                        onChange={() => handleCheckboxChange(el)} // pass 'el' to the handler
+                        onChange={() => handleCheckboxChange(role)} // Handle change
                         className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
                       />
                     </div>
                     <div className="text-sm leading-6">
                       <p className="text-gray-500 sm:text-2xl lg:text-base">
-                        {el}
+                        {role}
                       </p>
                     </div>
                   </div>
@@ -493,7 +506,7 @@ const EditDirectorModal = ({
                     id="editMemberAmeliaAdmin"
                     name="Is Amilia admin"
                     type="checkbox"
-                    checked={formData.memberAdmin == 'true' ? true : false}
+                    checked={formData.memberAdmin == "true" ? true : false}
                     onChange={handleInputChange}
                     className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
                   />

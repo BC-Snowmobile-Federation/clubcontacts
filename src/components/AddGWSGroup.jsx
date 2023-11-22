@@ -2,32 +2,34 @@ import axios from "axios";
 import { useRef, useState } from "react";
 import Spinner from "./Spinner";
 
-const RequestAccessForm = ({ setRequestModal }) => {
-  const emailRequestRef = useRef(null);
+const AddGWSGroup = ({ setAddGwsGroup, clubName, setAddedGws, postClub }) => {
+  const gwsGroupRef = useRef(null);
   const [requestSent, setRequestSent] = useState(false);
   const [isLoadingRequest, setIsLoadingRequest] = useState(false);
 
   function handleSendRequest() {
     setIsLoadingRequest(true);
-    let email = emailRequestRef.current.value;
+    let gwsEmail = gwsGroupRef.current.value;
     return axios
       .get(
-        `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=requestAccess&email=${email}`
+        `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=addGwsGroupTpSheet&clubName=${encodeURI(clubName)}&gwsEmail=${encodeURI(gwsEmail)}`
       )
       .then((response) => {
         setIsLoadingRequest(false);
         setRequestSent(true);
+        postClub()
+        setAddedGws(true)
       });
   }
 
   function handleCloseRequest() {
-    setRequestModal(false);
+    setAddGwsGroup(false);
   }
 
   return (
     <div
       id="editMemberModal"
-      className="relative z-10 ml-[40px]"
+      className="relative z-20 ml-[60px]"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
@@ -54,17 +56,17 @@ const RequestAccessForm = ({ setRequestModal }) => {
                     className="font-semibold lg:text-base leading-6 text-gray-900"
                     id="modal-title"
                   >
-                    Request access
+                    This Club does not have any GWS Group associated.
                   </h3>
 
                   <p className="text-base">
-                    Please, provide the email you would like to login with.
+                    In case you want to add the GWS Group, insert it here
                   </p>
                   <div className="justify-start mt-4">
                     <div className="mt-2">
                       <input
                         type="email"
-                        ref={emailRequestRef}
+                        ref={gwsGroupRef}
                         name="email"
                         id="email"
                         className="w-64 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -98,4 +100,4 @@ const RequestAccessForm = ({ setRequestModal }) => {
   );
 };
 
-export default RequestAccessForm;
+export default AddGWSGroup;

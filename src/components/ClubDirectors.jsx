@@ -829,9 +829,7 @@ const ClubDirectors = ({
     const after = row.slice(3, 13);
     return [...before, item9, ...after];
   });
-  //console.log(data)
   const groups = groupDataById(data);
-  //console.log(groups)
   const [selectedClub, setSelectedClub] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [openModal, setOpenModal] = useState(false);

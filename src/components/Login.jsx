@@ -40,10 +40,7 @@ function Login() {
         `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=login&userEmail=${userEmail}`
       )
       .then((response) => {
-        console.log(response);
         const userData = response.data?.response?.userData;
-        console.log(userData)
-
         if (userData.club) {
           setIsLoadingLogin(true);
           setIsUserBcsf(response.data.response.userData.isBcsf);
