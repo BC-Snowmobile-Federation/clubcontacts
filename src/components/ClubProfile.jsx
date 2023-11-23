@@ -76,7 +76,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   };
 
   const deleteClub = async (clubName) => {
-    let url = `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=deleteClub&clubName=${clubName}`;
+    let url = `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=deleteClub&clubName=${encodeURI(clubName)}`;
 
     await fetch(url, {
       mode: "no-cors",
