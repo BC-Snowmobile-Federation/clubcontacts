@@ -142,20 +142,16 @@ const EditDirectorModal = ({
     "Director at Large",
     "Other",
   ];
+  let { data } = useSelector((state) => state.reducer);
 
   const initialCheckboxStates = {};
-  roles.forEach((el) => {
-    initialCheckboxStates[el] = formData.memberRole == el;
-  });
+  const selectedRoles = data
+    .filter((el) => el[2] == formData.memberEmail && el[7] == "Active")
+    .map((el) => el[6]);
 
-  // const [checkboxStates, setCheckboxStates] = useState(initialCheckboxStates);
-
-  // const handleCheckboxChange = (el) => {
-  //   setCheckboxStates((prevStates) => ({
-  //     ...prevStates,
-  //     [el]: !prevStates[el],
-  //   }));
-  // };
+    selectedRoles.forEach((el) => {
+      initialCheckboxStates[el] = el
+    });
 
   const [checkboxStates, setCheckboxStates] = useState(initialCheckboxStates);
 
@@ -165,12 +161,6 @@ const EditDirectorModal = ({
       [roleName]: !prevStates[roleName],
     }));
   };
-
-  let { data } = useSelector((state) => state.reducer);
-
-  const selectedRoles = data
-    .filter((el) => el[2] == formData.memberEmail && el[7] == "Active")
-    .map((el) => el[6]);
 
   const handleSubmit = async () => {
     const inputRefs = [

@@ -115,6 +115,19 @@ const AddDirectorModal = ({
       } else if (!isAnyRoleChecked) {
         newErrorMessages["Role"] = "At least one role must be selected";
         hasErrors = true;
+      } 
+
+      if (
+        element.name === "Phone number" ||
+        element.id === "phoneNumberInput"
+      ) {
+        // Adjust the condition as per the name or id of your phone number input
+        const phoneNumberPattern = /^\(\d{3}\) \d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
+        if (!phoneNumberPattern.test(element.value)) {
+          newErrorMessages[element.name] =
+            "Phone number format should be (xxx) yyy-zzzz";
+          hasErrors = true;
+        }
       }
     }
 

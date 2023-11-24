@@ -76,8 +76,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   };
 
   const deleteClub = async (clubName) => {
-    let url = `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=deleteClub&clubName=${encodeURI(clubName)}`;
-
+    let url = `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=deleteClub&clubName=${encodeURIComponent(clubName)}`;
     await fetch(url, {
       mode: "no-cors",
     });
@@ -188,7 +187,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
               id="addClubBtn"
               type="button"
               onClick={handleOpenAddClubModal}
-              className="w-[130px] right-0 rounded-full bg-[#243570] px-3 py-2 mb-4 text-base font-semibold text-white montserrat shadow-sm hover:bg-[#535787]"
+              className="w-[130px] right-0 rounded-full bg-[#243570] px-3 py-2 -mb-9 text-base font-semibold text-white montserrat shadow-sm hover:bg-[#535787]"
             >
               Add Club
             </button>

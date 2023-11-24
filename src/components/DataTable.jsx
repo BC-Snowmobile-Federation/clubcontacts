@@ -1,6 +1,7 @@
 import "./DataTable.css";
 // eslint-disable-next-line
 const DataTable = ({ data, headers }) => {
+  data = data.filter((el) => el[0] != '' && el[1] != '')
   return (
     <table id="data-table" className=" divide-y divide-gray-300">
       <thead className="bg-gray-50 min-w-auto">

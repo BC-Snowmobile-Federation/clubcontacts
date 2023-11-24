@@ -2,7 +2,7 @@ import axios from "axios";
 import { useRef, useState } from "react";
 import Spinner from "./Spinner";
 
-const AddGWSGroup = ({ setAddGwsGroup, clubName, setAddedGws, postClub }) => {
+const AddGWSGroup = ({ setAddGwsGroup, clubName, setOpenAddClubModal }) => {
   const gwsGroupRef = useRef(null);
   const [requestSent, setRequestSent] = useState(false);
   const [isLoadingRequest, setIsLoadingRequest] = useState(false);
@@ -17,8 +17,7 @@ const AddGWSGroup = ({ setAddGwsGroup, clubName, setAddedGws, postClub }) => {
       .then((response) => {
         setIsLoadingRequest(false);
         setRequestSent(true);
-        postClub()
-        setAddedGws(true)
+        setOpenAddClubModal(false)
       });
   }
 
@@ -37,7 +36,7 @@ const AddGWSGroup = ({ setAddGwsGroup, clubName, setAddedGws, postClub }) => {
       <div className="fixed inset-0 bg-gray-500 bg-opacity-40 transition-opacity"></div>
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all w-[600px] sm:my-8 sm:p-6">
+          <div className="relative ml-6 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all w-[600px] sm:my-8 sm:p-6">
             <div className="mt-3 text-center sm:mt-5 text-sm montserrat">
               {isLoadingRequest ? (
                 <div className="p-12">

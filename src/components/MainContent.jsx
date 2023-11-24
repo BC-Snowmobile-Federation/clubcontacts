@@ -27,6 +27,7 @@ const MainContent = ({
   uniqueStatusValues,
   // eslint-disable-next-line
   uniqueAmiliaValues,
+  setCurrentPage
 }) => {
   let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
 
@@ -48,32 +49,36 @@ const MainContent = ({
   const onRoleChange = (e) => {
     const newRole = e.target.value;
     handleRoleChange(newRole);
+    setCurrentPage(1)
   };
 
   const onClubChange = (e) => {
     const newClub = e.target.value;
     handleClubChange(newClub);
+    setCurrentPage(1)
   };
 
   const onStatusChange = (e) => {
     const newStatus = e.target.value;
     handleStatusChange(newStatus);
+    setCurrentPage(1)
   };
 
   const onAmiliaChange = (e) => {
     const newAmilia = e.target.value;
     handleAmiliaChange(newAmilia);
+    setCurrentPage(1)
   };
 
   return (
     <div className="flex items-center justify-center">
-      <div className="bg-transparent rounded-full w-[720px] h-10 items-center flex justify-around">
-        <div className="svg-container flex h-10 items-center ml-4">
+      <div className="bg-transparent rounded-full w-[720px] mb-6 h-10 items-center flex justify-around">
+        <div className="svg-container flex h-10 items-center mt-9">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="#4F5664"
-            className="w-6 h-6"
+            className="w-6 h-6 mr-2"
           >
             <path
               fillRule="evenodd"
@@ -84,70 +89,83 @@ const MainContent = ({
         </div>
 
         {isBcsf && (
+          <div className="mt-4">
+            <label className="text-sm font-semibold">Club</label>
+            <select
+              id="historicalClubSelect"
+              className="px-4 rounded-full bg-slate-200 border-0 arrowSelect appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+              value={selectedClub}
+              onChange={onClubChange}
+            >
+              <option value="" disabled>
+                Club
+              </option>
+              {clubOptions.map((club, index) => (
+                <option key={index} value={club === "All" ? "All" : club}>
+                  {club}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <div className="mt-4 ml-2">
+          <label className="text-sm font-semibold">Role</label>
           <select
-            id="historicalClubSelect"
+            id="roleSelect"
             className="px-4 rounded-full bg-slate-200 border-0 arrowSelect appearance-none pr-8 focus:outline-none focus:border-none text-sm"
-            value={selectedClub}
-            onChange={onClubChange}
+            value={selectedRole}
+            onChange={onRoleChange}
           >
             <option value="" disabled>
-              Club
+              Role
             </option>
-            {clubOptions.map((club, index) => (
-              <option key={index} value={club === "All" ? "All" : club}>
-                {club}
+            {roleOptions.map((role, index) => (
+              <option key={index} value={role === "All" ? "All" : role}>
+                {role}
               </option>
             ))}
           </select>
-        )}
+        </div>
 
-        <select
-          id="roleSelect"
-          className="px-4 rounded-full bg-slate-200 border-0 arrowSelect appearance-none pr-8 focus:outline-none focus:border-none text-sm"
-          value={selectedRole}
-          onChange={onRoleChange}
-        >
-          <option value="" disabled>
-            Role
-          </option>
-          {roleOptions.map((role, index) => (
-            <option key={index} value={role === "All" ? "All" : role}>
-              {role}
+        <div className="mt-4 ml-2">
+          <label className="text-sm font-semibold">Status</label>
+          <select
+            id="statusSelect"
+            className="px-4 rounded-full bg-slate-200 arrowSelect border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+            value={selectedStatus}
+            onChange={onStatusChange}
+          >
+            <option value="" disabled>
+              Status
             </option>
-          ))}
-        </select>
+            {statusOptions.map((status, index) => (
+              <option key={index} value={status === "All" ? "All" : status}>
+                {status}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          id="statusSelect"
-          className="px-4 rounded-full bg-slate-200 arrowSelect border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
-          value={selectedStatus}
-          onChange={onStatusChange}
-        >
-          <option value="" disabled>
-            Status
-          </option>
-          {statusOptions.map((status, index) => (
-            <option key={index} value={status === "All" ? "All" : status}>
-              {status}
+        <div className="mt-4 ml-2">
+          <label className="text-sm font-semibold">Amilia</label>
+          <select
+            id="amiliaSelect"
+            className="px-4 rounded-full bg-slate-200 arrowSelect border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
+            value={selectedAmilia}
+            onChange={onAmiliaChange}
+          >
+            <option value="" disabled>
+              Amilia
             </option>
-          ))}
-        </select>
+            {amiliaOptions.map((amilia, index) => (
+              <option key={index} value={amilia === "All" ? "All" : amilia}>
+                {amilia}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          id="amiliaSelect"
-          className="px-4 rounded-full bg-slate-200 arrowSelect border-0 appearance-none pr-8 focus:outline-none focus:border-none text-sm"
-          value={selectedAmilia}
-          onChange={onAmiliaChange}
-        >
-          <option value="" disabled>
-            Amilia
-          </option>
-          {amiliaOptions.map((amilia, index) => (
-            <option key={index} value={amilia === "All" ? "All" : amilia}>
-              {amilia}
-            </option>
-          ))}
-        </select>
       </div>
     </div>
   );

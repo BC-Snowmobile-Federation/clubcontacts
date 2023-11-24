@@ -209,6 +209,7 @@ const Dashboard = () => {
                       uniqueClubValues={uniqueClubValues}
                       uniqueStatusValues={uniqueStatusValues}
                       uniqueAmiliaValues={uniqueAmiliaValues}
+                      setCurrentPage={setCurrentPage}
                     />
                     <SearchBar setSearchQuery={setSearchQuery} />
                   </>
@@ -245,7 +246,7 @@ const Dashboard = () => {
                 </div>
                 {activeButton === "historical" ? (
                   <Pagination
-                    totalItems={filteredData.length}
+                    totalItems={filteredData.filter((el) => el[0] != '' && el[1] != '').length}
                     itemsPerPage={itemsPerPage}
                     currentPage={currentPage}
                     onPageChange={(page) => setCurrentPage(page)}

@@ -24,21 +24,10 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
   const [shouldPostAdd, setShouldPostAdd] = useState(false);
   const [isLoadingAddPost, setIsLoadingAddPost] = useState(false);
   const [addGwsGroup, setAddGwsGroup] = useState(false);
-  const [addedGws, setAddedGws] = useState(false);
 
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    checkGWSGroup().then((resp) => {
-      if (!resp.includes("No GWS Group")) {
-        postClub();
-      } else {
-        setAddGwsGroup(true);
-      }
-    })
-  };
-
-  function postClub() {
     let errors = {};
     const newClubName = newClubNameRef.current.value;
     const newClubMailingAddress = newClubMailingAddressRef.current.value;
@@ -56,7 +45,6 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
     const newClubTikTok = newClubTikTokRef.current.value;
     const newClubYouTube = newClubYouTubeRef.current.value;
 
-    // Validation logic
     if (!newClubName) {
       errors["newClubName"] = "Club Name is required";
     }
@@ -110,20 +98,9 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
       ]);
     }
 
-    // If all validations pass, proceed with form submission...
     if (isLoadingAddPost) return;
     setShouldPostAdd(true);
-  }
-
-  async function checkGWSGroup() {
-    let url =
-      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=getGwsGroups&clubName=" +
-      encodeURI(newClubNameRef.current.value);
-
-    let response = await fetch(url);
-    let json = await response.json();
-    return json.response;
-  }
+  };
 
   const postAddClub = async (data) => {
     let url =
@@ -144,29 +121,46 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
     await fetch(url, options);
   };
 
+  const handleCheckGroups = () => {
+    checkGWSGroup().then((resp) => {
+      if (!resp.includes("No GWS Group")) {
+        setOpenAddClubModal(false);
+      } else {
+        setAddGwsGroup(true);
+      }
+    });
+  };
+
+  async function checkGWSGroup() {
+    let url =
+      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=getGwsGroups&clubName=" +
+      encodeURI(newClubNameRef.current.value);
+
+    let response = await fetch(url);
+    let json = await response.json();
+    return json.response;
+  }
+
   useEffect(() => {
     if (shouldPostAdd && !isLoadingAddPost) {
       const addClub = async () => {
         setIsLoadingAddPost(true);
         await postAddClub(addClubData);
-        setAddedGws(false);
         dispatch(fetchClubData());
-        dispatch(fetchData());
         setShouldPostAdd(false);
         setIsLoadingAddPost(false);
-        setOpenAddClubModal(false);
+        handleCheckGroups();
+        dispatch(fetchData());
       };
       addClub();
     }
   }, [
-    addedGws,
     shouldPostAdd,
     addClubData,
     isLoadingAddPost,
     setOpenAddClubModal,
     dispatch,
   ]);
-
   return (
     <div
       id="addClubModal"
@@ -179,8 +173,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
         <AddGWSGroup
           setAddGwsGroup={setAddGwsGroup}
           clubName={newClubNameRef.current.value}
-          setAddedGws={setAddedGws}
-          postClub={postClub}
+          setOpenAddClubModal={setOpenAddClubModal}
         />
       )}
 
@@ -440,7 +433,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
                   <div
                     className="spinner inline-block w-2 h-2 ml-2 border-t-2 border-solid rounded-full animate-spin"
                     style={{
-                      borderColor: "#535787",
+                      borderColor: "#D6D7E1",
                       borderRightColor: "transparent",
                       width: "1.2rem",
                       height: "1.2rem",
