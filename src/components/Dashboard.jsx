@@ -54,7 +54,8 @@ const Dashboard = () => {
     const before = row.slice(0, 3);
     const after = row.slice(3, 10);
     return [...before, item9, ...after];
-  });
+  })
+
 
   let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
   let isManager = localStorage.getItem("isManager");

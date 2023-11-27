@@ -57,8 +57,8 @@ const appReducer = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchData.fulfilled, (state, action) => {
       let setData = action.payload
-      state.data = setData; 
-      state.allData = setData; 
+      state.data = setData.filter(el => el[13] == 'Active'); 
+      state.allData = setData.filter(el => el[13] == 'Active'); 
     });
     builder.addCase(fetchClubData.fulfilled, (state, action) => {
       state.clubData = action.payload;
