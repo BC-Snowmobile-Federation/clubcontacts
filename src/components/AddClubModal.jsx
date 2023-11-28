@@ -375,7 +375,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
                 ref={newClubFinancialYearEndDateRef}
                 name="newClubFinancialYearEndDate"
                 id="newClubFinancialYearEndDate"
-                type="text"
+                type="date"
                 className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
                 placeholder="Insert club financial year end date"
               />

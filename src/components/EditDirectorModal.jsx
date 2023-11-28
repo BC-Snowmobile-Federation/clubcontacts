@@ -143,7 +143,6 @@ const EditDirectorModal = ({
     "Other",
   ];
   let { data } = useSelector((state) => state.reducer);
-
   const initialCheckboxStates = {};
   const selectedRoles = data
     .filter((el) => el[2] == formData.memberEmail && el[7] == "Active")
@@ -249,6 +248,10 @@ const EditDirectorModal = ({
 
     if (!newModifiedValues.email) {
       newModifiedValues.email = member[2];
+    }
+
+    if (!newModifiedValues.username) {
+      newModifiedValues.username = member[0] + ' ' + member[1];
     }
 
     if (newModifiedValues.editclubAdmin) {
