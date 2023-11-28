@@ -33,6 +33,9 @@ const EditDirectorModal = ({
   const [dateModified, setDateModified] = useState(false);
   const [confirmClose, setConfirmClose] = useState(false);
   const [closeModalConfirmed, setCloseModalConfirmed] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [phonedSet, setPhonedSet] = useState(false);
+
   const [formData, setFormData] = useState({
     memberName: member[0] || "",
     memberLastName: member[1] || "",
@@ -64,9 +67,14 @@ const EditDirectorModal = ({
   };
 
   useEffect(() => {
-    if (member && !dateModified) {
-      // let dateToInsert = formatDate(member[5]);
-      setStartDate(new Date(member[6]));
+    if (member) {
+      if (!dateModified) {
+        // let dateToInsert = formatDate(member[5]);
+        setStartDate(new Date(member[6]));
+      }
+      if (member && !phonedSet) {
+        setPhone(member[4])
+      }
     }
     if (dateModified) {
       setModifiedValues((prevData) => ({
@@ -75,6 +83,7 @@ const EditDirectorModal = ({
         email: member[2],
       }));
     }
+
   }, [member, dateModified, startDate, confirmClose]);
 
   function handleInputChange(event) {
@@ -275,6 +284,8 @@ const EditDirectorModal = ({
 
     setModifiedValues(newModifiedValues);
 
+    console.log(modifiedValues)
+
     setActiveSaveButton(true);
     if (isLoading) return;
     setShouldPostEdition(true);
@@ -290,6 +301,33 @@ const EditDirectorModal = ({
     // Return the formatted date string
     return formattedDate.toISOString();
   }
+
+  const normalizeInput = (value, previousValue) => {
+    if (!value) return value;
+    const currentValue = value.replace(/[^\d]/g, "");
+    const cvLength = currentValue.length;
+
+    if (!previousValue || value.length > previousValue.length) {
+      if (cvLength < 4) return currentValue;
+      if (cvLength < 7)
+        return `(${currentValue.slice(0, 3)}) ${currentValue.slice(3)}`;
+      return `(${currentValue.slice(0, 3)}) ${currentValue.slice(
+        3,
+        6
+      )}-${currentValue.slice(6, 10)}`;
+    }
+  };
+
+  const handleFormatNumber = (e) => {
+    const value = e.target.value;
+    setPhone((prevPhone) => normalizeInput(value, prevPhone));
+    setPhonedSet(true);
+    setModifiedValues((prevData) => ({
+      ...prevData,
+      ['editphoneNumber']: phone,
+      email: member[2],
+    }));
+  };
 
   const editDirectorData = async (modifiedValues) => {
     let url =
@@ -428,10 +466,11 @@ const EditDirectorModal = ({
                 name="Phone number"
                 id="editMemberPhoneNumber"
                 type="text"
-                value={formData.memberPhoneNumber}
-                onChange={handleInputChange}
+                value={phone}
+                // onChange={handleInputChange}
                 className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
-                placeholder="Insert phone number"
+                placeholder="(xxx) xxx-xxxx"
+                onChange={handleFormatNumber}
               />
               <span className="text-red-500">
                 {errorMessages["Phone number"]}
