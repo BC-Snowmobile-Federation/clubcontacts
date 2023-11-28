@@ -40,7 +40,7 @@ const EditDirectorModal = ({
     memberPhoneNumber: member[4] || "",
     memberGender: member[5] || "",
     memberRole: member[7] || "",
-    memberAdmin: member[9] || "",
+    memberAdmin: (member[9] == "true" ? true : false) || "",
     memberManager: member[13] != undefined ? member[13] == "MANAGER" : "",
     //member[13] != undefined ? member[13]=="MANAGER" :""
   });
@@ -64,7 +64,7 @@ const EditDirectorModal = ({
   };
 
   useEffect(() => {
-    if (member) {
+    if (member && !dateModified) {
       // let dateToInsert = formatDate(member[5]);
       setStartDate(new Date(member[6]));
     }
@@ -112,7 +112,9 @@ const EditDirectorModal = ({
         return; // if name doesn't match any, don't do anything
     }
 
+    // Update formData using the callback function
     setFormData((prevState) => ({ ...prevState, [newStateKey]: actualValue }));
+
     const serverKey =
       "edit" +
       name
@@ -125,9 +127,11 @@ const EditDirectorModal = ({
             : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
         })
         .join("");
+
+    // Update modifiedValues using the callback function
     setModifiedValues((prevData) => ({
       ...prevData,
-      [serverKey]: value,
+      [serverKey]: actualValue,
       email: member[2],
     }));
   }
@@ -251,7 +255,7 @@ const EditDirectorModal = ({
     }
 
     if (!newModifiedValues.username) {
-      newModifiedValues.username = member[0] + ' ' + member[1];
+      newModifiedValues.username = member[0] + " " + member[1];
     }
 
     if (newModifiedValues.editclubAdmin) {
@@ -265,6 +269,10 @@ const EditDirectorModal = ({
       }
     }
 
+    if (newModifiedValues.editeffectivedate) {
+      newModifiedValues.editeffectivedate = formatDateString(newModifiedValues.editeffectivedate)
+    }
+
     setModifiedValues(newModifiedValues);
 
     setActiveSaveButton(true);
@@ -272,8 +280,18 @@ const EditDirectorModal = ({
     setShouldPostEdition(true);
   };
 
+  function formatDateString(dateString) {
+    // Split the input string into parts
+    const [month, day, year] = dateString.split('/');
+  
+    // Create a new Date object using the parts
+    const formattedDate = new Date(`${year}-${month}-${day}T00:00:00.000Z`);
+  
+    // Return the formatted date string
+    return formattedDate.toISOString();
+  }
+
   const editDirectorData = async (modifiedValues) => {
-    console.log(modifiedValues);
     let url =
       "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec"; // Your URL here
 
@@ -511,7 +529,7 @@ const EditDirectorModal = ({
                     id="editMemberAmeliaAdmin"
                     name="Is Amilia admin"
                     type="checkbox"
-                    checked={formData.memberAdmin == "true" ? true : false}
+                    checked={formData.memberAdmin}
                     onChange={handleInputChange}
                     className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
                   />
