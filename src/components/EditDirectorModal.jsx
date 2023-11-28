@@ -149,9 +149,9 @@ const EditDirectorModal = ({
     .filter((el) => el[2] == formData.memberEmail && el[7] == "Active")
     .map((el) => el[6]);
 
-    selectedRoles.forEach((el) => {
-      initialCheckboxStates[el] = el
-    });
+  selectedRoles.forEach((el) => {
+    initialCheckboxStates[el] = el;
+  });
 
   const [checkboxStates, setCheckboxStates] = useState(initialCheckboxStates);
 
@@ -239,7 +239,7 @@ const EditDirectorModal = ({
         return { roleKey: role, value: true };
       });
 
-    const newModifiedValues = {
+    let newModifiedValues = {
       ...modifiedValues,
       ...checkedRolesObjects.reduce((acc, curr) => {
         acc[curr.roleKey] = curr.value;
@@ -251,6 +251,17 @@ const EditDirectorModal = ({
       newModifiedValues.email = member[2];
     }
 
+    if (newModifiedValues.editclubAdmin) {
+      // Assuming editclubAdminRef is a ref to the editclubAdmin checkbox
+      const editclubAdminCheckbox = managerAccessRef.current;
+      if (editclubAdminCheckbox) {
+        // Update the value with the checkbox's checked status
+        newModifiedValues.editclubAdmin = editclubAdminCheckbox.checked
+          ? "on"
+          : "off";
+      }
+    }
+
     setModifiedValues(newModifiedValues);
 
     setActiveSaveButton(true);
@@ -259,6 +270,7 @@ const EditDirectorModal = ({
   };
 
   const editDirectorData = async (modifiedValues) => {
+    console.log(modifiedValues);
     let url =
       "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec"; // Your URL here
 

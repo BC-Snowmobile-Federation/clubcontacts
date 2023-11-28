@@ -835,6 +835,7 @@ const ClubDirectors = ({
   setActiveButton,
   btnId,
 }) => {
+  
   let { data } = useSelector((state) => state.reducer);
   data = data.map((row) => {
     const item9 = row[11];
@@ -842,6 +843,7 @@ const ClubDirectors = ({
     const after = row.slice(3, 13);
     return [...before, item9, ...after];
   });
+
   const groups = groupDataById(data);
   const [selectedClub, setSelectedClub] = useState("");
   const [searchTerm, setSearchTerm] = useState("");

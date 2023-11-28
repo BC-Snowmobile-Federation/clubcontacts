@@ -5,7 +5,10 @@ import AddGWSGroup from "./AddGWSGroup";
 
 const AddClubModal = ({ setOpenAddClubModal }) => {
   const newClubNameRef = useRef();
+  // const newClubMailingAddressRef = useRef();
   const newClubMailingAddressRef = useRef();
+  const newClubMailingTownRef = useRef();
+  const newClubMailingProvinceRef = useRef();
   const newClubTourismRegionRef = useRef();
   const newClubMainPhoneRef = useRef();
   const newClubGeneralEmailRef = useRef();
@@ -30,7 +33,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
   const handleSubmit = () => {
     let errors = {};
     const newClubName = newClubNameRef.current.value;
-    const newClubMailingAddress = newClubMailingAddressRef.current.value;
+    // const newClubMailingAddress = newClubMailingAddressRef.current.value;
     const newClubTourismRegion = newClubTourismRegionRef.current.value;
     const newClubMainPhone = newClubMainPhoneRef.current.value;
     const newClubGeneralEmail = newClubGeneralEmailRef.current.value;
@@ -44,12 +47,24 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
     const newClubInstragram = newClubInstragramRef.current.value;
     const newClubTikTok = newClubTikTokRef.current.value;
     const newClubYouTube = newClubYouTubeRef.current.value;
+    const newClubMailingAddress = newClubMailingAddressRef.current.value;
+    const newClubMailingTown = newClubMailingTownRef.current.value;
+    const newClubMailingProvince = newClubMailingProvinceRef.current.value;
+  
+    // Concatenate address, town, and province
+    const fullMailingAddress = `${newClubMailingAddress}; ${newClubMailingTown}; ${newClubMailingProvince}`;
 
     if (!newClubName) {
       errors["newClubName"] = "Club Name is required";
     }
     if (!newClubMailingAddress) {
       errors["newClubMailingAddress"] = "Club Mailing Address is required";
+    }
+    if (!newClubMailingTown) {
+      errors["newClubMailingTown"] = "Club Mailing Town is required";
+    }
+    if (!newClubMailingProvince) {
+      errors["newClubMailingProvince"] = "Club Mailing Province is required";
     }
     if (!newClubTourismRegion) {
       errors["newClubTourismRegion"] = "Club Tourism Region is required";
@@ -81,7 +96,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
       setErrorMessages({});
       setAddClubData([
         newClubName,
-        newClubMailingAddress,
+        fullMailingAddress,
         newClubTourismRegion,
         newClubMainPhone,
         newClubGeneralEmail,
@@ -222,6 +237,40 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
               />
               <span className="text-red-500">
                 {errorMessages["newClubMailingAddress"]}
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
+              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
+                Club Mailing Town{" "}
+              </label>
+              <input
+                ref={newClubMailingTownRef}
+                name="newClubMailingTown"
+                id="newClubMailingTown"
+                type="text"
+                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
+                placeholder="Insert club mailing town"
+              />
+              <span className="text-red-500">
+                {errorMessages["newClubMailingTown"]}
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
+              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
+                Club Mailing Province{" "}
+              </label>
+              <input
+                ref={newClubMailingProvinceRef}
+                name="newClubMailingProvince"
+                id="newClubMailingProvince"
+                type="text"
+                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
+                placeholder="Insert club mailing province"
+              />
+              <span className="text-red-500">
+                {errorMessages["newClubMailingProvince"]}
               </span>
             </div>
 

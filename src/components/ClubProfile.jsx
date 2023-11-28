@@ -1211,17 +1211,15 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   const [editedData, setEditedData] = useState({});
   const [isLoadingEditClub, setIsLoadingEditClub] = useState(false);
   const [postingEditClub, setPostingEditClub] = useState(false);
-  const [editedDate, setEditedDate] = useState(null)
-
-
+  const [editedDate, setEditedDate] = useState(null);
 
   const handleEditClick = (clubName) => {
     setEditingClub(clubName);
     setMenuVisible(false);
     //club[7] != "" && club[7] != null ? new Date(club[7]) : null
-    for(let i = 0; i < filteredClubs.length; i++){
-      if(filteredClubs[i][0] == clubName){
-        if(filteredClubs[i][7] && filteredClubs[i][7] != ""){
+    for (let i = 0; i < filteredClubs.length; i++) {
+      if (filteredClubs[i][0] == clubName) {
+        if (filteredClubs[i][7] && filteredClubs[i][7] != "") {
           setEditedDate(new Date(filteredClubs[i][7]));
         }
       }
@@ -1247,7 +1245,6 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     };
 
     await fetch(url, options);
-    
   };
 
   const deleteClub = async (clubName) => {
@@ -1271,19 +1268,35 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     if (selectedClub) {
       filtered = filtered.filter((club) => club[0] === selectedClub);
     }
+    // filtered.forEach((c) => {
+    //   const addressSplitted = c[1].split(";");
+    //   c.push(addressSplitted[0])
+    //   if(addressSplitted.length > 1){
+    //     c.push(addressSplitted[1])
+    //   }
+    //   if(addressSplitted.length > 2){
+    //     c.push(addressSplitted[2])
+    //   }
+    // })
+    // if(filtered.length != 0){
+    //   console.log(filtered[0].length)
+    // }
+    // setFilteredClubs(filtered);
+    console.log(filtered);
+
     filtered.forEach((c) => {
       const addressSplitted = c[1].split(";");
 
-      c.push(addressSplitted[0])
-      if(addressSplitted.length > 1){
-        c.push(addressSplitted[1])
+      c.push(addressSplitted[0]);
+      if (addressSplitted.length > 1) {
+        c.push(addressSplitted[1]);
       }
-      if(addressSplitted.length > 2){
-        c.push(addressSplitted[2])
+      if (addressSplitted.length > 2) {
+        c.push(addressSplitted[2]);
       }
-    })
-    if(filtered.length != 0){
-      console.log(filtered[0].length)
+    });
+    if (filtered.length != 0) {
+      console.log(filtered[0].length);
     }
     setFilteredClubs(filtered);
 
@@ -1342,32 +1355,32 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
 
   function handleInputChange(label, value, club = null) {
     let newValue = value;
-    let labelToChange = label
-    let addressArray = ["","",""];
-    if("Club Mailing Address" in editedData){
-        const splittedMailingAddress = editedData["Club Mailing Address"].split(";");
-        console.log(splittedMailingAddress);
-        addressArray[0] = splittedMailingAddress[0] || club[15] || "";
-        addressArray[1] = splittedMailingAddress[1] || club[16] || "";
-        addressArray[2] = splittedMailingAddress[2] || club[17] || "";
+    let labelToChange = label;
+    let addressArray = ["", "", ""];
+    if ("Club Mailing Address" in editedData) {
+      const splittedMailingAddress =
+        editedData["Club Mailing Address"].split(";");
+      console.log(splittedMailingAddress);
+      addressArray[0] = splittedMailingAddress[0] || club[15] || "";
+      addressArray[1] = splittedMailingAddress[1] || club[16] || "";
+      addressArray[2] = splittedMailingAddress[2] || club[17] || "";
     }
-    if(label == "Club Mailing Address"){
+    if (label == "Club Mailing Address") {
       addressArray[0] = value;
-      newValue = addressArray.join(";")
-      labelToChange = "Club Mailing Address"
-    }else if(label == "Club Mailing Town"){
+      newValue = addressArray.join(";");
+      labelToChange = "Club Mailing Address";
+    } else if (label == "Club Mailing Town") {
       addressArray[1] = value;
-      newValue = addressArray.join(";")
-      labelToChange = "Club Mailing Address"
-    }if(label == "Club Mailing Province"){
-      addressArray[2] = value;
-      newValue = addressArray.join(";")
-      labelToChange = "Club Mailing Address"
+      newValue = addressArray.join(";");
+      labelToChange = "Club Mailing Address";
     }
-    console.log(newValue)
+    if (label == "Club Mailing Province") {
+      addressArray[2] = value;
+      newValue = addressArray.join(";");
+      labelToChange = "Club Mailing Address";
+    }
+    console.log("new value", newValue);
 
-
-   
     setEditedData((prevData) => ({
       ...prevData,
       [labelToChange]: newValue,
@@ -1629,78 +1642,157 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                         )}
                       </div>
                       <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">
-                            Club Mailing Address
-                          </dt>
-                          {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club Mailing Address",
-                                  e.target.value,
-                                  club
-                                )
-                              }
-                              defaultValue={club[15] || ""}
-                            />
-                          ) : (
-                            <dd className="flex items-start gap-x-2">
-                              <div className="font-medium text-gray-900">
-                                {club[15] || ""}
-                              </div>
-                            </dd>
-                          )}
-                        </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">
-                            Club Mailing Town
-                          </dt>
-                          {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club Mailing Town",
-                                  e.target.value,
-                                  club
-                                )
-                              }
-                              defaultValue={club[16] || ""}
-                            />
-                          ) : (
-                            <dd className="flex items-start gap-x-2">
-                              <div className="font-medium text-gray-900">
-                                {club[16] || ""}
-                              </div>
-                            </dd>
-                          )}
-                        </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">
-                            Club Mailing Province
-                          </dt>
-                          {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club Mailing Province",
-                                  e.target.value,
-                                  club
-                                )
-                              }
-                              defaultValue={club[17] || ""}
-                            />
-                          ) : (
-                            <dd className="flex items-start gap-x-2">
-                              <div className="font-medium text-gray-900">
-                                {club[17] || ""}
-                              </div>
-                            </dd>
-                          )}
-                        </div>
+                        {isBcsf ? (
+                          <>
+                            <div className="flex justify-between gap-x-4 py-3">
+                              <dt className="text-gray-500">
+                                Club Mailing Address
+                              </dt>
+                              {editingClub === club[0] ? (
+                                <input
+                                  className="border text-sm rounded-full w-[180px] p-1"
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      "Club Mailing Address",
+                                      e.target.value,
+                                      club
+                                    )
+                                  }
+                                  defaultValue={club[15] || ""}
+                                />
+                              ) : (
+                                <dd className="flex items-start gap-x-2">
+                                  <div className="font-medium text-gray-900">
+                                    {club[15] || ""}
+                                  </div>
+                                </dd>
+                              )}
+                            </div>
+                            <div className="flex justify-between gap-x-4 py-3">
+                              <dt className="text-gray-500">
+                                Club Mailing Town
+                              </dt>
+                              {editingClub === club[0] ? (
+                                <input
+                                  className="border text-sm rounded-full w-[180px] p-1"
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      "Club Mailing Town",
+                                      e.target.value,
+                                      club
+                                    )
+                                  }
+                                  defaultValue={club[16] || ""}
+                                />
+                              ) : (
+                                <dd className="flex items-start gap-x-2">
+                                  <div className="font-medium text-gray-900">
+                                    {club[16] || ""}
+                                  </div>
+                                </dd>
+                              )}
+                            </div>
+                            <div className="flex justify-between gap-x-4 py-3">
+                              <dt className="text-gray-500">
+                                Club Mailing Province
+                              </dt>
+                              {editingClub === club[0] ? (
+                                <input
+                                  className="border text-sm rounded-full w-[180px] p-1"
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      "Club Mailing Province",
+                                      e.target.value,
+                                      club
+                                    )
+                                  }
+                                  defaultValue={club[17] || ""}
+                                />
+                              ) : (
+                                <dd className="flex items-start gap-x-2">
+                                  <div className="font-medium text-gray-900">
+                                    {club[17] || ""}
+                                  </div>
+                                </dd>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <div>
+                            <div className="flex justify-between gap-x-4 py-3">
+                              <dt className="text-gray-500">
+                                Club Mailing Address
+                              </dt>
+                              {editingClub === club[0] ? (
+                                <input
+                                  className="border text-sm rounded-full w-[180px] p-1"
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      "Club Mailing Address",
+                                      e.target.value,
+                                      club
+                                    )
+                                  }
+                                  defaultValue={club[16] || ""}
+                                />
+                              ) : (
+                                <dd className="flex items-start gap-x-2">
+                                  <div className="font-medium text-gray-900">
+                                    {club[16] || ""}
+                                  </div>
+                                </dd>
+                              )}
+                            </div>
+                            <div className="flex justify-between gap-x-4 py-3">
+                              <dt className="text-gray-500">
+                                Club Mailing Town
+                              </dt>
+                              {editingClub === club[0] ? (
+                                <input
+                                  className="border text-sm rounded-full w-[180px] p-1"
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      "Club Mailing Town",
+                                      e.target.value,
+                                      club
+                                    )
+                                  }
+                                  defaultValue={club[17] || ""}
+                                />
+                              ) : (
+                                <dd className="flex items-start gap-x-2">
+                                  <div className="font-medium text-gray-900">
+                                    {club[17] || ""}
+                                  </div>
+                                </dd>
+                              )}
+                            </div>
+                            <div className="flex justify-between gap-x-4 py-3">
+                              <dt className="text-gray-500">
+                                Club Mailing Province
+                              </dt>
+                              {editingClub === club[0] ? (
+                                <input
+                                  className="border text-sm rounded-full w-[180px] p-1"
+                                  onChange={(e) =>
+                                    handleInputChange(
+                                      "Club Mailing Province",
+                                      e.target.value,
+                                      club
+                                    )
+                                  }
+                                  defaultValue={club[18] || ""}
+                                />
+                              ) : (
+                                <dd className="flex items-start gap-x-2">
+                                  <div className="font-medium text-gray-900">
+                                    {club[18] || ""}
+                                  </div>
+                                </dd>
+                              )}
+                            </div>
+                          </div>
+                        )}
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club Tourism Region</dt>
                           {editingClub === club[0] ? (
@@ -1838,11 +1930,11 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                               type="text"
                               selected={editedDate}
                               onChange={(date) => {
-                                setEditedDate(date)
+                                setEditedDate(date);
                                 handleInputChange(
                                   "Financial Year End Date",
                                   formatDate(date)
-                                ) // Set dateModified to true
+                                ); // Set dateModified to true
                               }}
                               className="border text-sm rounded-full w-[180px] p-1"
                               placeholderText="Insert effective date"
@@ -1961,7 +2053,9 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                           )}
                         </div>
                         <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">Club YouTube Channel</dt>
+                          <dt className="text-gray-500">
+                            Club YouTube Channel
+                          </dt>
                           {editingClub === club[0] ? (
                             <input
                               className="border text-sm rounded-full w-[180px] p-1"
