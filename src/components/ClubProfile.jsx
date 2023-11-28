@@ -1942,7 +1942,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                           ) : (
                             <dd className="flex items-start gap-x-2">
                               <div className="font-medium text-gray-900">
-                                {formatDate(club[7])}
+                                {club[7] ? formatDate(club[7]) : ""}
                               </div>
                             </dd>
                           )}
