@@ -6,6 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import EditDirectorModal from "./EditDirectorModal";
 import SaveChangesModal from "./SaveChangesModal";
 import NonData from "./NonData";
+import ExistingUserModal from "./ExistingUserModal";
 
 const groupDataById = (data) => {
   if (data.length >= 1) {
@@ -49,14 +50,20 @@ const AddDirectorModal = ({
   const ameliaAdminRef = useRef(null);
   const managerAccessRef = useRef(null);
   const [errorMessages, setErrorMessages] = useState({});
-  const [shouldPost, setShouldPost] = useState(false);
-  const [clubName, setClubName] = useState("");
-  const [hasManager, setHasManager] = useState(false);
-  const [memberData, setMemberData] = useState([]);
+  // const [shouldPost, setShouldPost] = useState(false);
+  // const [clubName, setClubName] = useState("");
+  // const [hasManager, setHasManager] = useState(false);
+  // const [memberData, setMemberData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [activeSaveButton, setActiveSaveButton] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [dateSelected, setDateSelected] = useState(false);
+  const [showExistingUser, setShowExistingUser] = useState(false);
+  const [statusUserFound, setStatusUserFound] = useState("");
+  const [existingInactiveUser, setExistingInactiveUser] = useState(false);
+  const [inactiveCheckedRole, setInactiveCheckedRole] = useState([]);
+  const [isLoadingInactive, setIsLoadingInactive] = useState(false);
+  const [isLoadingPostInactive, setIsLoadingPostInactive] = useState(false);
   const dispatch = useDispatch();
 
   const roles = [
@@ -83,62 +90,62 @@ const AddDirectorModal = ({
       managerAccessRef,
     ];
 
-    let newErrorMessages = {};
-    let hasErrors = false;
+    // let newErrorMessages = {};
+    // let hasErrors = false;
 
-    for (let i = 0; i < inputRefs.length; i++) {
-      const element = inputRefs[i]?.current;
+    // for (let i = 0; i < inputRefs.length; i++) {
+    //   const element = inputRefs[i]?.current;
 
-      if (!element) continue;
+    //   if (!element) continue;
 
-      if (element == null) {
-        if (!startDate) {
-          newErrorMessages["Effective date"] = "Effective date is required";
-          hasErrors = true;
-        }
-        continue;
-      }
+    //   if (element == null) {
+    //     if (!startDate) {
+    //       newErrorMessages["Effective date"] = "Effective date is required";
+    //       hasErrors = true;
+    //     }
+    //     continue;
+    //   }
 
-      let isAnyRoleChecked = roles.some(
-        (role) => document.getElementById(role).checked
-      );
+    //   let isAnyRoleChecked = roles.some(
+    //     (role) => document.getElementById(role).checked
+    //   );
 
-      if (
-        element.tagName.toLowerCase() === "select" &&
-        element.selectedIndex === 0
-      ) {
-        newErrorMessages[element.name] = `${element.name} is required`;
-        hasErrors = true;
-      } else if (element.type !== "checkbox" && element.value.trim() === "") {
-        newErrorMessages[element.name] = `${element.name} is required`;
-        hasErrors = true;
-      } else if (!isAnyRoleChecked) {
-        newErrorMessages["Role"] = "At least one role must be selected";
-        hasErrors = true;
-      } 
+    //   if (
+    //     element.tagName.toLowerCase() === "select" &&
+    //     element.selectedIndex === 0
+    //   ) {
+    //     newErrorMessages[element.name] = `${element.name} is required`;
+    //     hasErrors = true;
+    //   } else if (element.type !== "checkbox" && element.value.trim() === "") {
+    //     newErrorMessages[element.name] = `${element.name} is required`;
+    //     hasErrors = true;
+    //   } else if (!isAnyRoleChecked) {
+    //     newErrorMessages["Role"] = "At least one role must be selected";
+    //     hasErrors = true;
+    //   }
 
-      if (
-        element.name === "Phone number" ||
-        element.id === "phoneNumberInput"
-      ) {
-        // Adjust the condition as per the name or id of your phone number input
-        const phoneNumberPattern = /^\(\d{3}\) \d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
-        if (!phoneNumberPattern.test(element.value)) {
-          newErrorMessages[element.name] =
-            "Phone number format should be (xxx) yyy-zzzz";
-          hasErrors = true;
-        }
-      }
-    }
+    //   if (
+    //     element.name === "Phone number" ||
+    //     element.id === "phoneNumberInput"
+    //   ) {
+    //     // Adjust the condition as per the name or id of your phone number input
+    //     const phoneNumberPattern = /^\(\d{3}\) \d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
+    //     if (!phoneNumberPattern.test(element.value)) {
+    //       newErrorMessages[element.name] =
+    //         "Phone number format should be (xxx) yyy-zzzz";
+    //       hasErrors = true;
+    //     }
+    //   }
+    // }
 
-    if (!dateSelected && startDate == null) {
-      newErrorMessages["Effective date"] = "Effective date is required";
-      hasErrors = true;
-    }
+    // if (!dateSelected && startDate == null) {
+    //   newErrorMessages["Effective date"] = "Effective date is required";
+    //   hasErrors = true;
+    // }
 
-    setErrorMessages(newErrorMessages);
+    // setErrorMessages(newErrorMessages);
 
-    if (hasErrors) return;
+    // if (hasErrors) return;
 
     let checkedRoles = roles.filter(
       (role) => document.getElementById(role).checked
@@ -187,6 +194,219 @@ const AddDirectorModal = ({
     setIsLoading(false);
     setIsEditing(false);
     setOpenModal(false);
+  };
+
+  async function checkIfUserExists() {
+    let url =
+      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=checkIfUserExists&email=" +
+      memberEmailRef.current.value;
+
+    let response = await fetch(url);
+    let json = await response.json();
+    return json.response;
+  }
+
+  const handleCheckIfUserExists = async () => {
+    await checkIfUserExists().then((resp) => {
+      console.log("Check response: ", resp);
+      if (resp.status == "Active") {
+        setStatusUserFound("Active");
+        setShowExistingUser(true);
+        setIsLoading(false);
+      } else if (resp.status == "Inactive") {
+        setStatusUserFound("Inactive");
+        let checkedRoles = roles.filter(
+          (role) => document.getElementById(role).checked
+        );
+        setInactiveCheckedRole(checkedRoles);
+        setShowExistingUser(true);
+        setIsLoading(false);
+      } else {
+        handleSubmitUser();
+      }
+    });
+  };
+
+  const handleSubmitUser = async () => {
+    const inputRefs = [
+      memberNameRef,
+      memberLastNameRef,
+      memberEmailRef,
+      memberPhoneNumberRef,
+      genderRef,
+      memberBirthdateRef,
+      memberRoleRef,
+      ameliaAdminRef,
+      managerAccessRef,
+    ];
+
+    let checkedRoles = roles.filter(
+      (role) => document.getElementById(role).checked
+    );
+
+    for (let role of checkedRoles) {
+      const formDataForRole = inputRefs
+        .map((ref) => {
+          const element = ref.current;
+
+          if (!element) return null;
+
+          if (element instanceof HTMLElement) {
+            if (ref === memberRoleRef) {
+              return role;
+            }
+            return element.type === "checkbox"
+              ? element.checked
+              : element.value;
+          } else {
+            return startDate;
+          }
+        })
+        .filter((data) => data !== null);
+
+      let isClubAdmin = managerAccessRef.current.checked;
+
+      const localHasManager = formDataForRole.pop();
+      const localMemberData = [...formDataForRole];
+      localMemberData.splice(5, 0, startDate);
+      localMemberData.splice(7, 0, "Active");
+      localMemberData.push(isClubAdmin);
+
+      setIsLoading(true);
+      setActiveSaveButton(true);
+
+      await postDirectorData(
+        submitAddDirector(),
+        localMemberData,
+        localHasManager
+      );
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second before the next iteration
+    }
+
+    await dispatch(fetchData())
+    .then(() => {
+      setIsLoading(false);
+      setIsEditing(false);
+      setOpenModal(false);
+    })
+  };
+
+  const handleAllSubmit = () => {
+    const inputRefs = [
+      memberNameRef,
+      memberLastNameRef,
+      memberEmailRef,
+      memberPhoneNumberRef,
+      genderRef,
+      memberBirthdateRef,
+      memberRoleRef,
+      ameliaAdminRef,
+      managerAccessRef,
+    ];
+
+    let newErrorMessages = {};
+    let hasErrors = false;
+
+    for (let i = 0; i < inputRefs.length; i++) {
+      const element = inputRefs[i]?.current;
+
+      if (!element) continue;
+
+      if (element == null) {
+        if (!startDate) {
+          newErrorMessages["Effective date"] = "Effective date is required";
+          hasErrors = true;
+        }
+        continue;
+      }
+
+      let isAnyRoleChecked = roles.some(
+        (role) => document.getElementById(role).checked
+      );
+
+      if (
+        element.tagName.toLowerCase() === "select" &&
+        element.selectedIndex === 0
+      ) {
+        newErrorMessages[element.name] = `${element.name} is required`;
+        hasErrors = true;
+      } else if (element.type !== "checkbox" && element.value.trim() === "") {
+        newErrorMessages[element.name] = `${element.name} is required`;
+        hasErrors = true;
+      } else if (!isAnyRoleChecked) {
+        newErrorMessages["Role"] = "At least one role must be selected";
+        hasErrors = true;
+      }
+
+      if (
+        element.name === "Phone number" ||
+        element.id === "phoneNumberInput"
+      ) {
+        // Adjust the condition as per the name or id of your phone number input
+        const phoneNumberPattern = /^\(\d{3}\) \d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
+        if (!phoneNumberPattern.test(element.value)) {
+          newErrorMessages[element.name] =
+            "Phone number format should be (xxx) yyy-zzzz";
+          hasErrors = true;
+        }
+      }
+    }
+
+    if (!dateSelected && startDate == null) {
+      newErrorMessages["Effective date"] = "Effective date is required";
+      hasErrors = true;
+    }
+
+    setErrorMessages(newErrorMessages);
+
+    if (hasErrors) return;
+    setIsLoading(true);
+    setActiveSaveButton(true);
+    handleCheckIfUserExists();
+    // setIsEditing(false);
+    // setOpenModal(false);
+  };
+
+  useEffect(() => {
+    if (existingInactiveUser) {
+      setIsLoadingInactive(true);
+      submitInactiveUser();
+    }
+  }, [existingInactiveUser]);
+
+  const submitInactiveUser = async () => {
+    let inactiveUseremail = memberEmailRef.current.value;
+    let inactiveUserRoles = inactiveCheckedRole;
+    await postInactiveUser(inactiveUseremail, inactiveUserRoles).then(
+      async () => {
+        setExistingInactiveUser(false);
+        await dispatch(fetchData()).then(() => {
+          setIsLoadingInactive(false);
+          setShowExistingUser(false);
+          setOpenModal(false);
+          setIsEditing(false);
+        });
+      }
+    );
+  };
+
+  const postInactiveUser = async (inactiveEmail, inactiveRole) => {
+    let url =
+      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec";
+    const options = {
+      method: "post",
+      mode: "no-cors",
+      body: JSON.stringify({
+        action: "postInactiveUser",
+        inactiveEmail: inactiveEmail,
+        inactiveRole: inactiveRole,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    await fetch(url, options);
   };
 
   const postDirectorData = async (clubName, memberData, hasManager) => {
@@ -245,6 +465,15 @@ const AddDirectorModal = ({
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all w-[600px] sm:my-8 sm:p-6">
             <div className="mt-3 text-center sm:mt-5 text-sm montserrat">
+              {showExistingUser && (
+                <ExistingUserModal
+                  statusUserFound={statusUserFound}
+                  setShowExistingUser={setShowExistingUser}
+                  setExistingInactiveUser={setExistingInactiveUser}
+                  inactiveCheckedRole={inactiveCheckedRole}
+                  isLoadingInactive={isLoadingInactive}
+                />
+              )}
               <h3
                 className=" font-semibold lg:text-sm leading-6 text-gray-900"
                 id="modal-title"
@@ -442,7 +671,7 @@ const AddDirectorModal = ({
             >
               <button
                 disabled={activeSaveButton}
-                onClick={handleSubmit}
+                onClick={handleAllSubmit}
                 id="submitAddMember"
                 type="button"
                 className={
@@ -453,7 +682,7 @@ const AddDirectorModal = ({
               >
                 {isLoading ? (
                   <div
-                    className="spinner inline-block w-2 h-2 ml-2 border-t-2 border-solid rounded-full animate-spin"
+                    className="spinner inline-block w-2 h-2 ml-2 border-t-2 border-white border-solid rounded-full animate-spin"
                     style={{
                       borderColor: "#535787",
                       borderRightColor: "transparent",
@@ -559,7 +788,9 @@ const MemberDetail = ({
                     value={`${item[0]} ${item[1]}`}
                   >{`${item[0]} ${item[1]}`}</option>
                 ))}
-                <option value="openAddModal" onClick={handleOpenModal}>Add director</option>
+                <option value="openAddModal" onClick={handleOpenModal}>
+                  Add director
+                </option>
               </select>
             </dd>
           ) : member ? (
@@ -776,7 +1007,7 @@ const MemberCard = ({
               {isChangingSelect ? (
                 <div className="mt-[2px]">
                   <div
-                    className="spinner w-2 h-2 border-t-2 border-solid rounded-full animate-spin"
+                    className="spinner w-2 h-2 border-t-2 border-white border-solid rounded-full animate-spin"
                     style={{
                       borderColor: "#535787",
                       borderRightColor: "transparent",
@@ -835,7 +1066,6 @@ const ClubDirectors = ({
   setActiveButton,
   btnId,
 }) => {
-  
   let { data } = useSelector((state) => state.reducer);
   data = data.map((row) => {
     const item9 = row[11];
@@ -864,7 +1094,7 @@ const ClubDirectors = ({
   const submitAddDirector = () => {
     return selectedClubName;
   };
-  
+
   return (
     <div className="flex-col flex items-center justify-center">
       {isBcsf ? (
@@ -974,16 +1204,16 @@ const ClubDirectors = ({
           className="flex-col mt-12 justify-center items-center"
         >
           {openModal ? (
-              <AddDirectorModal
-                handleCloseModal={handleCloseModal}
-                submitAddDirector={submitAddDirector}
-                data={data}
-                setIsEditing={setIsEditing}
-                setOpenModal={setOpenModal}
-              />
-            ) : (
-              <></>
-            )}
+            <AddDirectorModal
+              handleCloseModal={handleCloseModal}
+              submitAddDirector={submitAddDirector}
+              data={data}
+              setIsEditing={setIsEditing}
+              setOpenModal={setOpenModal}
+            />
+          ) : (
+            <></>
+          )}
           {Object.values(groups).map((clubData, index) => (
             <MemberCard
               key={`${index}-${clubData[0][3]}`}
