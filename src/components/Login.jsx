@@ -15,24 +15,31 @@ function Login() {
   const [makePost, setMakePost] = useState(false);
   const [goToDashboard, setGoToDashboard] = useState(false);
   const [requestModal, setRequestModal] = useState(false);
+  const [isUserBcsf, setIsUserBcsf] = useState(null);
+  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
   const navigate = useNavigate();
+
+  // const login = useGoogleLogin({
+  //   onSuccess: (response) => {
+  //     localStorage.setItem("userInfo", JSON.stringify(response));
+  //     setMakePost(true);
+  //     // setUserInfo(response);
+  //   },
+  //   onError: (error) => console.log(`Login Failed: ${error}`),
+  // });
 
   const login = useGoogleLogin({
     onSuccess: (response) => {
       localStorage.setItem("userInfo", JSON.stringify(response));
       setMakePost(true);
-      // setUserInfo(response);
     },
     onError: (error) => console.log(`Login Failed: ${error}`),
   });
 
-  const logOut = () => {
-    googleLogout();
-    localStorage.clear();
-  };
-
-  const [isUserBcsf, setIsUserBcsf] = useState(null);
-  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
+  // const logOut = () => {
+  //   googleLogout();
+  //   localStorage.clear();
+  // };
 
   const fetchUserData = (userEmail) => {
     return axios
@@ -63,6 +70,36 @@ function Login() {
       });
   };
 
+  // useEffect(() => {
+  //   if (makePost) {
+  //     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  //     axios
+  //       .get(
+  //         `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userInfo.access_token}`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${userInfo.access_token}`,
+  //             Accept: "application/json",
+  //           },
+  //         }
+  //       )
+  //       .then((response) => {
+  //         localStorage.setItem("userEmail", JSON.stringify(response.data));
+  //         setUserEmail(response.data);
+  //         return fetchUserData(response.data.email);
+  //       })
+  //       .then(() => {
+  //         if (isUserBcsf !== null) {
+  //           setIsLoadingLogin(false);
+  //           setMakePost(false);
+  //           setGoToDashboard(true);
+  //           navigate("/dashboard");
+  //         }
+  //       })
+  //       .catch((error) => console.log(error));
+  //   }
+  // }, [navigate, userInfo, makePost, isUserBcsf]);
+
   useEffect(() => {
     if (makePost) {
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -82,24 +119,32 @@ function Login() {
           return fetchUserData(response.data.email);
         })
         .then(() => {
+          // ... (your logic)
           if (isUserBcsf !== null) {
             setIsLoadingLogin(false);
             setMakePost(false);
             setGoToDashboard(true);
-            navigate("/dashboard");
           }
         })
         .catch((error) => console.log(error));
     }
-  }, [navigate, userInfo, makePost, isUserBcsf]);
+  }, [makePost, isUserBcsf]);
 
   useEffect(() => {
     const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
     let hasUser = localStorage.getItem("activeUser");
-    if (userEmailInStorage && hasUser) {
+    if (userEmailInStorage && hasUser && goToDashboard) {
       navigate("/dashboard");
     }
-  }, [navigate]);
+  }, [navigate, goToDashboard]);
+
+  // useEffect(() => {
+  //   const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
+  //   let hasUser = localStorage.getItem("activeUser");
+  //   if (userEmailInStorage && hasUser) {
+  //     navigate("/dashboard");
+  //   }
+  // }, [navigate]);
 
   const logoStyle = {
     width: "100px",
