@@ -1,27 +1,27 @@
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  HashRouter,
-  useNavigate,
-  Navigate,
-} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { useEffect } from "react";
 
 function App() {
-  let hasUser = localStorage.getItem("activeUser");
+  const [hasUser, setHasUser] = useState(false);
+
+  useEffect(() => {
+    // Check if the user is authenticated when the component mounts
+    const activeUser = localStorage.getItem("activeUser");
+    setHasUser(!!activeUser); // !! converts the value to a boolean
+  }, []);
+
+  const handleUserLogin = (user) => {
+    localStorage.setItem('activeUser', user);
+    setHasUser(true);
+  };
 
   return (
     <HashRouter>
       <Routes>
-        <Route exact path="/" element={<Login />} />
-        {/* <Route
-          path="/dashboard"
-          element={hasUser !== null ? <Dashboard /> : <Navigate to="/" />}
-        /> */}
+        <Route exact path="/" element={<Login onUserLogin={handleUserLogin} />} />
         <Route
           path="/dashboard"
           element={
@@ -30,10 +30,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* <Route
-          path="/dashboard"
-          element={<ProtectedRoute component={Dashboard}/>}
-        /> */}
       </Routes>
     </HashRouter>
   );

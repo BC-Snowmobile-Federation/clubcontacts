@@ -8,7 +8,7 @@ import { fetchClubData } from "../../redux/slice";
 import Spinner from "./Spinner";
 import RequestAccessForm from "./RequestAccess";
 
-function Login() {
+function Login({onUserLogin}) {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [userInfo, setUserInfo] = useState([]);
   const [userEmail, setUserEmail] = useState([]);
@@ -64,6 +64,7 @@ function Login() {
             response.data.response.userData.club
           );
           localStorage.setItem("activeUser", userEmail);
+          onUserLogin(userEmail);
         } else {
           setShowErrorModal(true);
         }
