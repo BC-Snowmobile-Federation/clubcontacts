@@ -211,6 +211,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   };
 
   const handleOpenAddClubModal = () => {
+    setMenuVisible(false);
     setOpenAddClubModal(true);
   };
 
@@ -307,8 +308,9 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
               role="list"
               id="clubsProfileContainer"
               className={
-                isBcsf
-                  ? "grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 xl:gap-x-8 flex justify-center items-center"
+                filteredClubs.length >= 2
+                  ? 
+                  "grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 xl:gap-x-8 flex justify-center items-center"
                   : "flex justify-center items-center"
               }
             >

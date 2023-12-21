@@ -42,7 +42,9 @@ const SideMenu = ({
 
   let clubName = localStorage.getItem("clubName");
   let user = JSON.parse(localStorage.getItem("userEmail"))
+  // console.log(user)
   let activeUser = user.email;
+  let name = user.name;
   
   const renderSvgIcon = (pathData) => {
     return (
@@ -98,7 +100,7 @@ const SideMenu = ({
         <div className="mt-8 flex justify-center">
           <h2 className="montserrat text-xl font-medium text-white">
             Welcome
-            <span className="font-semibold"> {clubName}</span>
+            <span className="font-semibold"> {name}</span>
           </h2>
         </div>
 

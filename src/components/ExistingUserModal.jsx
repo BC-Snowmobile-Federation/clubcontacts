@@ -5,9 +5,15 @@ const ExistingUserModal = ({
   inactiveCheckedRole,
   setIsLoadingInactive,
   isLoadingInactive,
+  setActiveSaveButton
 }) => {
   function handleYes() {
     setIsLoadingInactive(true);
+  }
+
+  function handleExistingClose() {
+    setActiveSaveButton(false);
+    setShowExistingUser(false)
   }
   return (
     <div
@@ -36,7 +42,7 @@ const ExistingUserModal = ({
                   </p>
                   <div className="mt-5 flex justify-center">
                     <button
-                      onClick={() => setShowExistingUser(false)}
+                      onClick={handleExistingClose}
                       className="w-[120px] rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm hover:text-[#535787]"
                     >
                       Close

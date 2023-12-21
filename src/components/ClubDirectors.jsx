@@ -8,12 +8,31 @@ import SaveChangesModal from "./SaveChangesModal";
 import NonData from "./NonData";
 import ExistingUserModal from "./ExistingUserModal";
 
+// const groupDataById = (data) => {
+//   if (data.length >= 1) {
+//     return data.reduce((groups, item) => {
+//       let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
+//       let club = localStorage.getItem("clubName");
+//       item[3] = Boolean(isBcsf) == false ? club : item[3];
+//       const id = item[3];
+//       if (!groups[id]) {
+//         groups[id] = [];
+//       }
+//       groups[id].push(item);
+//       return groups;
+//     }, {});
+//   } else {
+//     let club = localStorage.getItem("clubName");
+//     return { [club]: [["", "", "", club, "", "", "", "", "", "", ""]] };
+//   }
+// };
 const groupDataById = (data) => {
+  let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
+  let club = localStorage.getItem("clubName");
+  // let filteredData = isBcsf ? data : data.filter(item => item[3] === club);
+
   if (data.length >= 1) {
     return data.reduce((groups, item) => {
-      let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
-      let club = localStorage.getItem("clubName");
-      item[3] = Boolean(isBcsf) == false ? club : item[3];
       const id = item[3];
       if (!groups[id]) {
         groups[id] = [];
@@ -22,10 +41,10 @@ const groupDataById = (data) => {
       return groups;
     }, {});
   } else {
-    let club = localStorage.getItem("clubName");
     return { [club]: [["", "", "", club, "", "", "", "", "", "", ""]] };
   }
 };
+
 // eslint-disable-next-line
 const AddDirectorModal = ({
   // eslint-disable-next-line
@@ -472,6 +491,7 @@ const AddDirectorModal = ({
                   setExistingInactiveUser={setExistingInactiveUser}
                   inactiveCheckedRole={inactiveCheckedRole}
                   isLoadingInactive={isLoadingInactive}
+                  setActiveSaveButton={setActiveSaveButton}
                 />
               )}
               <h3
@@ -1081,6 +1101,8 @@ const ClubDirectors = ({
   const [selectedClubName, setSelectedClubName] = useState("");
   const [version, setVersion] = useState(0);
 
+  console.log(data)
+
   const handleClubChange = (e) => {
     setSelectedClub(e.target.value);
   };
@@ -1214,7 +1236,7 @@ const ClubDirectors = ({
           ) : (
             <></>
           )}
-          {Object.values(groups).map((clubData, index) => (
+          {/* {Object.values(groups).map((clubData, index) => (
             <MemberCard
               key={`${index}-${clubData[0][3]}`}
               clubData={clubData}
@@ -1230,7 +1252,35 @@ const ClubDirectors = ({
               setActiveButton={setActiveButton}
               btnId={btnId}
             />
-          ))}
+          ))} */}
+          {Object.entries(groups)
+              // eslint-disable-next-line
+              .filter(([clubName, clubData]) => {
+                if (searchTerm) {
+                  return clubName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase());
+                }
+                return !selectedClub || clubName === selectedClub;
+              })
+              // eslint-disable-next-line
+              .map(([clubName, clubData], index) => (
+                <MemberCard
+                  key={`${index}-${clubName}`}
+                  clubData={clubData}
+                  isManager={isManager}
+                  setOpenModal={setOpenModal}
+                  setSelectedClubName={setSelectedClubName}
+                  version={version}
+                  isEditing={isEditing}
+                  setIsEditing={setIsEditing}
+                  data={data}
+                  showModal={showModal}
+                  setShowModal={setShowModal}
+                  setActiveButton={setActiveButton}
+                  btnId={btnId}
+                />
+              ))}
         </div>
       )}
     </div>

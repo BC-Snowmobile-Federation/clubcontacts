@@ -139,13 +139,13 @@ function Login({onUserLogin}) {
     }
   }, [navigate, goToDashboard]);
 
-  // useEffect(() => {
-  //   const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
-  //   let hasUser = localStorage.getItem("activeUser");
-  //   if (userEmailInStorage && hasUser) {
-  //     navigate("/dashboard");
-  //   }
-  // }, [navigate]);
+  useEffect(() => {
+    const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
+    let hasUser = localStorage.getItem("activeUser");
+    if (userEmailInStorage && hasUser) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   const logoStyle = {
     width: "100px",

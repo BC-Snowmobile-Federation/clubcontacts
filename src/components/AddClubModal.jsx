@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchClubData, fetchData } from "../../redux/slice";
 import AddGWSGroup from "./AddGWSGroup";
+import ModalAllowPostComponent from "./ModalAllowPost";
 
 const AddClubModal = ({ setOpenAddClubModal }) => {
   const newClubNameRef = useRef();
@@ -27,12 +28,20 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
   const [shouldPostAdd, setShouldPostAdd] = useState(false);
   const [isLoadingAddPost, setIsLoadingAddPost] = useState(false);
   const [addGwsGroup, setAddGwsGroup] = useState(false);
+  const [modalAllowPost, setModalAllowPost] = useState(false);
+
+  let { clubData } = useSelector((state) => state.reducer);
 
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
     let errors = {};
     const newClubName = newClubNameRef.current.value;
+    let clubExists = clubData.some((subarray) => subarray[0] === newClubName);
+    if (clubExists) {
+      setModalAllowPost(true);
+      return;
+    }
     // const newClubMailingAddress = newClubMailingAddressRef.current.value;
     const newClubTourismRegion = newClubTourismRegionRef.current.value;
     const newClubMainPhone = newClubMainPhoneRef.current.value;
@@ -50,7 +59,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
     const newClubMailingAddress = newClubMailingAddressRef.current.value;
     const newClubMailingTown = newClubMailingTownRef.current.value;
     const newClubMailingProvince = newClubMailingProvinceRef.current.value;
-  
+
     // Concatenate address, town, and province
     const fullMailingAddress = `${newClubMailingAddress}; ${newClubMailingTown}; ${newClubMailingProvince}`;
 
@@ -149,10 +158,11 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
   async function checkGWSGroup() {
     let url =
       "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=getGwsGroups&clubName=" +
-      encodeURI(newClubNameRef.current.value);
+      encodeURIComponent(newClubNameRef.current.value);
 
     let response = await fetch(url);
     let json = await response.json();
+    console.log(json.response);
     return json.response;
   }
 
@@ -179,7 +189,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
   return (
     <div
       id="addClubModal"
-      className="relative z-10 ml-[40px]"
+      className="relative z-10"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
@@ -191,7 +201,9 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
           setOpenAddClubModal={setOpenAddClubModal}
         />
       )}
-
+      {modalAllowPost && (
+        <ModalAllowPostComponent setModalAllowPost={setModalAllowPost} />
+      )}
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex min-h-full items-end justify-center ml-[40px] p-4 text-center sm:items-center sm:p-0">

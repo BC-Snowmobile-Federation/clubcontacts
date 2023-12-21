@@ -23,6 +23,7 @@ const AddGWSGroup = ({ setAddGwsGroup, clubName, setOpenAddClubModal }) => {
 
   function handleCloseRequest() {
     setAddGwsGroup(false);
+    setOpenAddClubModal(false)
   }
 
   return (
