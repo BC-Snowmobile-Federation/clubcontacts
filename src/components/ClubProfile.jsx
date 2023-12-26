@@ -168,7 +168,6 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     if ("Club Mailing Address" in editedData) {
       const splittedMailingAddress =
         editedData["Club Mailing Address"].split(";");
-      console.log(splittedMailingAddress);
       addressArray[0] = splittedMailingAddress[0] || club[15] || "";
       addressArray[1] = splittedMailingAddress[1] || club[16] || "";
       addressArray[2] = splittedMailingAddress[2] || club[17] || "";
@@ -187,7 +186,6 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
       newValue = addressArray.join(";");
       labelToChange = "Club Mailing Address";
     }
-    console.log("new value", newValue);
 
     setEditedData((prevData) => ({
       ...prevData,
@@ -215,10 +213,10 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     setOpenAddClubModal(true);
   };
 
-  let isManager = localStorage.getItem("isManager") == "MANAGER" ? true : false;
+  // let isManager = localStorage.getItem("isManager") == "MANAGER" ? true : false;
   return (
     <div>
-      {isBcsf && isManager ? (
+      {isBcsf ? (
         <>
           <div className="flex justify-end">
             <button
@@ -326,7 +324,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                         <div className="text-base font-semibold leading-6 text-[#243746]">
                           {club[0]}
                         </div>
-                        {isManager ? (
+                        {JSON.parse(localStorage.getItem(club[0])).isManager ? (
                           <div className="relative ml-auto">
                             {editingClub === club[0] ? (
                               isLoadingEditClub ? (

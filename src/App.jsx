@@ -3,12 +3,18 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useDispatch } from "react-redux";
+import { fetchAllClubs } from "../redux/slice";
 
 function App() {
   const [hasUser, setHasUser] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // Check if the user is authenticated when the component mounts
+    dispatch(fetchAllClubs());
+  }, [dispatch]);
+
+  useEffect(() => {
     const activeUser = localStorage.getItem("activeUser");
     setHasUser(!!activeUser); // !! converts the value to a boolean
   }, []);

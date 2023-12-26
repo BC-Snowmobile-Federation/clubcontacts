@@ -5,7 +5,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import EditDirectorModal from "./EditDirectorModal";
 import SaveChangesModal from "./SaveChangesModal";
-import NonData from "./NonData";
 import ExistingUserModal from "./ExistingUserModal";
 
 // const groupDataById = (data) => {
@@ -27,12 +26,11 @@ import ExistingUserModal from "./ExistingUserModal";
 //   }
 // };
 const groupDataById = (data) => {
-  let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
-  let club = localStorage.getItem("clubName");
-  // let filteredData = isBcsf ? data : data.filter(item => item[3] === club);
+  let clubsString = localStorage.getItem("clubs");
+  let clubs = JSON.parse(clubsString);
 
   if (data.length >= 1) {
-    return data.reduce((groups, item) => {
+    let resp = data.reduce((groups, item) => {
       const id = item[3];
       if (!groups[id]) {
         groups[id] = [];
@@ -40,8 +38,20 @@ const groupDataById = (data) => {
       groups[id].push(item);
       return groups;
     }, {});
+    clubs.forEach((club) => {
+      if (!resp[club]) {
+        resp[club] = [["", "", "", club, "", "", "", "", "", "", ""]];
+      }
+    });
+    return resp;
   } else {
-    return { [club]: [["", "", "", club, "", "", "", "", "", "", ""]] };
+    let resp = [];
+    clubs.forEach((club) => {
+      if (!resp[club]) {
+        resp[club] = [["", "", "", club, "", "", "", "", "", "", ""]];
+      }
+    });
+    return resp;
   }
 };
 
@@ -227,7 +237,6 @@ const AddDirectorModal = ({
 
   const handleCheckIfUserExists = async () => {
     await checkIfUserExists().then((resp) => {
-      console.log("Check response: ", resp);
       if (resp.status == "Active") {
         setStatusUserFound("Active");
         setShowExistingUser(true);
@@ -302,12 +311,11 @@ const AddDirectorModal = ({
       await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for 1 second before the next iteration
     }
 
-    await dispatch(fetchData())
-    .then(() => {
+    await dispatch(fetchData()).then(() => {
       setIsLoading(false);
       setIsEditing(false);
       setOpenModal(false);
-    })
+    });
   };
 
   const handleAllSubmit = () => {
@@ -1076,7 +1084,7 @@ const MemberCard = ({
 };
 // eslint-disable-next-line
 const ClubDirectors = ({
-  isManager,
+  // isManager,
   isBcsf,
   uniqueClubValues,
   isEditing,
@@ -1100,8 +1108,6 @@ const ClubDirectors = ({
   const [openModal, setOpenModal] = useState(false);
   const [selectedClubName, setSelectedClubName] = useState("");
   const [version, setVersion] = useState(0);
-
-  console.log(data)
 
   const handleClubChange = (e) => {
     setSelectedClub(e.target.value);
@@ -1201,23 +1207,28 @@ const ClubDirectors = ({
                 return !selectedClub || clubName === selectedClub;
               })
               // eslint-disable-next-line
-              .map(([clubName, clubData], index) => (
-                <MemberCard
-                  key={`${index}-${clubName}`}
-                  clubData={clubData}
-                  isManager={isManager}
-                  setOpenModal={setOpenModal}
-                  setSelectedClubName={setSelectedClubName}
-                  version={version}
-                  isEditing={isEditing}
-                  setIsEditing={setIsEditing}
-                  data={data}
-                  showModal={showModal}
-                  setShowModal={setShowModal}
-                  setActiveButton={setActiveButton}
-                  btnId={btnId}
-                />
-              ))}
+              .map(([clubName, clubData], index) => {
+                const clubInfo = JSON.parse(
+                  localStorage.getItem(clubName) || "{}"
+                );
+                return (
+                  <MemberCard
+                    key={`${index}-${clubName}`}
+                    clubData={clubData}
+                    isManager={clubInfo.isManager == true ? 'MANAGER' : 'MEMBER'}
+                    setOpenModal={setOpenModal}
+                    setSelectedClubName={setSelectedClubName}
+                    version={version}
+                    isEditing={isEditing}
+                    setIsEditing={setIsEditing}
+                    data={data}
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    setActiveButton={setActiveButton}
+                    btnId={btnId}
+                  />
+                );
+              })}
           </div>
         </>
       ) : (
@@ -1236,39 +1247,26 @@ const ClubDirectors = ({
           ) : (
             <></>
           )}
-          {/* {Object.values(groups).map((clubData, index) => (
-            <MemberCard
-              key={`${index}-${clubData[0][3]}`}
-              clubData={clubData}
-              isManager={isManager}
-              setOpenModal={setOpenModal}
-              setSelectedClubName={setSelectedClubName}
-              version={version}
-              isEditing={isEditing}
-              setIsEditing={setIsEditing}
-              data={data}
-              showModal={showModal}
-              setShowModal={setShowModal}
-              setActiveButton={setActiveButton}
-              btnId={btnId}
-            />
-          ))} */}
           {Object.entries(groups)
-              // eslint-disable-next-line
-              .filter(([clubName, clubData]) => {
-                if (searchTerm) {
-                  return clubName
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase());
-                }
-                return !selectedClub || clubName === selectedClub;
-              })
-              // eslint-disable-next-line
-              .map(([clubName, clubData], index) => (
+            // eslint-disable-next-line
+            .filter(([clubName, clubData]) => {
+              if (searchTerm) {
+                return clubName
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase());
+              }
+              return !selectedClub || clubName === selectedClub;
+            })
+            // eslint-disable-next-line
+            .map(([clubName, clubData], index) => {
+              const clubInfo = JSON.parse(
+                localStorage.getItem(clubName) || "{}"
+              );
+              return (
                 <MemberCard
                   key={`${index}-${clubName}`}
                   clubData={clubData}
-                  isManager={isManager}
+                  isManager={clubInfo.isManager == true ? 'MANAGER' : 'MEMBER'}
                   setOpenModal={setOpenModal}
                   setSelectedClubName={setSelectedClubName}
                   version={version}
@@ -1280,7 +1278,8 @@ const ClubDirectors = ({
                   setActiveButton={setActiveButton}
                   btnId={btnId}
                 />
-              ))}
+              );
+            })}
         </div>
       )}
     </div>

@@ -3,12 +3,12 @@ import axios from "axios";
 import { useGoogleLogin, googleLogout } from "@react-oauth/google";
 import ErrorLoginModal from "./ErrorLoginModal";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { fetchClubData } from "../../redux/slice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllClubs, fetchClubData } from "../../redux/slice";
 import Spinner from "./Spinner";
 import RequestAccessForm from "./RequestAccess";
 
-function Login({onUserLogin}) {
+function Login({ onUserLogin }) {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [userInfo, setUserInfo] = useState([]);
   const [userEmail, setUserEmail] = useState([]);
@@ -19,15 +19,6 @@ function Login({onUserLogin}) {
   const [isLoadingLogin, setIsLoadingLogin] = useState(false);
   const navigate = useNavigate();
 
-  // const login = useGoogleLogin({
-  //   onSuccess: (response) => {
-  //     localStorage.setItem("userInfo", JSON.stringify(response));
-  //     setMakePost(true);
-  //     // setUserInfo(response);
-  //   },
-  //   onError: (error) => console.log(`Login Failed: ${error}`),
-  // });
-
   const login = useGoogleLogin({
     onSuccess: (response) => {
       localStorage.setItem("userInfo", JSON.stringify(response));
@@ -35,11 +26,8 @@ function Login({onUserLogin}) {
     },
     onError: (error) => console.log(`Login Failed: ${error}`),
   });
-
-  // const logOut = () => {
-  //   googleLogout();
-  //   localStorage.clear();
-  // };
+  
+  let { clubs } = useSelector((state) => state.reducer);
 
   const fetchUserData = (userEmail) => {
     return axios
@@ -47,59 +35,46 @@ function Login({onUserLogin}) {
         `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=login&userEmail=${userEmail}`
       )
       .then((response) => {
-        const userData = response.data?.response?.userData;
-        if (userData.club) {
+        const userDataArray = response.data?.response?.userData;
+        if (userDataArray && userDataArray.length > 0) {
           setIsLoadingLogin(true);
-          setIsUserBcsf(response.data.response.userData.isBcsf);
-          localStorage.setItem(
-            "isBcsf",
-            response.data.response.userData.isBcsf
-          );
-          localStorage.setItem(
-            "isManager",
-            response.data.response.userData.isManager
-          );
-          localStorage.setItem(
-            "clubName",
-            response.data.response.userData.club
-          );
           localStorage.setItem("activeUser", userEmail);
+          const isBcsf = userDataArray.some((data) => data.isBcsf);
+          setIsUserBcsf(isBcsf);
+          localStorage.setItem("isBcsf", isBcsf);
+          let allclubs = [];
+          userDataArray.forEach((userData) => {
+            if (
+              userData.club.includes("British Columbia Snowmobile Federation")
+            ) {
+              clubs.forEach((el) => {
+                localStorage.setItem(
+                  el,
+                  JSON.stringify({
+                    isManager: true,
+                  })
+                );
+                allclubs.push(el);
+              });
+              localStorage.setItem("clubs", JSON.stringify(allclubs));
+            } else {
+              localStorage.setItem(
+                userData.club,
+                JSON.stringify({
+                  isManager: userData.isManager,
+                })
+              );
+              allclubs.push(userData.club);
+              localStorage.setItem("clubs", JSON.stringify(allclubs));
+            }
+          });
+
           onUserLogin(userEmail);
         } else {
           setShowErrorModal(true);
         }
       });
   };
-
-  // useEffect(() => {
-  //   if (makePost) {
-  //     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  //     axios
-  //       .get(
-  //         `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userInfo.access_token}`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${userInfo.access_token}`,
-  //             Accept: "application/json",
-  //           },
-  //         }
-  //       )
-  //       .then((response) => {
-  //         localStorage.setItem("userEmail", JSON.stringify(response.data));
-  //         setUserEmail(response.data);
-  //         return fetchUserData(response.data.email);
-  //       })
-  //       .then(() => {
-  //         if (isUserBcsf !== null) {
-  //           setIsLoadingLogin(false);
-  //           setMakePost(false);
-  //           setGoToDashboard(true);
-  //           navigate("/dashboard");
-  //         }
-  //       })
-  //       .catch((error) => console.log(error));
-  //   }
-  // }, [navigate, userInfo, makePost, isUserBcsf]);
 
   useEffect(() => {
     if (makePost) {
@@ -120,7 +95,6 @@ function Login({onUserLogin}) {
           return fetchUserData(response.data.email);
         })
         .then(() => {
-          // ... (your logic)
           if (isUserBcsf !== null) {
             setIsLoadingLogin(false);
             setMakePost(false);

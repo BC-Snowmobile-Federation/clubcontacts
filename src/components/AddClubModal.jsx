@@ -162,7 +162,6 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
 
     let response = await fetch(url);
     let json = await response.json();
-    console.log(json.response);
     return json.response;
   }
 

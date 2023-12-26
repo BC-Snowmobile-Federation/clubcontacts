@@ -58,8 +58,9 @@ const Dashboard = () => {
 
 
   let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
-  let isManager = localStorage.getItem("isManager");
-  let clubName = localStorage.getItem("clubName");
+  // let isManager = localStorage.getItem("isManager");
+  // let clubName = localStorage.getItem("clubName");
+  // let localUserData = localStorage.getItem()
 
   const rolePosition = 7;
   const statusPosition = 8;
@@ -221,7 +222,7 @@ const Dashboard = () => {
                       <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg max-w-screen">
                         {activeButton === "clubs" ? (
                           <ClubDirectors
-                            isManager={isManager}
+                            // isManager={isManager}
                             data={data}
                             isBcsf={isBcsf}
                             uniqueClubValues={uniqueClubValues}

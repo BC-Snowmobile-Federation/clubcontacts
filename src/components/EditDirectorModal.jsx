@@ -284,8 +284,6 @@ const EditDirectorModal = ({
 
     setModifiedValues(newModifiedValues);
 
-    console.log(modifiedValues)
-
     setActiveSaveButton(true);
     if (isLoading) return;
     setShouldPostEdition(true);

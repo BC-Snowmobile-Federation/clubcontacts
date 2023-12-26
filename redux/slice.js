@@ -5,6 +5,7 @@ const initialState = {
   allData: [],
   headers: [],
   clubData: [],
+  clubs: [],
 };
 
 export const fetchData = createAsyncThunk("getData/fetchData", async () => {
@@ -28,11 +29,17 @@ export const fetchClubData = createAsyncThunk("getData/fetchClubData", async () 
   return data.response;
 });
 
-
 export const clear = createAsyncThunk("getData/clear", async () => {
   return localStorage.clear();
 });
 
+export const fetchAllClubs = createAsyncThunk("getData/fetchAllClubs", async () => {
+  let url =
+    "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=fetchAllClubs";
+  const response = await fetch(url);
+  const data = await response.json();
+  return data.response;
+});
 
 const appReducer = createSlice({
   name: "getData",
@@ -68,6 +75,9 @@ const appReducer = createSlice({
       state.allData = [];
       state.clubData = [];
     });
+    builder.addCase(fetchAllClubs.fulfilled, (state, action) => {
+      state.clubs = action.payload
+    })
   },
 });
 
