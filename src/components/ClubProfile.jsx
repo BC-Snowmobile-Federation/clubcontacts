@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { fetchClubData, fetchData } from "../../redux/slice";
 import { useDispatch } from "react-redux";
 import AddClubModal from "./AddClubModal";
@@ -18,6 +18,16 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
 
     return [month, day, year].join("/");
   }
+  const clubMailingAddressRef = useRef(null);
+  const clubMailingTownRef = useRef(null);
+  const clubMailingProvinceRef = useRef(null);
+  const clubTourismRegionRef = useRef(null);
+  const clubMainPhoneRef = useRef(null);
+  const clubGeneralEmailRef = useRef(null);
+  const clubWebsiteRef = useRef(null);
+  const clubBCSNumberRef = useRef(null);
+  const clubFEYDRef = useRef(null);
+
   // eslint-disable-next-line
   const [selectedClub, setSelectedClub] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -33,6 +43,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   const [isLoadingEditClub, setIsLoadingEditClub] = useState(false);
   const [postingEditClub, setPostingEditClub] = useState(false);
   const [editedDate, setEditedDate] = useState(null);
+  const [editErrorsMessages, setEditErrorsMessages] = useState({});
 
   const handleEditClick = (clubName) => {
     setEditingClub(clubName);
@@ -153,6 +164,44 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   };
 
   const handleSaveChanges = () => {
+    setEditErrorsMessages({});
+    let errors = {};
+
+    if (!clubMailingAddressRef.current.value) {
+      errors["editMailingAddress"] = "Club Mailing Address is required";
+    }
+    if (!clubMailingTownRef.current.value) {
+      errors["editMailingTown"] = "Club Mailing Town is required";
+    }
+    if (!clubMailingProvinceRef.current.value) {
+      errors["editMailingProvince"] = "Club Mailing Province is required";
+    }
+    if (!clubTourismRegionRef.current.value) {
+      errors["editTourismRegion"] = "Club Tourism Region is required";
+    }
+    if (!clubMainPhoneRef.current.value) {
+      errors["editMainPhone"] = "Club Main Phone is required";
+    }
+    if (!clubGeneralEmailRef.current.value) {
+      errors["editGeneralEmail"] = "Club General Email is required";
+    }
+    if (!clubWebsiteRef.current.value) {
+      errors["editWebsite"] = "Club Website is required";
+    }
+    if (!clubBCSNumberRef.current.value) {
+      errors["editBCSNumber"] = "Club BC Society Number is required";
+    }
+
+    if (!/^[\w.-]+@[\w.-]+\.\w+$/.test(clubGeneralEmailRef.current.value)) {
+      errors["newClubGeneralEmail"] = "Please enter a valid email";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setEditErrorsMessages(errors);
+      return;
+    }
+
+    setEditErrorsMessages({});
     setPostingEditClub(true);
   };
 
@@ -307,8 +356,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
               id="clubsProfileContainer"
               className={
                 filteredClubs.length >= 2
-                  ? 
-                  "grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 xl:gap-x-8 flex justify-center items-center"
+                  ? "grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 xl:gap-x-8 flex justify-center items-center"
                   : "flex justify-center items-center"
               }
             >
@@ -457,17 +505,23 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 Club Mailing Address
                               </dt>
                               {editingClub === club[0] ? (
-                                <input
-                                  className="border text-sm rounded-full w-[180px] p-1"
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      "Club Mailing Address",
-                                      e.target.value,
-                                      club
-                                    )
-                                  }
-                                  defaultValue={club[15] || ""}
-                                />
+                                <div className="flex flex-col items-end">
+                                  <input
+                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    ref={clubMailingAddressRef}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        "Club Mailing Address",
+                                        e.target.value,
+                                        club
+                                      )
+                                    }
+                                    defaultValue={club[15] || ""}
+                                  />
+                                  <span className="text-red-500">
+                                    {editErrorsMessages["editMailingAddress"]}
+                                  </span>
+                                </div>
                               ) : (
                                 <dd className="flex items-start gap-x-2">
                                   <div className="font-medium text-gray-900">
@@ -481,17 +535,23 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 Club Mailing Town
                               </dt>
                               {editingClub === club[0] ? (
-                                <input
-                                  className="border text-sm rounded-full w-[180px] p-1"
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      "Club Mailing Town",
-                                      e.target.value,
-                                      club
-                                    )
-                                  }
-                                  defaultValue={club[16] || ""}
-                                />
+                                <div className="flex flex-col items-end">
+                                  <input
+                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    ref={clubMailingTownRef}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        "Club Mailing Town",
+                                        e.target.value,
+                                        club
+                                      )
+                                    }
+                                    defaultValue={club[16] || ""}
+                                  />
+                                  <span className="text-red-500">
+                                    {editErrorsMessages["editMailingTown"]}
+                                  </span>
+                                </div>
                               ) : (
                                 <dd className="flex items-start gap-x-2">
                                   <div className="font-medium text-gray-900">
@@ -505,17 +565,23 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 Club Mailing Province
                               </dt>
                               {editingClub === club[0] ? (
-                                <input
-                                  className="border text-sm rounded-full w-[180px] p-1"
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      "Club Mailing Province",
-                                      e.target.value,
-                                      club
-                                    )
-                                  }
-                                  defaultValue={club[17] || ""}
-                                />
+                                <div className="flex flex-col items-end">
+                                  <input
+                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    ref={clubMailingProvinceRef}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        "Club Mailing Province",
+                                        e.target.value,
+                                        club
+                                      )
+                                    }
+                                    defaultValue={club[17] || ""}
+                                  />
+                                  <span className="text-red-500">
+                                    {editErrorsMessages["editMailingProvince"]}
+                                  </span>
+                                </div>
                               ) : (
                                 <dd className="flex items-start gap-x-2">
                                   <div className="font-medium text-gray-900">
@@ -532,17 +598,23 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 Club Mailing Address
                               </dt>
                               {editingClub === club[0] ? (
-                                <input
-                                  className="border text-sm rounded-full w-[180px] p-1"
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      "Club Mailing Address",
-                                      e.target.value,
-                                      club
-                                    )
-                                  }
-                                  defaultValue={club[16] || ""}
-                                />
+                                <div className="flex flex-col items-end">
+                                  <input
+                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    ref={clubMailingAddressRef}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        "Club Mailing Address",
+                                        e.target.value,
+                                        club
+                                      )
+                                    }
+                                    defaultValue={club[16] || ""}
+                                  />
+                                  <span className="text-red-500">
+                                    {editErrorsMessages["editMailingAddress"]}
+                                  </span>
+                                </div>
                               ) : (
                                 <dd className="flex items-start gap-x-2">
                                   <div className="font-medium text-gray-900">
@@ -556,17 +628,23 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 Club Mailing Town
                               </dt>
                               {editingClub === club[0] ? (
-                                <input
-                                  className="border text-sm rounded-full w-[180px] p-1"
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      "Club Mailing Town",
-                                      e.target.value,
-                                      club
-                                    )
-                                  }
-                                  defaultValue={club[17] || ""}
-                                />
+                                <div className="flex flex-col items-end">
+                                  <input
+                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    ref={clubMailingTownRef}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        "Club Mailing Town",
+                                        e.target.value,
+                                        club
+                                      )
+                                    }
+                                    defaultValue={club[17] || ""}
+                                  />
+                                  <span className="text-red-500">
+                                    {editErrorsMessages["editMailingTown"]}
+                                  </span>
+                                </div>
                               ) : (
                                 <dd className="flex items-start gap-x-2">
                                   <div className="font-medium text-gray-900">
@@ -580,17 +658,23 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 Club Mailing Province
                               </dt>
                               {editingClub === club[0] ? (
-                                <input
-                                  className="border text-sm rounded-full w-[180px] p-1"
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      "Club Mailing Province",
-                                      e.target.value,
-                                      club
-                                    )
-                                  }
-                                  defaultValue={club[18] || ""}
-                                />
+                                <div className="flex flex-col items-end">
+                                  <input
+                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    ref={clubMailingProvinceRef}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        "Club Mailing Province",
+                                        e.target.value,
+                                        club
+                                      )
+                                    }
+                                    defaultValue={club[18] || ""}
+                                  />
+                                  <span className="text-red-500">
+                                    {editErrorsMessages["editMailingProvince"]}
+                                  </span>
+                                </div>
                               ) : (
                                 <dd className="flex items-start gap-x-2">
                                   <div className="font-medium text-gray-900">
@@ -604,36 +688,42 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club Tourism Region</dt>
                           {editingClub === club[0] ? (
-                            <select
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club Tourism Region",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={club[2]}
-                            >
-                              <option selected disabled value="">
-                                Select club tourism region
-                              </option>
-                              <option value="Cariboo Chilcotin Coast">
-                                Cariboo Chilcotin Coast
-                              </option>
-                              <option value="Northern">Northern</option>
-                              <option value="Kootenay Rockies">
-                                Kootenay Rockies
-                              </option>
-                              <option value="Thompson Okanagan">
-                                Thompson Okanagan
-                              </option>
-                              <option value="Vancouver Island">
-                                Vancouver Island
-                              </option>
-                              <option value="Vancouver Coast">
-                                Vancouver Coast
-                              </option>
-                            </select>
+                            <div className="flex flex-col items-end">
+                              <select
+                                className="border text-sm rounded-full w-[180px] p-1"
+                                ref={clubTourismRegionRef}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    "Club Tourism Region",
+                                    e.target.value
+                                  )
+                                }
+                                defaultValue={club[2]}
+                              >
+                                <option selected disabled value="">
+                                  Select club tourism region
+                                </option>
+                                <option value="Cariboo Chilcotin Coast">
+                                  Cariboo Chilcotin Coast
+                                </option>
+                                <option value="Northern">Northern</option>
+                                <option value="Kootenay Rockies">
+                                  Kootenay Rockies
+                                </option>
+                                <option value="Thompson Okanagan">
+                                  Thompson Okanagan
+                                </option>
+                                <option value="Vancouver Island">
+                                  Vancouver Island
+                                </option>
+                                <option value="Vancouver Coast">
+                                  Vancouver Coast
+                                </option>
+                              </select>
+                              <span className="text-red-500">
+                                {editErrorsMessages["editTourismRegion"]}
+                              </span>
+                            </div>
                           ) : (
                             <dd className="flex items-start gap-x-2">
                               <div className="font-medium text-gray-900">
@@ -645,16 +735,22 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club Main Phone #</dt>
                           {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club Main Phone",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={club[3]}
-                            />
+                            <div className="flex flex-col items-end">
+                              <input
+                                className="border text-sm rounded-full w-[180px] p-1"
+                                ref={clubMainPhoneRef}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    "Club Main Phone",
+                                    e.target.value
+                                  )
+                                }
+                                defaultValue={club[3]}
+                              />
+                              <span className="text-red-500">
+                                {editErrorsMessages["editMainPhone"]}
+                              </span>
+                            </div>
                           ) : (
                             <dd className="flex items-start gap-x-2">
                               <div className="font-medium text-gray-900">
@@ -666,16 +762,22 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club General Email</dt>
                           {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club General Email",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={club[4]}
-                            />
+                            <div className="flex flex-col items-end">
+                              <input
+                                className="border text-sm rounded-full w-[180px] p-1"
+                                ref={clubGeneralEmailRef}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    "Club General Email",
+                                    e.target.value
+                                  )
+                                }
+                                defaultValue={club[4]}
+                              />
+                              <span className="text-red-500">
+                                {editErrorsMessages["editGeneralEmail"]}
+                              </span>
+                            </div>
                           ) : (
                             <dd className="flex items-start gap-x-2">
                               <div className="font-medium text-gray-900">
@@ -687,16 +789,22 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                         <div className="flex justify-between gap-x-4 py-3">
                           <dt className="text-gray-500">Club Website</dt>
                           {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club Website",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={club[5]}
-                            />
+                            <div className="flex flex-col items-end">
+                              <input
+                                className="border text-sm rounded-full w-[180px] p-1"
+                                ref={clubWebsiteRef}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    "Club Website",
+                                    e.target.value
+                                  )
+                                }
+                                defaultValue={club[5]}
+                              />
+                              <span className="text-red-500">
+                                {editErrorsMessages["editWebsite"]}
+                              </span>
+                            </div>
                           ) : (
                             <dd className="flex items-start gap-x-2">
                               <div className="font-medium text-gray-900">
@@ -710,16 +818,22 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             Club BC Society Number
                           </dt>
                           {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club BC Society Number",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={club[6]}
-                            />
+                            <div className="flex flex-col items-end">
+                              <input
+                                className="border text-sm rounded-full w-[180px] p-1"
+                                ref={clubBCSNumberRef}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    "Club BC Society Number",
+                                    e.target.value
+                                  )
+                                }
+                                defaultValue={club[6]}
+                              />
+                              <span className="text-red-500">
+                                {editErrorsMessages["editBCSNumber"]}
+                              </span>
+                            </div>
                           ) : (
                             <dd className="flex items-start gap-x-2">
                               <div className="font-medium text-gray-900">
@@ -745,6 +859,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 ); // Set dateModified to true
                               }}
                               className="border text-sm rounded-full w-[180px] p-1"
+                              ref={clubFEYDRef}
                               placeholderText="Insert effective date"
                             />
                           ) : (

@@ -226,9 +226,10 @@ const AddDirectorModal = ({
   };
 
   async function checkIfUserExists() {
+    let clubName = submitAddDirector();
     let url =
       "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=checkIfUserExists&email=" +
-      memberEmailRef.current.value;
+      memberEmailRef.current.value + "&clubName=" + encodeURIComponent(clubName);
 
     let response = await fetch(url);
     let json = await response.json();
