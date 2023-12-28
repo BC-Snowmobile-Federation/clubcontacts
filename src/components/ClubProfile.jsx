@@ -81,7 +81,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   };
 
   const deleteClub = async (clubName) => {
-    let url = `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=deleteClub&clubName=${clubName}`;
+    let url = `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=deleteClub&clubName=${encodeURIComponent(clubName)}`;
 
     await fetch(url, {
       mode: "no-cors",
@@ -123,8 +123,8 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
       const deletePost = async () => {
         setIsLoadingPost(true);
         await deleteClub(clubToDelete);
-        dispatch(fetchClubData());
         dispatch(fetchData());
+        dispatch(fetchClubData());
         setPostDeleteClub(false);
         setIsLoadingPost(false);
         setMenuVisible(false);
@@ -201,8 +201,6 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
       errors["editGeneralEmail"] = "Please enter a valid email";
     }
 
-    console.log("errors ", errors);
-    console.log("edit errors ", editErrorsMessages);
     if (Object.keys(errors).length > 0) {
       setEditErrorsMessages(errors);
       return;
@@ -268,7 +266,6 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     setOpenAddClubModal(true);
   };
 
-  // let isManager = localStorage.getItem("isManager") == "MANAGER" ? true : false;
   return (
     <div>
       {isBcsf ? (

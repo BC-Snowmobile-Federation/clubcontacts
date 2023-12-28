@@ -37,7 +37,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
   const handleSubmit = () => {
     let errors = {};
     const newClubName = newClubNameRef.current.value;
-    let clubExists = clubData.some((subarray) => subarray[0] === newClubName);
+    let clubExists = clubData.some((subarray) => subarray[0].toLowerCase() === newClubName.toLowerCase());
     if (clubExists) {
       setModalAllowPost(true);
       return;
@@ -171,6 +171,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
         setIsLoadingAddPost(true);
         await postAddClub(addClubData);
         dispatch(fetchClubData());
+        localStorage.setItem(addClubData[0], JSON.stringify({isManager: true}));
         setShouldPostAdd(false);
         setIsLoadingAddPost(false);
         handleCheckGroups();
