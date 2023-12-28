@@ -46,6 +46,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   const [editErrorsMessages, setEditErrorsMessages] = useState({});
 
   const handleEditClick = (clubName) => {
+    setEditErrorsMessages({});
     setEditingClub(clubName);
     setMenuVisible(false);
     //club[7] != "" && club[7] != null ? new Date(club[7]) : null
@@ -168,39 +169,44 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     let errors = {};
 
     if (!clubMailingAddressRef.current.value) {
-      errors["editMailingAddress"] = "Club Mailing Address is required";
+      errors["editMailingAddress"] = "Mailing Address is required";
     }
     if (!clubMailingTownRef.current.value) {
-      errors["editMailingTown"] = "Club Mailing Town is required";
+      errors["editMailingTown"] = "Mailing Town is required";
     }
     if (!clubMailingProvinceRef.current.value) {
-      errors["editMailingProvince"] = "Club Mailing Province is required";
+      errors["editMailingProvince"] = "Mailing Province is required";
     }
     if (!clubTourismRegionRef.current.value) {
-      errors["editTourismRegion"] = "Club Tourism Region is required";
+      errors["editTourismRegion"] = "Tourism Region is required";
     }
     if (!clubMainPhoneRef.current.value) {
-      errors["editMainPhone"] = "Club Main Phone is required";
+      errors["editMainPhone"] = "Main Phone is required";
     }
     if (!clubGeneralEmailRef.current.value) {
-      errors["editGeneralEmail"] = "Club General Email is required";
+      errors["editGeneralEmail"] = "General Email is required";
     }
     if (!clubWebsiteRef.current.value) {
-      errors["editWebsite"] = "Club Website is required";
+      errors["editWebsite"] = "Website is required";
     }
     if (!clubBCSNumberRef.current.value) {
-      errors["editBCSNumber"] = "Club BC Society Number is required";
+      errors["editBCSNumber"] = "BC Society Number is required";
+    }
+
+    if (!editedDate) {
+      errors["editFYED"] = "FY End Date is required";
     }
 
     if (!/^[\w.-]+@[\w.-]+\.\w+$/.test(clubGeneralEmailRef.current.value)) {
-      errors["newClubGeneralEmail"] = "Please enter a valid email";
+      errors["editGeneralEmail"] = "Please enter a valid email";
     }
 
+    console.log("errors ", errors);
+    console.log("edit errors ", editErrorsMessages);
     if (Object.keys(errors).length > 0) {
       setEditErrorsMessages(errors);
       return;
     }
-
     setEditErrorsMessages({});
     setPostingEditClub(true);
   };
@@ -372,7 +378,8 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                         <div className="text-base font-semibold leading-6 text-[#243746]">
                           {club[0]}
                         </div>
-                        {JSON.parse(localStorage.getItem(club[0])).isManager ? (
+                        {JSON.parse(localStorage.getItem(club[0]) || "{}")
+                          .isManager ? (
                           <div className="relative ml-auto">
                             {editingClub === club[0] ? (
                               isLoadingEditClub ? (
@@ -847,21 +854,26 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             Financial Year End Date
                           </dt>
                           {editingClub === club[0] ? (
-                            <DatePicker
-                              name="Financial Year End Date"
-                              type="text"
-                              selected={editedDate}
-                              onChange={(date) => {
-                                setEditedDate(date);
-                                handleInputChange(
-                                  "Financial Year End Date",
-                                  formatDate(date)
-                                ); // Set dateModified to true
-                              }}
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              ref={clubFEYDRef}
-                              placeholderText="Insert effective date"
-                            />
+                            <div className="flex flex-col items-end w-[200px]">
+                              <DatePicker
+                                name="Financial Year End Date"
+                                type="text"
+                                selected={editedDate}
+                                onChange={(date) => {
+                                  setEditedDate(date);
+                                  handleInputChange(
+                                    "Financial Year End Date",
+                                    formatDate(date)
+                                  ); // Set dateModified to true
+                                }}
+                                className="border text-sm rounded-full w-[180px] p-1"
+                                ref={clubFEYDRef}
+                                placeholderText="Insert effective date"
+                              />
+                              <span className="text-red-500">
+                                {editErrorsMessages["editFYED"]}
+                              </span>
+                            </div>
                           ) : (
                             <dd className="flex items-start gap-x-2">
                               <div className="font-medium text-gray-900">
