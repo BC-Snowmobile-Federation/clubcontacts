@@ -36,6 +36,18 @@ const EditDirectorModal = ({
   const [phone, setPhone] = useState("");
   const [phonedSet, setPhonedSet] = useState(false);
 
+  function formatPhoneNumber(phoneNumber) {
+    // Extract numeric digits from the input
+    const digits = phoneNumber.match(/\d+/g)?.join('');
+  
+    if (digits && digits.length === 10) {
+      // Format and return the phone number
+      return `(${digits.substring(0, 3)}) ${digits.substring(3, 6)}-${digits.substring(6)}`;
+    } else {
+      return "";
+    }
+  }
+
   const [formData, setFormData] = useState({
     memberName: member[0] || "",
     memberLastName: member[1] || "",
@@ -73,7 +85,7 @@ const EditDirectorModal = ({
         setStartDate(new Date(member[6]));
       }
       if (member && !phonedSet) {
-        setPhone(member[4])
+        setPhone(formatPhoneNumber(member[4]))
       }
     }
     if (dateModified) {
