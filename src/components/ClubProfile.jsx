@@ -114,7 +114,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     });
 
     if (filtered.length != 0) {
-      console.log(filtered[0].length);
+      console.log("");
     }
 
     setFilteredClubs(filtered);
