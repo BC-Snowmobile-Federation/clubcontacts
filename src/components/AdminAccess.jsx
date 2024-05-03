@@ -278,13 +278,6 @@ const AdminAccess = () => {
                       "Request access"
                     )}
                   </button>
-                  <button
-                    onClick={goToDashboard}
-                    id="requestAccess"
-                    className="relative flex mt-2 justify-center items-center montserrat w-60 h-[42px] bg-white text-[#243746] border border-[#243746] rounded-full shadow-md px-6 py-2 text-sm font-medium hover:bg-[#4F5664] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                  >
-                    Go to Dashboard
-                  </button>
                 </div>
               </>
             )}
