@@ -162,7 +162,7 @@ const AdminAccess = () => {
                     <option selected disabled value="">
                       Select club
                     </option>
-                    {showClubs.map((el) => (
+                    {clubs.map((el) => (
                       <option key={el} value={el}>
                         {el}
                       </option>
