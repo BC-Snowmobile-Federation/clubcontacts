@@ -19,6 +19,7 @@ const AdminAccess = () => {
   const clubToMakeAdmin = useRef();
   const userRequestAdmin = useRef();
   const userFullName = useRef();
+  const userPhoneNum = useRef()
 
   const navigate = useNavigate();
 
@@ -43,6 +44,7 @@ const AdminAccess = () => {
 
   async function request() {
     let clubToRequest = clubToMakeAdmin.current.value;
+    let userPhoneNumber = userPhoneNum.current.value;
     let url = `https://script.google.com/macros/s/AKfycbz0voHFfq9AWnCqtwKKBdHDHFmdGrnbvUAiqdYY6H42T1YP-slsOKT1nzENqCR1dul5/exec`;
     let params;
     let errors = {};
@@ -51,13 +53,13 @@ const AdminAccess = () => {
       let user = userData.name;
       params = `action=requestAccess&club=${encodeURI(
         clubToRequest
-      )}&user=${encodeURI(user)}&email=${encodeURI(email)}`;
+      )}&user=${encodeURI(user)}&email=${encodeURI(email)}&phone=${encodeURI(userPhoneNumber)}`;
     } else {
       let userRequest = userRequestAdmin.current.value;
       let fullName = userFullName.current.value;
       params = `action=requestAccess&club=${encodeURI(
         clubToRequest
-      )}&user=${encodeURI(fullName)}&email=${encodeURI(userRequest)}`;
+      )}&user=${encodeURI(fullName)}&email=${encodeURI(userRequest)}&phone=${encodeURI(userPhoneNumber)}`;
       if (userRequest === "") {
         errors["userAdmin"] = "Please, insert your email";
       }
@@ -69,6 +71,10 @@ const AdminAccess = () => {
 
     if (clubToRequest === "") {
       errors["clubToRequest"] = "Please, select a club";
+    }
+
+    if (userPhoneNumber === "") {
+      errors["userPhoneNum"] = "Please, insert you phone number"
     }
 
     if (Object.keys(errors).length > 0) {
@@ -102,8 +108,8 @@ const AdminAccess = () => {
       <div
         className={
           userData
-            ? "bg-white shadow-xl h-[24rem] rounded-lg p-6"
-            : "bg-white shadow-xl h-[38rem] rounded-lg p-6"
+            ? "bg-white shadow-xl h-[32rem] rounded-lg p-6"
+            : "bg-white shadow-xl h-[42rem] rounded-lg p-6"
         }
       >
         <div className="flex-grow w-[500px] flex items-center justify-center">
@@ -150,6 +156,22 @@ const AdminAccess = () => {
             ) : showClubs.length >= 1 && userData ? (
               <div className="flex flex-col items-center justify-center mt-4">
                 <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
+                    <label className="text-left montserrat text-gray-700">
+                      Phone Number:
+                    </label>
+                    <input
+                      ref={userPhoneNum}
+                      name="userFullName"
+                      id="userFullName"
+                      type="text"
+                      className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
+                      placeholder="Phone Number of the user you want to make admin"
+                    />
+                    <span className="text-red-500 italic -mt-2 ml-1">
+                      {errorMessages["userPhoneNum"]}
+                    </span>
+                  </div>
+                <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
                   <label className="text-left montserrat text-gray-700">
                     Choose the club you want admin access:
                   </label>
@@ -162,7 +184,7 @@ const AdminAccess = () => {
                     <option selected disabled value="">
                       Select club
                     </option>
-                    {clubs.map((el) => (
+                    {[...clubs].sort().map((el) => (
                       <option key={el} value={el}>
                         {el}
                       </option>
@@ -229,10 +251,26 @@ const AdminAccess = () => {
                       id="userFullName"
                       type="text"
                       className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
-                      placeholder="Email of the user you want to make admin"
+                      placeholder="Full Name of the user you want to make admin"
                     />
                     <span className="text-red-500 italic -mt-2 ml-1">
                       {errorMessages["username"]}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
+                    <label className="text-left montserrat text-gray-700">
+                      Phone Number:
+                    </label>
+                    <input
+                      ref={userPhoneNum}
+                      name="userFullName"
+                      id="userFullName"
+                      type="text"
+                      className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
+                      placeholder="Phone Number of the user you want to make admin"
+                    />
+                    <span className="text-red-500 italic -mt-2 ml-1">
+                      {errorMessages["userPhoneNum"]}
                     </span>
                   </div>
                   <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
@@ -248,7 +286,7 @@ const AdminAccess = () => {
                       <option selected disabled value="">
                         Select club
                       </option>
-                      {clubs.map((el) => (
+                      {[...clubs].sort().map((el) => (
                         <option key={el} value={el}>
                           {el}
                         </option>
