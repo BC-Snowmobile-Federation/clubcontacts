@@ -8,6 +8,7 @@ const initialState = {
   clubs: [],
 };
 
+// esto es la data de cada una de las personas.
 export const fetchData = createAsyncThunk("getData/fetchData", async () => {
   let email = JSON.parse(localStorage.getItem("userEmail"));
   let user = email.email;
@@ -15,6 +16,7 @@ export const fetchData = createAsyncThunk("getData/fetchData", async () => {
     "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=getAllData&activeUser=" + user;
   const response = await fetch(url);
   const data = await response.json();
+  // console.log(data.response)
   return data.response;
 });
 

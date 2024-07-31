@@ -154,7 +154,7 @@ const Dashboard = () => {
 
     setFilteredData(newFilteredData);
   }, [
-    data,
+    // data,
     searchQuery,
     selectedRole,
     selectedClub,

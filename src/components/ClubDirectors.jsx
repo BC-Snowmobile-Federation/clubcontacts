@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchData } from "../../redux/slice";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import EditDirectorModal from "./EditDirectorModal";
-import SaveChangesModal from "./SaveChangesModal";
-import ExistingUserModal from "./ExistingUserModal";
+import { useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchData } from '../../redux/slice';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import EditDirectorModal from './EditDirectorModal';
+import SaveChangesModal from './SaveChangesModal';
+import ExistingUserModal from './ExistingUserModal';
 
 // const groupDataById = (data) => {
 //   if (data.length >= 1) {
@@ -26,7 +26,7 @@ import ExistingUserModal from "./ExistingUserModal";
 //   }
 // };
 const groupDataById = (data) => {
-  let clubsString = localStorage.getItem("clubs");
+  let clubsString = localStorage.getItem('clubs');
   let clubs = JSON.parse(clubsString);
 
   if (data.length >= 1) {
@@ -40,7 +40,7 @@ const groupDataById = (data) => {
     }, {});
     clubs.forEach((club) => {
       if (!resp[club]) {
-        resp[club] = [["", "", "", club, "", "", "", "", "", "", ""]];
+        resp[club] = [['', '', '', club, '', '', '', '', '', '', '']];
       }
     });
     return resp;
@@ -48,7 +48,7 @@ const groupDataById = (data) => {
     let resp = [];
     clubs.forEach((club) => {
       if (!resp[club]) {
-        resp[club] = [["", "", "", club, "", "", "", "", "", "", ""]];
+        resp[club] = [['', '', '', club, '', '', '', '', '', '', '']];
       }
     });
     return resp;
@@ -88,7 +88,7 @@ const AddDirectorModal = ({
   const [startDate, setStartDate] = useState(new Date());
   const [dateSelected, setDateSelected] = useState(false);
   const [showExistingUser, setShowExistingUser] = useState(false);
-  const [statusUserFound, setStatusUserFound] = useState("");
+  const [statusUserFound, setStatusUserFound] = useState('');
   const [existingInactiveUser, setExistingInactiveUser] = useState(false);
   const [inactiveCheckedRole, setInactiveCheckedRole] = useState([]);
   const [isLoadingInactive, setIsLoadingInactive] = useState(false);
@@ -96,14 +96,14 @@ const AddDirectorModal = ({
   const dispatch = useDispatch();
 
   const roles = [
-    "President",
-    "Vice President",
-    "Secretary",
-    "Treasurer",
-    "Past President",
-    "Membership Director",
-    "Director at Large",
-    "Other",
+    'President',
+    'Vice President',
+    'Secretary',
+    'Treasurer',
+    'Past President',
+    'Membership Director',
+    'Director at Large',
+    'Other',
   ];
 
   const handleSubmit = async () => {
@@ -191,7 +191,7 @@ const AddDirectorModal = ({
             if (ref === memberRoleRef) {
               return role;
             }
-            return element.type === "checkbox"
+            return element.type === 'checkbox'
               ? element.checked
               : element.value;
           } else {
@@ -205,7 +205,7 @@ const AddDirectorModal = ({
       const localHasManager = formDataForRole.pop();
       const localMemberData = [...formDataForRole];
       localMemberData.splice(5, 0, startDate);
-      localMemberData.splice(7, 0, "Active");
+      localMemberData.splice(7, 0, 'Active');
       localMemberData.push(isClubAdmin);
 
       setIsLoading(true);
@@ -228,8 +228,10 @@ const AddDirectorModal = ({
   async function checkIfUserExists() {
     let clubName = submitAddDirector();
     let url =
-      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=checkIfUserExists&email=" +
-      memberEmailRef.current.value + "&clubName=" + encodeURIComponent(clubName);
+      'https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=checkIfUserExists&email=' +
+      memberEmailRef.current.value +
+      '&clubName=' +
+      encodeURIComponent(clubName);
 
     let response = await fetch(url);
     let json = await response.json();
@@ -238,12 +240,12 @@ const AddDirectorModal = ({
 
   const handleCheckIfUserExists = async () => {
     await checkIfUserExists().then((resp) => {
-      if (resp.status == "Active") {
-        setStatusUserFound("Active");
+      if (resp.status == 'Active') {
+        setStatusUserFound('Active');
         setShowExistingUser(true);
         setIsLoading(false);
-      } else if (resp.status == "Inactive") {
-        setStatusUserFound("Inactive");
+      } else if (resp.status == 'Inactive') {
+        setStatusUserFound('Inactive');
         let checkedRoles = roles.filter(
           (role) => document.getElementById(role).checked
         );
@@ -284,7 +286,7 @@ const AddDirectorModal = ({
             if (ref === memberRoleRef) {
               return role;
             }
-            return element.type === "checkbox"
+            return element.type === 'checkbox'
               ? element.checked
               : element.value;
           } else {
@@ -298,7 +300,7 @@ const AddDirectorModal = ({
       const localHasManager = formDataForRole.pop();
       const localMemberData = [...formDataForRole];
       localMemberData.splice(5, 0, startDate);
-      localMemberData.splice(7, 0, "Active");
+      localMemberData.splice(7, 0, 'Active');
       localMemberData.push(isClubAdmin);
 
       setIsLoading(true);
@@ -314,7 +316,7 @@ const AddDirectorModal = ({
 
     await dispatch(fetchData()).then(() => {
       setIsLoading(false);
-      setIsEditing(false);
+      // setIsEditing(false);
       setOpenModal(false);
     });
   };
@@ -342,7 +344,7 @@ const AddDirectorModal = ({
 
       if (element == null) {
         if (!startDate) {
-          newErrorMessages["Effective date"] = "Effective date is required";
+          newErrorMessages['Effective date'] = 'Effective date is required';
           hasErrors = true;
         }
         continue;
@@ -353,35 +355,35 @@ const AddDirectorModal = ({
       );
 
       if (
-        element.tagName.toLowerCase() === "select" &&
+        element.tagName.toLowerCase() === 'select' &&
         element.selectedIndex === 0
       ) {
         newErrorMessages[element.name] = `${element.name} is required`;
         hasErrors = true;
-      } else if (element.type !== "checkbox" && element.value.trim() === "") {
+      } else if (element.type !== 'checkbox' && element.value.trim() === '') {
         newErrorMessages[element.name] = `${element.name} is required`;
         hasErrors = true;
       } else if (!isAnyRoleChecked) {
-        newErrorMessages["Role"] = "At least one role must be selected";
+        newErrorMessages['Role'] = 'At least one role must be selected';
         hasErrors = true;
       }
 
       if (
-        element.name === "Phone number" ||
-        element.id === "phoneNumberInput"
+        element.name === 'Phone number' ||
+        element.id === 'phoneNumberInput'
       ) {
         // Adjust the condition as per the name or id of your phone number input
         const phoneNumberPattern = /^\(\d{3}\) \d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
         if (!phoneNumberPattern.test(element.value)) {
           newErrorMessages[element.name] =
-            "Phone number format should be (xxx) yyy-zzzz";
+            'Phone number format should be (xxx) yyy-zzzz';
           hasErrors = true;
         }
       }
     }
 
     if (!dateSelected && startDate == null) {
-      newErrorMessages["Effective date"] = "Effective date is required";
+      newErrorMessages['Effective date'] = 'Effective date is required';
       hasErrors = true;
     }
 
@@ -420,17 +422,17 @@ const AddDirectorModal = ({
 
   const postInactiveUser = async (inactiveEmail, inactiveRole) => {
     let url =
-      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec";
+      'https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec';
     const options = {
-      method: "post",
-      mode: "no-cors",
+      method: 'post',
+      mode: 'no-cors',
       body: JSON.stringify({
-        action: "postInactiveUser",
+        action: 'postInactiveUser',
         inactiveEmail: inactiveEmail,
         inactiveRole: inactiveRole,
       }),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     };
 
@@ -439,29 +441,29 @@ const AddDirectorModal = ({
 
   const postDirectorData = async (clubName, memberData, hasManager) => {
     let url =
-      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec"; // Your URL here
+      'https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec'; // Your URL here
     const options = {
-      method: "post",
-      mode: "no-cors",
+      method: 'post',
+      mode: 'no-cors',
       body: JSON.stringify({
-        action: "addMemberToSheet",
+        action: 'addMemberToSheet',
         memberData: memberData,
         clubName: clubName,
         hasManager: hasManager,
       }),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     };
 
     await fetch(url, options);
   };
 
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState('');
 
   const normalizeInput = (value, previousValue) => {
     if (!value) return value;
-    const currentValue = value.replace(/[^\d]/g, "");
+    const currentValue = value.replace(/[^\d]/g, '');
     const cvLength = currentValue.length;
 
     if (!previousValue || value.length > previousValue.length) {
@@ -483,7 +485,7 @@ const AddDirectorModal = ({
   return (
     <div
       id="addMemberModal"
-      className="relative z-10 ml-[40px]"
+      className="relative z-10"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
@@ -491,8 +493,8 @@ const AddDirectorModal = ({
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all w-[600px] sm:my-8 sm:p-6">
-            <div className="mt-3 text-center sm:mt-5 text-sm montserrat">
+          <div className="relative transform overflow-hidden rounded-lg bg-white px-8 text-left shadow-xl transition-all w-[500px] ml-0 lg:ml-[23%] sm:my-8">
+            <div className="mt-3 text-center sm:mt-5 montserrat text-gray-900">
               {showExistingUser && (
                 <ExistingUserModal
                   statusUserFound={statusUserFound}
@@ -504,46 +506,51 @@ const AddDirectorModal = ({
                 />
               )}
               <h3
-                className=" font-semibold lg:text-sm leading-6 text-gray-900"
+                className="font-medium text-lg md:text-2xl leading-6"
                 id="modal-title"
               >
                 Add Director
               </h3>
-              <p>Complete this fields to add new director.</p>
             </div>
 
-            <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
-              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
-                Name{" "}
-              </label>
-              <input
-                ref={memberNameRef}
-                name="Name"
-                id="memberName"
-                type="text"
-                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
-                placeholder="Insert name"
-              />
-              <span className="text-red-500">{errorMessages["Name"]}</span>
+            <div className="flex gap-2">
+              <div className="flex flex-col w-full">
+                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                  Name{' '}
+                </label>
+                <input
+                  ref={memberNameRef}
+                  name="Name"
+                  id="memberName"
+                  type="text"
+                  className="bg-white w-full rounded-md border border-gray-400 px-2 py-1.5 mt-1"
+                  placeholder="Insert name"
+                />
+                <span className="text-red-600 text-xs mt-1 ml-2">
+                  {errorMessages['Name']}
+                </span>
+              </div>
+
+              <div className="flex flex-col w-full">
+                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                  Last Name{' '}
+                </label>
+                <input
+                  ref={memberLastNameRef}
+                  name="Last Name"
+                  id="memberLastName"
+                  type="text"
+                  className="bg-white w-full rounded-md border border-gray-400 px-2 py-1.5 mt-1"
+                  placeholder="Insert last name"
+                />
+                <span className="text-red-600 text-xs mt-1 ml-2">
+                  {errorMessages['Last Name']}
+                </span>
+              </div>
             </div>
 
-            <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
-              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
-                Last Name{" "}
-              </label>
-              <input
-                ref={memberLastNameRef}
-                name="Last Name"
-                id="memberLastName"
-                type="text"
-                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
-                placeholder="Insert last name"
-              />
-              <span className="text-red-500">{errorMessages["Last Name"]}</span>
-            </div>
-
-            <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
-              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
+            <div className="flex flex-col w-full">
+              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                 Email
               </label>
               <input
@@ -551,15 +558,17 @@ const AddDirectorModal = ({
                 name="Email"
                 id="memberEmail"
                 type="text"
-                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
+                className="bg-white w-full rounded-md border border-gray-400 px-2 py-1.5 mt-1"
                 placeholder="Insert email"
               />
-              <span className="text-red-500">{errorMessages["Email"]}</span>
+              <span className="text-red-600 text-xs mt-1 ml-2">
+                {errorMessages['Email']}
+              </span>
             </div>
 
-            <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
-              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
-                Phone Number{" "}
+            <div className="flex flex-col w-full">
+              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                Phone Number{' '}
               </label>
               <input
                 ref={memberPhoneNumberRef}
@@ -567,137 +576,151 @@ const AddDirectorModal = ({
                 id="memberPhoneNumber"
                 type="text"
                 value={phone}
-                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
+                className="bg-white w-full rounded-md border border-gray-400 px-2 py-1.5 mt-1"
                 placeholder="(xxx) xxx-xxxx"
                 onChange={handleFormatNumber}
               />
-              <span className="text-red-500">
-                {errorMessages["Phone number"]}
+              <span className="text-red-600 text-xs mt-1 ml-2">
+                {errorMessages['Phone number']}
               </span>
             </div>
 
-            <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  lg:text-sm">
-              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
-                Gender{" "}
-              </label>
-              <select
-                ref={genderRef}
-                id="gender"
-                name="Gender"
-                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
-              >
-                <option value="" disabled selected>
-                  Select gender
-                </option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-              <span className="text-red-500">{errorMessages["Gender"]}</span>
-            </div>
-
-            <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  ">
-              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
-                Effective Date
-              </label>
-              <DatePicker
-                name="Effective date"
-                id="memberBirthdate"
-                customInput={<input ref={memberBirthdateRef} />}
-                type="text"
-                selected={startDate}
-                onChange={(date) => {
-                  setStartDate(date);
-                  setDateSelected(!!date);
-                }}
-                className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px]"
-                placeholderText="Insert effective date"
-              />
-              <span className="text-red-500">
-                {errorMessages["Effective date"]}
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-3 w-full py-2 text-gray-500 px-1 outline-none ">
-              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
-                Role{" "}
-              </label>
-              {roles.map((el, e) => (
-                <div
-                  key={e}
-                  className="flex mt-2 flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none"
+            <div className="flex gap-2">
+              <div className="flex flex-col w-full">
+                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                  Gender{' '}
+                </label>
+                <select
+                  ref={genderRef}
+                  id="gender"
+                  name="Gender"
+                  className="bg-white w-full rounded-md border border-gray-400 px-2 py-1.5 mt-1"
                 >
-                  <div className="relative flex gap-x-3">
-                    <div className="flex h-6 items-center">
-                      <input
-                        ref={memberRoleRef}
-                        id={el}
-                        name="Role"
-                        type="checkbox"
-                        className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
-                      />
-                    </div>
-                    <div className="text-sm leading-6">
-                      <p className="text-gray-500 sm:text-2xl lg:text-base">
-                        {el}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <span className="text-red-500">{errorMessages["Role"]}</span>
-            </div>
-            <div className="flex mt-4 flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none">
-              <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm">
-                Access{" "}
-              </label>
-              <div className="relative flex gap-x-3">
-                <div className="flex h-6 items-center">
-                  <input
-                    ref={ameliaAdminRef}
-                    id="ameliaAdmin"
-                    name="Is Amilia admin"
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
-                  />
-                  <span className="text-red-500">
-                    {errorMessages["Is Amilia admin"]}
-                  </span>
-                </div>
-                <div className="text-sm leading-6">
-                  <p className="text-gray-500 sm:text-2xl lg:text-base">
-                    Amilia Admin
-                  </p>
-                </div>
+                  <option value="" disabled selected>
+                    Select gender
+                  </option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                <span className="text-red-600 text-xs mt-1 ml-2">
+                  {errorMessages['Gender']}
+                </span>
+              </div>
+
+              <div className="flex flex-col w-full">
+                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                  Effective Date
+                </label>
+                <DatePicker
+                  name="Effective date"
+                  id="memberBirthdate"
+                  customInput={<input ref={memberBirthdateRef} />}
+                  type="text"
+                  selected={startDate}
+                  onChange={(date) => {
+                    setStartDate(date);
+                    setDateSelected(!!date);
+                  }}
+                  className="bg-white w-full rounded-md border border-gray-400 px-2 py-1.5 mt-1"
+                  placeholderText="Insert effective date"
+                />
+                <span className="text-red-600 text-xs mt-1 ml-2">
+                  {errorMessages['Effective date']}
+                </span>
               </div>
             </div>
 
-            <div className="flex mt-4 flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none">
-              <div className="relative flex gap-x-3">
-                <div className="flex h-6 items-center">
-                  <input
-                    ref={managerAccessRef}
-                    id="managerAccess"
-                    name="Club admin"
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
-                  />
-                  <span className="text-red-500">
-                    {errorMessages["Club admin"]}
-                  </span>
+            <div className="flex flex-col w-full">
+              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                Role{' '}
+              </label>
+              <div className="grid grid-cols-2">
+                {roles.map((el, e) => (
+                  <div
+                    key={e}
+                    className="flex mt-2 flex-col gap-4 w-full py-0.5 outline-none"
+                  >
+                    <div className="relative flex gap-x-3">
+                      <div className="flex h-6 items-center ml-2">
+                        <input
+                          ref={memberRoleRef}
+                          id={el}
+                          name="Role"
+                          type="checkbox"
+                          className="h-5 w-5 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600 cursor-pointer"
+                        />
+                      </div>
+                      <div className="leading-6">
+                        <p className="sm:text-2xl lg:text-base">{el}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <span className="text-red-600 text-xs mt-1 ml-2">
+                {errorMessages['Role']}
+              </span>
+            </div>
+
+            <div className="flex flex-col w-full">
+              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                Access{' '}
+              </label>
+              <div className="grid grid-cols-2 mt-2">
+                <div className="relative flex gap-x-3">
+                  <div className="flex items-center ml-2">
+                    <input
+                      ref={ameliaAdminRef}
+                      id="ameliaAdmin"
+                      name="Is Amilia admin"
+                      type="checkbox"
+                      className="h-5 w-5 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
+                    />
+                    <span className="text-red-600 text-xs mt-1 ml-2">
+                      {errorMessages['Is Amilia admin']}
+                    </span>
+                  </div>
+                  <div className="text-sm leading-6">
+                    <p className="sm:text-2xl lg:text-base">Amilia Admin</p>
+                  </div>
                 </div>
-                <div className="text-sm leading-6">
-                  <p className="text-gray-500 sm:text-2xl lg:text-base">
-                    Club Admin
-                  </p>
+
+                <div className="flex flex-col w-full">
+                  <div className="relative flex gap-x-3">
+                    <div className="flex items-center ml-2">
+                      <input
+                        ref={managerAccessRef}
+                        id="managerAccess"
+                        name="Club admin"
+                        type="checkbox"
+                        className="h-5 w-5 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
+                      />
+                      <span className="text-red-600 text-xs mt-1 ml-2">
+                        {errorMessages['Club admin']}
+                      </span>
+                    </div>
+                    <div className="leading-6">
+                      <p className="sm:text-2xl lg:text-base">Club Admin</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div
               id="submitButtonsContainer"
-              className="mt-5 flex justify-center"
+              className="mt-10 mb-4 flex gap-4 justify-center"
             >
+              <button
+                disabled={isLoading}
+                onClick={handleCloseModal}
+                id="closeAddModal"
+                type="button"
+                className="w-[120px] rounded-lg bg-transparent px-3 py-2 border-2 border-red-600 text-base font-semibold text-gray-900 shadow-sm hover:bg-red-600 hover:text-white transition-all"
+              >
+                Close
+              </button>
               <button
                 disabled={activeSaveButton}
                 onClick={handleAllSubmit}
@@ -705,33 +728,22 @@ const AddDirectorModal = ({
                 type="button"
                 className={
                   activeSaveButton
-                    ? "w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787] hover:text-[#535787]"
-                    : "w-[120px] mr-2 rounded-lg bg-[#243570] px-3 py-2 text-sm font-semibold lg:text-sm text-white shadow-sm hover:bg-[#535787]"
+                    ? 'w-[120px] mr-2 rounded-lg bg-[#535787] px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-[#3C3F63] hover:text-[#535787] transition-all'
+                    : 'w-[120px] mr-2 rounded-lg bg-[#535787] px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-[#3C3F63] transition-all'
                 }
               >
                 {isLoading ? (
                   <div
-                    className="spinner inline-block w-2 h-2 ml-2 border-t-2 border-white border-solid rounded-full animate-spin"
-                    style={{
-                      borderColor: "#535787",
-                      borderRightColor: "transparent",
-                      width: "1.2rem",
-                      height: "1.2rem",
-                    }}
-                  ></div>
+                    className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+                    role="status"
+                  >
+                    <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                      Loading...
+                    </span>
+                  </div>
                 ) : (
-                  "Save"
+                  'Save'
                 )}
-              </button>
-
-              <button
-                disabled={isLoading}
-                onClick={handleCloseModal}
-                id="closeAddModal"
-                type="button"
-                className="w-[120px] mr-2 rounded-lg bg-transparent px-3 py-2 border-2 border-[#243570] text-base font-semibold text-[#243570] shadow-sm"
-              >
-                Close
               </button>
             </div>
           </div>
@@ -740,6 +752,8 @@ const AddDirectorModal = ({
     </div>
   );
 };
+
+// Este es el edit mode con el dropdown y el boton para editar a una persona
 
 // eslint-disable-next-line
 const MemberDetail = ({
@@ -767,7 +781,20 @@ const MemberDetail = ({
     (item) => item[7] === dtValue && item[3] === clubName
   );
 
-  const defaultMemberValue = member ? `${member[0]} ${member[1]}` : "";
+  // Filter to get active roles for the member
+  let activeRoles;
+  if (member) {
+    activeRoles = data
+      .filter(
+        (item) =>
+          item[0] === member[0] && // First name matches
+          item[1] === member[1] && // Last name matches
+          item[8] === 'Active' // Role is active
+      )
+      .map((item) => item[7]);
+  }
+
+  const defaultMemberValue = member ? `${member[0]} ${member[1]}` : '';
 
   return (
     <dl className="divide-y divide-gray-500 montserrat">
@@ -782,94 +809,117 @@ const MemberDetail = ({
       ) : (
         <></>
       )}
-      <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-[8rem] sm:px-0">
-        <div className="sm:grid sm:grid-cols-3 sm:gap-[8rem] items-center">
-          <dt
-            className="text-sm font-medium leading-6 text-gray-900 whitespace-nowrap sm:col-start-1 ml-[25px] text-left"
-            data-dthtml-value={dtValue}
-          >
-            {dtValue}
-          </dt>
-        </div>
-        <div className="sm:grid sm:grid-cols-3 sm:gap-[8rem]">
+      <div className="px-4 py-4">
+        <div className="">
           {isEditing && editSelectedClub == clubName ? (
-            <dd
-              id={`${clubName}-${dtValue}-${index}`}
-              data-index={index}
-              className="text-sm leading-6 whitespace-nowrap text-gray-700 sm:col-start-3 text-right flex justify-end"
-            >
-              <select
-                className="ml-4 ring-0 border-transparent text-sm -ml-8 text-right appearance-none border-0 focus:outline-none focus:ring-0 focus:border-none"
-                defaultValue={defaultMemberValue}
-                onChange={(e) => {
-                  handleSelectChange(
-                    clubName,
-                    e.target.value,
-                    defaultMemberValue,
-                    dtValue
-                  );
-                }}
+            <div className="flex justify-between">
+              <dd
+                id={`${clubName}-${dtValue}-${index}`}
+                data-index={index}
+                className="text-sm px-4 leading-6 whitespace-nowrap text-gray-700 sm:col-start-3"
               >
-                <option value="">None</option>
-                {matchingMembers.map((item, idx) => (
-                  <option
-                    key={idx}
-                    value={`${item[0]} ${item[1]}`}
-                  >{`${item[0]} ${item[1]}`}</option>
-                ))}
-                <option value="openAddModal" onClick={handleOpenModal}>
-                  Add director
-                </option>
-              </select>
-            </dd>
+                {member ? member[0] + ' ' + member[1] : ''}
+              </dd>
+              <div>
+                {activeRoles.length > 0 && (
+                  <div className="ml-2 text-gray-600">
+                    ({activeRoles.join(', ')})
+                  </div>
+                )}
+              </div>
+              {isManager &&
+                member &&
+                isEditing &&
+                editSelectedClub == clubName && (
+                  <div className="flex gap-4">
+                    <button onClick={handleOpenEditModal} className="w-5">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      className="w-5 text-red-600"
+                      onClick={() => {
+                        console.log('delete');
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+            </div>
           ) : member ? (
-            <dd
-              id={`${clubName}-${dtValue}-${index}`}
-              data-value={`${member[0]} ${member[1]}`}
-              data-index={index}
-              className="text-sm leading-6 text-gray-900 whitespace-nowrap sm:col-start-3 text-right flex justify-end"
-            >
-              {member[0]} {member[1]}
-            </dd>
+            <div className="flex justify-between px-4">
+              <dt
+                className="text-sm font-medium leading-6 text-gray-900 whitespace-nowrap sm:col-start-1 text-left"
+                data-dthtml-value={dtValue}
+              >
+                {dtValue}
+              </dt>
+
+              <dd
+                id={`${clubName}-${dtValue}-${index}`}
+                data-value={`${member[0]} ${member[1]}`}
+                data-index={index}
+                className="text-sm leading-6 text-gray-900 whitespace-nowrap sm:col-start-3 text-right flex justify-end"
+              >
+                {member[0]} {member[1]}
+              </dd>
+            </div>
           ) : (
-            <dd
-              id={`${clubName}-${dtValue}-${index}`}
-              data-index={index}
-              className="text-sm leading-6 whitespace-nowrap text-gray-700 sm:col-start-3 text-right flex justify-end"
-            ></dd>
+            <div className="flex justify-between px-4">
+              <dt
+                className="text-sm font-medium leading-6 text-gray-900 whitespace-nowrap sm:col-start-1 text-left"
+                data-dthtml-value={dtValue}
+              >
+                {dtValue}
+              </dt>
+              <dd
+                id={`${clubName}-${dtValue}-${index}`}
+                data-index={index}
+                className="text-sm leading-6 whitespace-nowrap text-gray-700 sm:col-start-3 text-right flex justify-end"
+              ></dd>
+            </div>
           )}
         </div>
-
-        {isManager && member && isEditing && editSelectedClub == clubName && (
-          <button onClick={handleOpenEditModal} className="w-5 ml-[54px]">
-            <svg
-              className="h-5 w-5 mt-0.5"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              stroke="#243570"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-              />
-            </svg>
-          </button>
-        )}
       </div>
     </dl>
   );
 };
+
+//
 // eslint-disable-next-line
 const MemberCard = ({
-  // eslint-disable-next-line
-  clubData, // eslint-disable-next-line
-  isManager, // eslint-disable-next-line
-  setOpenModal, // eslint-disable-next-line
-  setSelectedClubName, // eslint-disable-next-line
-  isEditing, // eslint-disable-next-line
-  setIsEditing, // eslint-disable-next-line
+  clubData,
+  isManager,
+  setOpenModal,
+  setSelectedClubName,
+  isEditing,
+  setIsEditing,
   data,
   showModal,
   setShowModal,
@@ -877,24 +927,23 @@ const MemberCard = ({
   btnId,
 }) => {
   const dtValues = [
-    "President",
-    "Vice President",
-    "Secretary",
-    "Treasurer",
-    "Past President",
-    "Membership Director",
-    "Director at Large",
-    "Other",
+    'President',
+    'Vice President',
+    'Secretary',
+    'Treasurer',
+    'Past President',
+    'Membership Director',
+    'Director at Large',
+    'Other',
   ];
 
-  const [editSelectedClub, setEditSelectedClub] = useState("");
+  const [editSelectedClub, setEditSelectedClub] = useState('');
   const [shouldChange, setShouldChange] = useState(false);
   const [isLoadingSelect, setIsLoadingSelect] = useState(false);
   const [isChangingSelect, setIsChangingSelect] = useState(false);
 
   const clubName = clubData[0][3];
-  // eslint-disable-next-line
-  const activeMembers = clubData.filter((el) => el[8] === "Active");
+  const activeMembers = clubData.filter((el) => el[8] === 'Active');
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -906,11 +955,16 @@ const MemberCard = ({
     setEditSelectedClub(clubName);
   };
 
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditSelectedClub('');
+  };
+
   const [selectedChanges, setSelectedChanges] = useState([]);
   const dispatch = useDispatch();
 
   const handleSelectChange = (clubName, newValue, oldValue, dtValue) => {
-    if (newValue == "openAddModal") {
+    if (newValue === 'openAddModal') {
       handleOpenModal();
     } else {
       const changeObj = {
@@ -944,17 +998,17 @@ const MemberCard = ({
 
   const postSelectChanges = async (changes) => {
     let url =
-      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec";
+      'https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec';
 
     const options = {
-      method: "post",
-      mode: "no-cors",
+      method: 'post',
+      mode: 'no-cors',
       body: JSON.stringify({
-        action: "editClubInSheet",
+        action: 'editClubInSheet',
         changes: changes,
       }),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     };
 
@@ -976,22 +1030,25 @@ const MemberCard = ({
     }
   }, [shouldChange, isLoadingSelect, selectedChanges, dispatch]);
 
-  const membersJSX = dtValues.map((dtValue, dtIndex) => {
-    if (dtValue === "Director at Large" || dtValue === "Other") {
-      const membersWithRole = activeMembers.filter(
-        (item) => item[7] === dtValue
-      );
-
-      if (membersWithRole.length === 0) {
-        membersWithRole.push(null);
+  const uniqueMembers = activeMembers.reduce(
+    (acc, member) => {
+      const uniqueKey = `${member[0]}|${member[1]}`; // Create a unique key based on the first two elements
+      if (!acc.seen.has(uniqueKey)) {
+        acc.seen.add(uniqueKey);
+        acc.result.push(member);
       }
+      return acc;
+    },
+    { seen: new Set(), result: [] }
+  ).result;
 
-      return membersWithRole.map((member, memberIndex) => (
+  const membersJSX = editSelectedClub
+    ? uniqueMembers.map((member, index) => (
         <MemberDetail
-          key={`${dtIndex}-${memberIndex}`}
-          dtValue={dtValue}
+          key={`${index}-${member[0]}`}
+          dtValue={member[7]}
           member={member}
-          index={dtIndex + memberIndex}
+          index={index}
           clubName={clubName}
           isManager={isManager}
           isEditing={isEditing}
@@ -1002,69 +1059,123 @@ const MemberCard = ({
           handleChangesSubmit={handleChangesSubmit}
           handleOpenModal={handleOpenModal}
         />
-      ));
-    } else {
-      const member = activeMembers.find((item) => item[7] === dtValue);
-      return (
-        <MemberDetail
-          key={`${dtIndex}-${dtValue}`}
-          dtValue={dtValue}
-          member={member || null}
-          index={dtIndex}
-          clubName={clubName}
-          isManager={isManager}
-          isEditing={isEditing}
-          setIsEditing={setIsEditing}
-          data={data}
-          editSelectedClub={editSelectedClub}
-          handleSelectChange={handleSelectChange}
-          handleChangesSubmit={handleChangesSubmit}
-          handleOpenModal={handleOpenModal}
-        />
-      );
-    }
-  });
+      ))
+    : dtValues.map((dtValue, dtIndex) => {
+        if (dtValue === 'Director at Large' || dtValue === 'Other') {
+          const membersWithRole = activeMembers.filter(
+            (item) => item[7] === dtValue
+          );
+
+          if (membersWithRole.length === 0) {
+            membersWithRole.push(null);
+          }
+
+          return membersWithRole.map((member, memberIndex) => (
+            <MemberDetail
+              key={`${dtIndex}-${memberIndex}`}
+              dtValue={dtValue}
+              member={member}
+              index={dtIndex + memberIndex}
+              clubName={clubName}
+              isManager={isManager}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+              data={data}
+              editSelectedClub={editSelectedClub}
+              handleSelectChange={handleSelectChange}
+              handleChangesSubmit={handleChangesSubmit}
+              handleOpenModal={handleOpenModal}
+            />
+          ));
+        } else {
+          const member = activeMembers.find((item) => item[7] === dtValue);
+
+          return (
+            <MemberDetail
+              key={`${dtIndex}-${dtValue}`}
+              dtValue={dtValue}
+              member={member || null}
+              index={dtIndex}
+              clubName={clubName}
+              isManager={isManager}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+              data={data}
+              editSelectedClub={editSelectedClub}
+              handleSelectChange={handleSelectChange}
+              handleChangesSubmit={handleChangesSubmit}
+              handleOpenModal={handleOpenModal}
+            />
+          );
+        }
+      });
 
   return (
     <div className="mt-8 w-[500px] rounded-xl shadow-2xl border">
-      <div className="flex text-xl px-4 py-5 bg-gray-200 rounded-t-xl justify-between">
-        <h2 className="font-semibold">{clubName}</h2>
+      <div className="flex text-xl px-4 py-4 bg-gray-200 rounded-t-xl justify-between items-center">
+        <h2
+          className={`font-semibold ${
+            isEditing && editSelectedClub === clubName
+              ? 'truncate max-w-[225px]'
+              : ''
+          }`}
+        >
+          {clubName}
+        </h2>
 
         <div className="flex space-x-4">
-          {isEditing && editSelectedClub == clubName ? (
+          {isEditing && editSelectedClub === clubName ? (
             <>
               {isChangingSelect ? (
                 <div className="mt-[2px]">
                   <div
                     className="spinner w-2 h-2 border-t-2 border-white border-solid rounded-full animate-spin"
                     style={{
-                      borderColor: "#535787",
-                      borderRightColor: "transparent",
-                      width: "1.2rem",
-                      height: "1.2rem",
+                      borderColor: '#535787',
+                      borderRightColor: 'transparent',
+                      width: '1.2rem',
+                      height: '1.2rem',
                     }}
                   ></div>
                 </div>
               ) : (
-                <button
-                  className="save-button bg-transparent"
-                  onClick={handleChangesSubmit}
-                >
-                  <p className="font-semibold text-base text-[#535787] cursor-pointer">
-                    Save
-                  </p>
-                </button>
+                <div className="flex items-center gap-4">
+                  <button
+                    className="text-base font-semibold border border-[#535787] px-4 py-1 text-[#535787] rounded-xl hover:bg-[#535787] hover:text-white transition-all"
+                    onClick={handleOpenModal}
+                  >
+                    Add Director
+                  </button>
+                  <button
+                    className="text-base font-semibold border border-red-600 px-4 py-1 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all"
+                    onClick={handleCancelEdit}
+                  >
+                    Cancel
+                  </button>
+                </div>
               )}
             </>
           ) : (
-            isManager === "MANAGER" && (
+            isManager === 'MANAGER' && (
               <button
-                className="edit-button bg-transparent"
+                className="flex items-center gap-3 edit-button bg-transparent border border-[#535787] text-[#535787] px-4 py-1 rounded-xl hover:bg-[#535787] hover:text-white transition-all"
                 onClick={() => handleEdit(clubName)}
               >
-                <p className="font-semibold text-base text-[#535787] cursor-pointer">
-                  Edit
-                </p>
+                <p className="font-semibold text-base cursor-pointer">Edit</p>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                  />
+                </svg>
               </button>
             )
           )}
@@ -1104,10 +1215,10 @@ const ClubDirectors = ({
   });
 
   const groups = groupDataById(data);
-  const [selectedClub, setSelectedClub] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedClub, setSelectedClub] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [openModal, setOpenModal] = useState(false);
-  const [selectedClubName, setSelectedClubName] = useState("");
+  const [selectedClubName, setSelectedClubName] = useState('');
   const [version, setVersion] = useState(0);
 
   const handleClubChange = (e) => {
@@ -1117,7 +1228,6 @@ const ClubDirectors = ({
   const handleCloseModal = () => {
     setOpenModal(false);
     setVersion((prevVersion) => prevVersion + 1);
-    setIsEditing(false);
   };
 
   const submitAddDirector = () => {
@@ -1210,13 +1320,15 @@ const ClubDirectors = ({
               // eslint-disable-next-line
               .map(([clubName, clubData], index) => {
                 const clubInfo = JSON.parse(
-                  localStorage.getItem(clubName) || "{}"
+                  localStorage.getItem(clubName) || '{}'
                 );
                 return (
                   <MemberCard
                     key={`${index}-${clubName}`}
                     clubData={clubData}
-                    isManager={clubInfo.isManager == true ? 'MANAGER' : 'MEMBER'}
+                    isManager={
+                      clubInfo.isManager == true ? 'MANAGER' : 'MEMBER'
+                    }
                     setOpenModal={setOpenModal}
                     setSelectedClubName={setSelectedClubName}
                     version={version}
@@ -1261,7 +1373,7 @@ const ClubDirectors = ({
             // eslint-disable-next-line
             .map(([clubName, clubData], index) => {
               const clubInfo = JSON.parse(
-                localStorage.getItem(clubName) || "{}"
+                localStorage.getItem(clubName) || '{}'
               );
               return (
                 <MemberCard
