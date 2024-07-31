@@ -794,6 +794,8 @@ const MemberDetail = ({
       .map((item) => item[7]);
   }
 
+  // redploy
+
   const defaultMemberValue = member ? `${member[0]} ${member[1]}` : '';
 
   return (
