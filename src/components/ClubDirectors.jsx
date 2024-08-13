@@ -6,6 +6,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import EditDirectorModal from './EditDirectorModal';
 import SaveChangesModal from './SaveChangesModal';
 import ExistingUserModal from './ExistingUserModal';
+import DeleteDirectorModal from './DeleteDirectorModal';
+import { APPS_SCRIPT_URL } from '../constants';
 
 // const groupDataById = (data) => {
 //   if (data.length >= 1) {
@@ -440,8 +442,6 @@ const AddDirectorModal = ({
   };
 
   const postDirectorData = async (clubName, memberData, hasManager) => {
-    let url =
-      'https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec'; // Your URL here
     const options = {
       method: 'post',
       mode: 'no-cors',
@@ -456,7 +456,7 @@ const AddDirectorModal = ({
       },
     };
 
-    await fetch(url, options);
+    await fetch(APPS_SCRIPT_URL, options);
   };
 
   const [phone, setPhone] = useState('');
@@ -668,7 +668,7 @@ const AddDirectorModal = ({
                 Access{' '}
               </label>
               <div className="grid grid-cols-2 mt-2">
-                <div className="relative flex gap-x-3">
+                <div className="relative flex gap-x-1">
                   <div className="flex items-center ml-2">
                     <input
                       ref={ameliaAdminRef}
@@ -682,7 +682,34 @@ const AddDirectorModal = ({
                     </span>
                   </div>
                   <div className="text-sm leading-6">
-                    <p className="sm:text-2xl lg:text-base">Amilia Admin</p>
+                    <div className="flex gap-2 items-center">
+                      <p className="sm:text-2xl lg:text-base">Amilia Admin</p>
+                      <button className="relative group">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+                          />
+                        </svg>
+
+                        <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-1/3 translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
+                          <div className="flex flex-col p-2 text-xs">
+                            <span className="truncate">
+                              Grants the user administrator access to the club's
+                              Amilia Online Store
+                            </span>
+                          </div>
+                        </span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -701,7 +728,34 @@ const AddDirectorModal = ({
                       </span>
                     </div>
                     <div className="leading-6">
-                      <p className="sm:text-2xl lg:text-base">Club Admin</p>
+                      <div className="flex gap-2 items-center">
+                        <p className="sm:text-2xl lg:text-base">Club Admin</p>
+                        <button className="relative group">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+                            />
+                          </svg>
+
+                          <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-3/4 translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
+                            <div className="flex flex-col p-2 text-xs">
+                              <span className="truncate">
+                                Allows the user to make changes to club contacts
+                                in this app
+                              </span>
+                            </div>
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -772,9 +826,14 @@ const MemberDetail = ({
   handleOpenModal,
 }) => {
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const handleOpenEditModal = () => {
     setOpenEditModal(true);
+  };
+
+  const handleOpenDeleteModal = () => {
+    setOpenDeleteModal(true);
   };
 
   const matchingMembers = data.filter(
@@ -794,8 +853,6 @@ const MemberDetail = ({
       .map((item) => item[7]);
   }
 
-  // redploy
-
   const defaultMemberValue = member ? `${member[0]} ${member[1]}` : '';
 
   return (
@@ -811,6 +868,14 @@ const MemberDetail = ({
       ) : (
         <></>
       )}
+      {openDeleteModal ? (
+        <DeleteDirectorModal
+          member={member}
+          setOpenDeleteModal={setOpenDeleteModal}
+        />
+      ) : (
+        <></>
+      )}
       <div className="px-4 py-4">
         <div className="">
           {isEditing && editSelectedClub == clubName ? (
@@ -818,15 +883,15 @@ const MemberDetail = ({
               <dd
                 id={`${clubName}-${dtValue}-${index}`}
                 data-index={index}
-                className="text-sm px-4 leading-6 whitespace-nowrap text-gray-700 sm:col-start-3"
+                className="text-sm px-2 leading-6 whitespace-nowrap text-gray-900 sm:col-start-3 w-[180px]"
               >
                 {member ? member[0] + ' ' + member[1] : ''}
               </dd>
-              <div>
+              <div className="flex items-center text-left w-[200px] truncate">
                 {activeRoles.length > 0 && (
-                  <div className="ml-2 text-gray-600">
-                    ({activeRoles.join(', ')})
-                  </div>
+                  <p className="text-left text-xs text-gray-600">
+                    {activeRoles.join(', ')}
+                  </p>
                 )}
               </div>
               {isManager &&
@@ -852,9 +917,7 @@ const MemberDetail = ({
                     </button>
                     <button
                       className="w-5 text-red-600"
-                      onClick={() => {
-                        console.log('delete');
-                      }}
+                      onClick={handleOpenDeleteModal}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1032,7 +1095,7 @@ const MemberCard = ({
     }
   }, [shouldChange, isLoadingSelect, selectedChanges, dispatch]);
 
-  const uniqueMembers = activeMembers.reduce(
+  const uniqueMembers = clubData.reduce(
     (acc, member) => {
       const uniqueKey = `${member[0]}|${member[1]}`; // Create a unique key based on the first two elements
       if (!acc.seen.has(uniqueKey)) {

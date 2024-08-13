@@ -4,6 +4,7 @@ import { fetchData } from '../../redux/slice';
 import DatePicker from 'react-datepicker';
 import ConfirmClose from './ConfirmClose.jsx';
 import 'react-datepicker/dist/react-datepicker.css';
+import { APPS_SCRIPT_URL } from '../constants.js';
 
 // eslint-disable-next-line
 const EditDirectorModal = ({
@@ -346,9 +347,6 @@ const EditDirectorModal = ({
   };
 
   const editDirectorData = async (modifiedValues) => {
-    let url =
-      'https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec'; // Your URL here
-
     const options = {
       method: 'post',
       mode: 'no-cors',
@@ -361,7 +359,7 @@ const EditDirectorModal = ({
       },
     };
 
-    await fetch(url, options);
+    await fetch(APPS_SCRIPT_URL, options);
   };
 
   useEffect(() => {
@@ -512,7 +510,7 @@ const EditDirectorModal = ({
                   onChange={handleInputChange}
                   className="bg-white w-full rounded-md border border-gray-400 px-2 py-1.5 mt-1"
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select gender
                   </option>
                   <option value="Male">Male</option>
@@ -580,7 +578,9 @@ const EditDirectorModal = ({
                   </div>
                 ))}
               </div>
-              <span className="text-red-600 text-xs mt-1 ml-2">{errorMessages['Role']}</span>
+              <span className="text-red-600 text-xs mt-1 ml-2">
+                {errorMessages['Role']}
+              </span>
             </div>
 
             <div className="flex flex-col w-full">
@@ -597,14 +597,41 @@ const EditDirectorModal = ({
                       type="checkbox"
                       checked={formData.memberAdmin}
                       onChange={handleInputChange}
-                      className="h-5 w-5 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
+                      className="h-5 w-5 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600 cursor-pointer"
                     />
                     <span className="text-red-600 text-xs mt-1 ml-2">
                       {errorMessages['Is Amilia admin']}
                     </span>
                   </div>
                   <div className="text-sm leading-6">
-                    <p className="sm:text-2xl lg:text-base">Amilia Admin</p>
+                    <div className="flex gap-2 items-center">
+                      <p className="sm:text-2xl lg:text-base">Amilia Admin</p>
+                      <button className="relative group">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+                          />
+                        </svg>
+
+                        <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-1/3 translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
+                          <div className="flex flex-col p-2 text-xs">
+                            <span className="truncate">
+                              Grants the user administrator access to the club's
+                              Amilia Online Store
+                            </span>
+                          </div>
+                        </span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -618,14 +645,41 @@ const EditDirectorModal = ({
                         type="checkbox"
                         checked={formData.memberManager}
                         onChange={handleInputChange}
-                        className="h-5 w-5 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
+                        className="h-5 w-5 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600 cursor-pointer"
                       />
                       <span className="text-red-600 text-xs mt-1 ml-2">
                         {errorMessages['Club admin']}
                       </span>
                     </div>
                     <div className="leading-6">
-                      <p className="sm:text-2xl lg:text-base">Club Admin</p>
+                      <div className="flex gap-2 items-center">
+                        <p className="sm:text-2xl lg:text-base">Club Admin</p>
+                        <button className="relative group">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+                            />
+                          </svg>
+
+                          <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-3/4 translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
+                            <div className="flex flex-col p-2 text-xs">
+                              <span className="truncate">
+                                Allows the user to make changes to club contacts
+                                in this app
+                              </span>
+                            </div>
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
