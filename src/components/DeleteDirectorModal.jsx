@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { APPS_SCRIPT_URL } from '../constants';
 import { fetchData } from '../../redux/slice';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function DeleteDirectorModal({ member, setOpenDeleteModal }) {
   const username = member[0] + ' ' + member[1];
@@ -51,12 +51,22 @@ export default function DeleteDirectorModal({ member, setOpenDeleteModal }) {
     }
   };
 
+  useEffect(() => {
+    // Add the class to disable scroll on mount
+    document.body.classList.add('overflow-y-hidden');
+
+    // Remove the class when the component is unmounted
+    return () => {
+      document.body.classList.remove('overflow-y-hidden');
+    };
+  }, []);
+
   return (
     <div id="popup-modal" className="relative z-10 ml-[40px]">
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div className="flex bg-white ml-0 lg:ml-[23%] rounded-xl">
+          <div className="flex bg-white ml-0 lg:ml-72 rounded-xl">
             <div className="p-4 md:p-5 text-center w-[350px]">
               <div className="text-red-600 flex items-center justify-center mb-4">
                 <svg

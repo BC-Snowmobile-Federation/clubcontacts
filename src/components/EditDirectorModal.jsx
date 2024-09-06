@@ -386,6 +386,16 @@ const EditDirectorModal = ({
     dispatch,
   ]);
 
+  useEffect(() => {
+    // Add the class to disable scroll on mount
+    document.body.classList.add('overflow-y-hidden');
+
+    // Remove the class when the component is unmounted
+    return () => {
+      document.body.classList.remove('overflow-y-hidden');
+    };
+  }, []);
+
   return (
     <div
       // ref={editModalRef}
@@ -398,7 +408,7 @@ const EditDirectorModal = ({
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div className="relative transform overflow-hidden rounded-lg bg-white px-8 text-left shadow-xl transition-all w-[500px] ml-0 lg:ml-[23%] sm:my-8 ">
+          <div className="relative transform overflow-hidden rounded-lg bg-white px-8 text-left shadow-xl transition-all w-[500px] ml-0 lg:ml-72 sm:my-8 ">
             {confirmClose && (
               <div>
                 <ConfirmClose

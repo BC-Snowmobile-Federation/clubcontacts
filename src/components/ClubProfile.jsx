@@ -1,22 +1,24 @@
-import { useState, useEffect, useRef } from "react";
-import { fetchClubData, fetchData } from "../../redux/slice";
-import { useDispatch } from "react-redux";
-import AddClubModal from "./AddClubModal";
-import DatePicker from "react-datepicker";
+import { useState, useEffect, useRef } from 'react';
+import { fetchClubData, fetchData } from '../../redux/slice';
+import { useDispatch } from 'react-redux';
+import AddClubModal from './AddClubModal';
+import DatePicker from 'react-datepicker';
 
-import "./Arrow.css";
+import './Arrow.css';
+import { APPS_SCRIPT_URL } from '../constants';
+import Spinner from './Spinner';
 // eslint-disable-next-line
 function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   function formatDate(date) {
     const d = new Date(date);
-    let month = "" + (d.getMonth() + 1);
-    let day = "" + d.getDate();
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
     const year = d.getFullYear();
 
-    if (month.length < 2) month = "0" + month;
-    if (day.length < 2) day = "0" + day;
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
 
-    return [month, day, year].join("/");
+    return [month, day, year].join('/');
   }
   const clubMailingAddressRef = useRef(null);
   const clubMailingTownRef = useRef(null);
@@ -29,12 +31,12 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   const clubFEYDRef = useRef(null);
 
   // eslint-disable-next-line
-  const [selectedClub, setSelectedClub] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedClub, setSelectedClub] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [filteredClubs, setFilteredClubs] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [clubMenuOpen, setClubMenuOpen] = useState("");
-  const [clubToDelete, setClubToDelete] = useState("");
+  const [clubMenuOpen, setClubMenuOpen] = useState('');
+  const [clubToDelete, setClubToDelete] = useState('');
   const [postDeleteClub, setPostDeleteClub] = useState(false);
   const [isLoadingPost, setIsLoadingPost] = useState(false);
   const [openAddClubModal, setOpenAddClubModal] = useState(false);
@@ -44,6 +46,12 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   const [postingEditClub, setPostingEditClub] = useState(false);
   const [editedDate, setEditedDate] = useState(null);
   const [editErrorsMessages, setEditErrorsMessages] = useState({});
+  const fileInputRefs = useRef([]);
+  const [allFiles, setAllFiles] = useState([
+    { file: '', type: '', expiry: '' },
+  ]);
+  const [deleteConfirmation, setDeleteConfirmation] = useState('');
+
 
   const handleEditClick = (clubName) => {
     setEditErrorsMessages({});
@@ -52,7 +60,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     //club[7] != "" && club[7] != null ? new Date(club[7]) : null
     for (let i = 0; i < filteredClubs.length; i++) {
       if (filteredClubs[i][0] == clubName) {
-        if (filteredClubs[i][7] && filteredClubs[i][7] != "") {
+        if (filteredClubs[i][7] && filteredClubs[i][7] != '') {
           setEditedDate(new Date(filteredClubs[i][7]));
         }
       }
@@ -62,29 +70,31 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   const dispatch = useDispatch();
 
   const postEditClub = async (clubName, editedData) => {
-    let url =
-      "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec"; // Your URL here
+    // let url =
+    //   'https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec'; // Your URL here
     const options = {
-      method: "post",
-      mode: "no-cors",
+      method: 'post',
+      mode: 'no-cors',
       body: JSON.stringify({
-        action: "editClubData",
+        action: 'editClubData',
         changes: editedData,
         clubName: clubName,
       }),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     };
 
-    await fetch(url, options);
+    await fetch(APPS_SCRIPT_URL, options);
   };
 
   const deleteClub = async (clubName) => {
-    let url = `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=deleteClub&clubName=${encodeURIComponent(clubName)}`;
+    let url = `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=deleteClub&clubName=${encodeURIComponent(
+      clubName
+    )}`;
 
     await fetch(url, {
-      mode: "no-cors",
+      mode: 'no-cors',
     });
   };
 
@@ -103,7 +113,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     }
 
     filtered.forEach((c) => {
-      const addressSplitted = c[1].split(";");
+      const addressSplitted = c[1].split(';');
       c.push(addressSplitted[0]);
       if (addressSplitted.length > 1) {
         c.push(addressSplitted[1]);
@@ -114,7 +124,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     });
 
     if (filtered.length != 0) {
-      console.log("");
+      console.log('');
     }
 
     setFilteredClubs(filtered);
@@ -141,6 +151,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
         setPostingEditClub(false);
         setIsLoadingEditClub(false);
         setMenuVisible(false);
+        setAllFiles([{ file: '', type: '', expiry: '' }]);
         // postEditClub(false);
       };
       editingClubData();
@@ -164,49 +175,130 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     setSelectedClub(e.target.value);
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     setEditErrorsMessages({});
     let errors = {};
 
     if (!clubMailingAddressRef.current.value) {
-      errors["editMailingAddress"] = "Mailing Address is required";
+      errors['editMailingAddress'] = 'Mailing Address is required';
     }
     if (!clubMailingTownRef.current.value) {
-      errors["editMailingTown"] = "Mailing Town is required";
+      errors['editMailingTown'] = 'Mailing Town is required';
     }
     if (!clubMailingProvinceRef.current.value) {
-      errors["editMailingProvince"] = "Mailing Province is required";
+      errors['editMailingProvince'] = 'Mailing Province is required';
     }
     if (!clubTourismRegionRef.current.value) {
-      errors["editTourismRegion"] = "Tourism Region is required";
+      errors['editTourismRegion'] = 'Tourism Region is required';
     }
     if (!clubMainPhoneRef.current.value) {
-      errors["editMainPhone"] = "Main Phone is required";
+      errors['editMainPhone'] = 'Main Phone is required';
     }
     if (!clubGeneralEmailRef.current.value) {
-      errors["editGeneralEmail"] = "General Email is required";
+      errors['editGeneralEmail'] = 'General Email is required';
     }
     if (!clubWebsiteRef.current.value) {
-      errors["editWebsite"] = "Website is required";
-    }
-    if (!clubBCSNumberRef.current.value) {
-      errors["editBCSNumber"] = "BC Society Number is required";
-    }
-
-    if (!editedDate) {
-      errors["editFYED"] = "FY End Date is required";
+      errors['editWebsite'] = 'Website is required';
     }
 
     if (!/^[\w.-]+@[\w.-]+\.\w+$/.test(clubGeneralEmailRef.current.value)) {
-      errors["editGeneralEmail"] = "Please enter a valid email";
+      errors['editGeneralEmail'] = 'Please enter a valid email';
     }
+
+    // get the base 64 and validate that type and expiry are not empty in case a file is selected
+    const processedFiles = await Promise.all(
+      allFiles.map(async (file, index) => {
+        if (file.file) {
+          // If a file is selected, validate type and expiry date
+          if (!file.type) {
+            errors[`fileType_${index}`] = 'File type is required';
+          }
+          if (!file.expiry) {
+            errors[`fileExpiry_${index}`] = 'File expiry date is required';
+          }
+
+          return {
+            file: await convertFileToBase64(file.file),
+            type: file.type,
+            expiry: file.expiry,
+          };
+        } else {
+          return null;
+        }
+      })
+    );
 
     if (Object.keys(errors).length > 0) {
       setEditErrorsMessages(errors);
       return;
     }
+
+    // Filter out any null values from processedFiles
+    const validFiles = processedFiles.filter((file) => file !== null);
+
+    // Update the editedData with the processed files
+    setEditedData((prevData) => {
+      const updatedData = { ...prevData };
+
+      if (validFiles.length > 0) {
+        updatedData.files = validFiles;
+      }
+
+      return updatedData;
+    });
+
     setEditErrorsMessages({});
     setPostingEditClub(true);
+  };
+
+  // funcion auxiliar para convertir el file a base64
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+  // funciones para agregar un archivo
+  const addFile = () => {
+    setAllFiles([...allFiles, { file: '', type: '', expiry: '' }]);
+  };
+  // funcion para manejar los cambios
+  const handleFilesChange = (index, field, value) => {
+    const updatedFiles = allFiles.map((file, i) =>
+      i === index ? { ...file, [field]: value } : file
+    );
+    setAllFiles(updatedFiles);
+  };
+  // funcion para hacer clear de el file input
+  const clearFileInput = (index) => {
+    fileInputRefs.current[index].value = '';
+    handleFilesChange(index, 'file', '');
+  };
+  // funcion para eliminar un archivo
+  const removeFile = (index) => {
+    // Remove the file from the state
+    const updatedFiles = allFiles.filter((_, i) => i !== index);
+    setAllFiles(updatedFiles);
+
+    // Update the file input elements to reflect the correct file names
+    updatedFiles.forEach((file, i) => {
+      if (fileInputRefs.current[i]) {
+        if (file.file) {
+          // If the file exists, create a new DataTransfer object to simulate selecting the file
+          const dataTransfer = new DataTransfer();
+          const newFile = new File([file.file], file.file.name);
+          dataTransfer.items.add(newFile);
+          fileInputRefs.current[i].files = dataTransfer.files;
+        } else {
+          // If no file is selected (file is undefined), reset the input
+          fileInputRefs.current[i].value = '';
+        }
+      }
+    });
   };
 
   const handleCancelEdit = () => {
@@ -217,27 +309,27 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   function handleInputChange(label, value, club = null) {
     let newValue = value;
     let labelToChange = label;
-    let addressArray = ["", "", ""];
-    if ("Club Mailing Address" in editedData) {
+    let addressArray = ['', '', ''];
+    if ('Club Mailing Address' in editedData) {
       const splittedMailingAddress =
-        editedData["Club Mailing Address"].split(";");
-      addressArray[0] = splittedMailingAddress[0] || club[15] || "";
-      addressArray[1] = splittedMailingAddress[1] || club[16] || "";
-      addressArray[2] = splittedMailingAddress[2] || club[17] || "";
+        editedData['Club Mailing Address'].split(';');
+      addressArray[0] = splittedMailingAddress[0] || club[15] || '';
+      addressArray[1] = splittedMailingAddress[1] || club[16] || '';
+      addressArray[2] = splittedMailingAddress[2] || club[17] || '';
     }
-    if (label == "Club Mailing Address") {
+    if (label == 'Club Mailing Address') {
       addressArray[0] = value;
-      newValue = addressArray.join(";");
-      labelToChange = "Club Mailing Address";
-    } else if (label == "Club Mailing Town") {
+      newValue = addressArray.join(';');
+      labelToChange = 'Club Mailing Address';
+    } else if (label == 'Club Mailing Town') {
       addressArray[1] = value;
-      newValue = addressArray.join(";");
-      labelToChange = "Club Mailing Address";
+      newValue = addressArray.join(';');
+      labelToChange = 'Club Mailing Address';
     }
-    if (label == "Club Mailing Province") {
+    if (label == 'Club Mailing Province') {
       addressArray[2] = value;
-      newValue = addressArray.join(";");
-      labelToChange = "Club Mailing Address";
+      newValue = addressArray.join(';');
+      labelToChange = 'Club Mailing Address';
     }
 
     setEditedData((prevData) => ({
@@ -256,15 +348,84 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
     }
   };
 
-  const handleDeleteClub = (clubname) => {
-    setClubToDelete(clubname);
-    setPostDeleteClub(true);
+  // const handleDeleteClub = (clubname) => {
+  //   setClubToDelete(clubname);
+  //   setPostDeleteClub(true);
+  // };
+
+  const handleDeleteClub = (clubName) => {
+    if (deleteConfirmation === clubName) {
+      // If the user clicks again, perform the delete action
+      setClubToDelete(clubName);
+      setPostDeleteClub(true);
+      setDeleteConfirmation(''); // Reset confirmation state after delete
+    } else {
+      // Set the confirmation state to the clicked club
+      setDeleteConfirmation(clubName);
+  
+      // Optionally, reset the confirmation state after a timeout if the user doesn't confirm
+      setTimeout(() => {
+        setDeleteConfirmation('');
+      }, 5000); // Reset after 5 seconds if not confirmed
+    }
   };
+  
 
   const handleOpenAddClubModal = () => {
     setMenuVisible(false);
     setOpenAddClubModal(true);
   };
+
+  const cancelButton = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="size-6"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6 18 18 6M6 6l12 12"
+      />
+    </svg>
+  );
+
+  const editButton = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="size-4"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+      />
+    </svg>
+  );
+
+  const deleteIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="size-4"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+      />
+    </svg>
+  );
 
   return (
     <div>
@@ -275,7 +436,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
               id="addClubBtn"
               type="button"
               onClick={handleOpenAddClubModal}
-              className="w-[130px] right-0 rounded-full bg-[#243570] px-3 py-2 mb-4 text-base font-semibold text-white montserrat shadow-sm hover:bg-[#535787]"
+              className="w-[130px] mb-4 right-0 rounded-lg bg-[#535787] px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-[#3C3F63] transition-all"
             >
               Add Club
             </button>
@@ -359,8 +520,8 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
               id="clubsProfileContainer"
               className={
                 filteredClubs.length >= 2
-                  ? "grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 xl:gap-x-8 flex justify-center items-center"
-                  : "flex justify-center items-center"
+                  ? 'grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 xl:gap-x-8 flex justify-center items-center'
+                  : 'flex justify-center items-center'
               }
             >
               {filteredClubs &&
@@ -369,48 +530,44 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                   return (
                     <li
                       key={index}
-                      className="overflow-hidden montserrat rounded-xl border border-gray-200 w-[26rem]"
+                      className="overflow-hidden montserrat rounded-xl border border-gray-200 w-[416px]"
                     >
                       <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
                         <div className="text-base font-semibold leading-6 text-[#243746]">
                           {club[0]}
                         </div>
-                        {JSON.parse(localStorage.getItem(club[0]) || "{}")
+                        {JSON.parse(localStorage.getItem(club[0]) || '{}')
                           .isManager ? (
                           <div className="relative ml-auto">
                             {editingClub === club[0] ? (
                               isLoadingEditClub ? (
-                                <div
-                                  className="flex justify-center items-center"
-                                  style={{ marginTop: "30px", height: "5px" }}
-                                >
+                                <div className="flex justify-center items-center h-6 w-6">
                                   <div
-                                    className="spinner border-t-2 border-solid rounded-full animate-spin"
-                                    style={{
-                                      borderColor: "#303030",
-                                      borderRightColor: "transparent",
-                                      width: "1rem",
-                                      height: "1rem",
-                                    }}
-                                  ></div>
+                                    className="inline-block text-[#535787] h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                                    role="status"
+                                  >
+                                    <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                                      Loading...
+                                    </span>
+                                  </div>
                                 </div>
                               ) : (
-                                <>
+                                <div className="flex items-center">
                                   <button
-                                    className="font-semibold text-base text-[#535787] cursor-pointer bg-transparent"
+                                    className="text-base font-semibold border border-[#535787] px-3 py-1 text-[#535787] rounded-xl hover:bg-[#535787] hover:text-white transition-all"
                                     onClick={() => handleSaveChanges(club[0])}
                                   >
                                     Save
                                     <span className="sr-only">, {club[0]}</span>
                                   </button>
                                   <button
-                                    className="font-semibold text-base text-[#535787] cursor-pointer bg-transparent ml-6"
+                                    className="font-semibold text-base text-[#535787] cursor-pointer bg-transparent ml-2"
                                     onClick={handleCancelEdit}
                                   >
-                                    Cancel
+                                    {cancelButton}
                                     <span className="sr-only">, {club[0]}</span>
                                   </button>
-                                </>
+                                </div>
                               )
                             ) : (
                               <>
@@ -434,62 +591,59 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 </button>
                                 {menuVisible && club[0] === clubMenuOpen && (
                                   <div
-                                    className="dropdown-menu absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                                    className="dropdown-menu absolute right-0 z-10 mt-0.5 w-40 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                                     role="menu"
                                     aria-orientation="vertical"
                                     aria-labelledby={`options-menu-${index}-button`}
                                     tabIndex="-1"
                                   >
                                     {isLoadingPost || isLoadingEditClub ? (
-                                      <div
-                                        className="flex justify-center items-center"
-                                        style={{
-                                          marginTop: "30px",
-                                          height: "5px",
-                                        }}
-                                      >
+                                      <div className="flex justify-center items-center w-full h-24">
                                         <div
-                                          className="spinner border-t-2 border-solid rounded-full animate-spin"
-                                          style={{
-                                            borderColor: "#303030",
-                                            borderRightColor: "transparent",
-                                            width: "1rem",
-                                            height: "1rem",
-                                          }}
-                                        ></div>
+                                          className={`inline-block ${isLoadingPost ? 'text-red-600' : 'text-[#535787]'} h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] self-center`}
+                                          role="status"
+                                        >
+                                          <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                                            Loading...
+                                          </span>
+                                        </div>
                                       </div>
                                     ) : (
                                       <div>
-                                        {isBcsf && (
+                                        <div className="flex items-center">
                                           <button
-                                            className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
+                                            className="block w-full mx-2 py-1 text-sm leading-6 text-gray-900 delete-button flex items-center gap-2 mb-1 rounded-md hover:bg-gray-100 transition-all pl-2"
                                             role="menuitem"
                                             onClick={() =>
-                                              handleDeleteClub(club[0])
+                                              handleEditClick(club[0])
                                             }
                                             tabIndex="-1"
-                                            id={`options-menu-${index}-item-1`}
+                                            id={`options-menu-${index}-item-2`}
                                           >
-                                            Delete
+                                            {editButton} Edit club
                                             <span className="sr-only">
                                               , {club[0]}
                                             </span>
                                           </button>
+                                        </div>
+                                        {isBcsf && (
+                                          <div className="border-t flex items-center">
+                                            <button
+                                              className="block w-full mx-2 py-1 text-sm leading-6 text-red-600 delete-button flex items-center text-left mt-2 rounded-md hover:bg-red-600 hover:text-white transition-all pr-6 pl-2"
+                                              role="menuitem"
+                                              onClick={() =>
+                                                handleDeleteClub(club[0])
+                                              }
+                                              tabIndex="-1"
+                                              id={`options-menu-${index}-item-1`}
+                                            >
+                                              <span className="mr-2">{deleteIcon}</span> {deleteConfirmation === club[0] ? 'Click again to confirm' : 'Delete club'}
+                                              <span className="sr-only">
+                                                , {club[0]}
+                                              </span>
+                                            </button>
+                                          </div>
                                         )}
-                                        <button
-                                          className="block px-3 py-1 text-sm leading-6 text-gray-900 delete-button"
-                                          role="menuitem"
-                                          onClick={() =>
-                                            handleEditClick(club[0])
-                                          }
-                                          tabIndex="-1"
-                                          id={`options-menu-${index}-item-2`}
-                                        >
-                                          Edit
-                                          <span className="sr-only">
-                                            , {club[0]}
-                                          </span>
-                                        </button>
                                       </div>
                                     )}
                                   </div>
@@ -504,92 +658,92 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                       <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
                         {isBcsf ? (
                           <>
-                            <div className="flex justify-between gap-x-4 py-3">
-                              <dt className="text-gray-500">
+                            <div className="flex items-center justify-between py-3 gap-x-2">
+                              <dt className="basis-1/2 text-gray-500">
                                 Club Mailing Address
                               </dt>
                               {editingClub === club[0] ? (
-                                <div className="flex flex-col items-end">
+                                <div className="basis-1/2 flex flex-col items-end">
                                   <input
-                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    className="border text-sm rounded-md w-full px-2 py-1"
                                     ref={clubMailingAddressRef}
                                     onChange={(e) =>
                                       handleInputChange(
-                                        "Club Mailing Address",
+                                        'Club Mailing Address',
                                         e.target.value,
                                         club
                                       )
                                     }
-                                    defaultValue={club[15] || ""}
+                                    defaultValue={club[15] || ''}
                                   />
-                                  <span className="text-red-500">
-                                    {editErrorsMessages["editMailingAddress"]}
+                                  <span className="text-red-600 text-xs self-start ml-1 mt-1">
+                                    {editErrorsMessages['editMailingAddress']}
                                   </span>
                                 </div>
                               ) : (
-                                <dd className="flex items-start gap-x-2">
+                                <dd className="flex items-center justify-end basis-1/2">
                                   <div className="font-medium text-gray-900">
-                                    {club[15] || ""}
+                                    {club[15] || ''}
                                   </div>
                                 </dd>
                               )}
                             </div>
-                            <div className="flex justify-between gap-x-4 py-3">
-                              <dt className="text-gray-500">
+                            <div className="flex items-center justify-between py-3 gap-x-2">
+                              <dt className="basis-1/2 text-gray-500">
                                 Club Mailing Town
                               </dt>
                               {editingClub === club[0] ? (
-                                <div className="flex flex-col items-end">
+                                <div className="basis-1/2 flex flex-col items-end">
                                   <input
-                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    className="border text-sm rounded-md w-full px-2 py-1"
                                     ref={clubMailingTownRef}
                                     onChange={(e) =>
                                       handleInputChange(
-                                        "Club Mailing Town",
+                                        'Club Mailing Town',
                                         e.target.value,
                                         club
                                       )
                                     }
-                                    defaultValue={club[16] || ""}
+                                    defaultValue={club[16] || ''}
                                   />
-                                  <span className="text-red-500">
-                                    {editErrorsMessages["editMailingTown"]}
+                                  <span className="text-red-600 text-xs self-start ml-1 mt-1">
+                                    {editErrorsMessages['editMailingTown']}
                                   </span>
                                 </div>
                               ) : (
-                                <dd className="flex items-start gap-x-2">
+                                <dd className="flex items-center justify-end basis-1/2">
                                   <div className="font-medium text-gray-900">
-                                    {club[16] || ""}
+                                    {club[16] || ''}
                                   </div>
                                 </dd>
                               )}
                             </div>
-                            <div className="flex justify-between gap-x-4 py-3">
-                              <dt className="text-gray-500">
+                            <div className="flex items-center justify-between py-3 gap-x-2">
+                              <dt className="basis-1/2 text-gray-500">
                                 Club Mailing Province
                               </dt>
                               {editingClub === club[0] ? (
-                                <div className="flex flex-col items-end">
+                                <div className="basis-1/2 flex flex-col items-end">
                                   <input
-                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    className="border text-sm rounded-md w-full px-2 py-1"
                                     ref={clubMailingProvinceRef}
                                     onChange={(e) =>
                                       handleInputChange(
-                                        "Club Mailing Province",
+                                        'Club Mailing Province',
                                         e.target.value,
                                         club
                                       )
                                     }
-                                    defaultValue={club[17] || ""}
+                                    defaultValue={club[17] || ''}
                                   />
-                                  <span className="text-red-500">
-                                    {editErrorsMessages["editMailingProvince"]}
+                                  <span className="text-red-600 text-xs self-start ml-1 mt-1">
+                                    {editErrorsMessages['editMailingProvince']}
                                   </span>
                                 </div>
                               ) : (
-                                <dd className="flex items-start gap-x-2">
+                                <dd className="flex items-center justify-end basis-1/2">
                                   <div className="font-medium text-gray-900">
-                                    {club[17] || ""}
+                                    {club[17] || ''}
                                   </div>
                                 </dd>
                               )}
@@ -597,108 +751,110 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                           </>
                         ) : (
                           <div>
-                            <div className="flex justify-between gap-x-4 py-3">
-                              <dt className="text-gray-500">
+                            <div className="flex items-center justify-between py-3 gap-x-2">
+                              <dt className="basis-1/2 text-gray-500">
                                 Club Mailing Address
                               </dt>
                               {editingClub === club[0] ? (
-                                <div className="flex flex-col items-end">
+                                <div className="basis-1/2 flex flex-col items-end">
                                   <input
-                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    className="border text-sm rounded-md w-full px-2 py-1"
                                     ref={clubMailingAddressRef}
                                     onChange={(e) =>
                                       handleInputChange(
-                                        "Club Mailing Address",
+                                        'Club Mailing Address',
                                         e.target.value,
                                         club
                                       )
                                     }
-                                    defaultValue={club[16] || ""}
+                                    defaultValue={club[16] || ''}
                                   />
-                                  <span className="text-red-500">
-                                    {editErrorsMessages["editMailingAddress"]}
+                                  <span className="text-red-600 text-xs self-start ml-1 mt-1">
+                                    {editErrorsMessages['editMailingAddress']}
                                   </span>
                                 </div>
                               ) : (
-                                <dd className="flex items-start gap-x-2">
+                                <dd className="flex items-center justify-end basis-1/2">
                                   <div className="font-medium text-gray-900">
-                                    {club[16] || ""}
+                                    {club[16] || ''}
                                   </div>
                                 </dd>
                               )}
                             </div>
-                            <div className="flex justify-between gap-x-4 py-3">
-                              <dt className="text-gray-500">
+                            <div className="flex items-center justify-between py-3 gap-x-2">
+                              <dt className="basis-1/2 text-gray-500">
                                 Club Mailing Town
                               </dt>
                               {editingClub === club[0] ? (
-                                <div className="flex flex-col items-end">
+                                <div className="basis-1/2 flex flex-col items-end">
                                   <input
-                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    className="border text-sm rounded-md w-full px-2 py-1"
                                     ref={clubMailingTownRef}
                                     onChange={(e) =>
                                       handleInputChange(
-                                        "Club Mailing Town",
+                                        'Club Mailing Town',
                                         e.target.value,
                                         club
                                       )
                                     }
-                                    defaultValue={club[17] || ""}
+                                    defaultValue={club[17] || ''}
                                   />
-                                  <span className="text-red-500">
-                                    {editErrorsMessages["editMailingTown"]}
+                                  <span className="text-red-600 text-xs self-start ml-1 mt-1">
+                                    {editErrorsMessages['editMailingTown']}
                                   </span>
                                 </div>
                               ) : (
-                                <dd className="flex items-start gap-x-2">
+                                <dd className="flex items-center justify-end basis-1/2">
                                   <div className="font-medium text-gray-900">
-                                    {club[17] || ""}
+                                    {club[17] || ''}
                                   </div>
                                 </dd>
                               )}
                             </div>
-                            <div className="flex justify-between gap-x-4 py-3">
-                              <dt className="text-gray-500">
+                            <div className="flex items-center justify-between py-3 gap-x-2">
+                              <dt className="basis-1/2 text-gray-500">
                                 Club Mailing Province
                               </dt>
                               {editingClub === club[0] ? (
-                                <div className="flex flex-col items-end">
+                                <div className="basis-1/2 flex flex-col items-end">
                                   <input
-                                    className="border text-sm rounded-full w-[180px] p-1"
+                                    className="border text-sm rounded-md w-full px-2 py-1"
                                     ref={clubMailingProvinceRef}
                                     onChange={(e) =>
                                       handleInputChange(
-                                        "Club Mailing Province",
+                                        'Club Mailing Province',
                                         e.target.value,
                                         club
                                       )
                                     }
-                                    defaultValue={club[18] || ""}
+                                    defaultValue={club[18] || ''}
                                   />
-                                  <span className="text-red-500">
-                                    {editErrorsMessages["editMailingProvince"]}
+                                  <span className="text-red-600 text-xs self-start ml-1 mt-1">
+                                    {editErrorsMessages['editMailingProvince']}
                                   </span>
                                 </div>
                               ) : (
-                                <dd className="flex items-start gap-x-2">
+                                <dd className="flex items-center justify-end basis-1/2">
                                   <div className="font-medium text-gray-900">
-                                    {club[18] || ""}
+                                    {club[18] || ''}
                                   </div>
                                 </dd>
                               )}
                             </div>
                           </div>
                         )}
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">Club Tourism Region</dt>
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
+                            Club Tourism Region
+                          </dt>
                           {editingClub === club[0] ? (
-                            <div className="flex flex-col items-end">
+                            <div className="basis-1/2 flex flex-col items-end">
                               <select
-                                className="border text-sm rounded-full w-[180px] p-1"
+                                className="border text-sm rounded-md w-full px-2 py-1"
                                 ref={clubTourismRegionRef}
                                 onChange={(e) =>
                                   handleInputChange(
-                                    "Club Tourism Region",
+                                    'Club Tourism Region',
                                     e.target.value
                                   )
                                 }
@@ -724,134 +880,137 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                   Vancouver Coast
                                 </option>
                               </select>
-                              <span className="text-red-500">
-                                {editErrorsMessages["editTourismRegion"]}
+                              <span className="text-red-600 text-xs self-start ml-1 mt-1">
+                                {editErrorsMessages['editTourismRegion']}
                               </span>
                             </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
                                 {club[2]}
                               </div>
                             </dd>
                           )}
                         </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">Club Main Phone #</dt>
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
+                            Club Main Phone #
+                          </dt>
                           {editingClub === club[0] ? (
-                            <div className="flex flex-col items-end">
+                            <div className="basis-1/2 flex flex-col items-end">
                               <input
-                                className="border text-sm rounded-full w-[180px] p-1"
+                                className="border text-sm rounded-md w-full px-2 py-1"
                                 ref={clubMainPhoneRef}
                                 onChange={(e) =>
                                   handleInputChange(
-                                    "Club Main Phone",
+                                    'Club Main Phone',
                                     e.target.value
                                   )
                                 }
                                 defaultValue={club[3]}
                               />
-                              <span className="text-red-500">
-                                {editErrorsMessages["editMainPhone"]}
+                              <span className="text-red-600 text-xs self-start ml-1 mt-1">
+                                {editErrorsMessages['editMainPhone']}
                               </span>
                             </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
                                 {club[3]}
                               </div>
                             </dd>
                           )}
                         </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">Club General Email</dt>
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
+                            Club General Email
+                          </dt>
                           {editingClub === club[0] ? (
-                            <div className="flex flex-col items-end">
+                            <div className="basis-1/2 flex flex-col items-end">
                               <input
-                                className="border text-sm rounded-full w-[180px] p-1"
+                                className="border text-sm rounded-md w-full px-2 py-1"
                                 ref={clubGeneralEmailRef}
                                 onChange={(e) =>
                                   handleInputChange(
-                                    "Club General Email",
+                                    'Club General Email',
                                     e.target.value
                                   )
                                 }
                                 defaultValue={club[4]}
                               />
-                              <span className="text-red-500">
-                                {editErrorsMessages["editGeneralEmail"]}
+                              <span className="text-red-600 text-xs self-start ml-1 mt-1">
+                                {editErrorsMessages['editGeneralEmail']}
                               </span>
                             </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
                                 {club[4]}
                               </div>
                             </dd>
                           )}
                         </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">Club Website</dt>
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
+                            Club Website
+                          </dt>
                           {editingClub === club[0] ? (
-                            <div className="flex flex-col items-end">
+                            <div className="basis-1/2 flex flex-col items-end">
                               <input
-                                className="border text-sm rounded-full w-[180px] p-1"
+                                className="border text-sm rounded-md w-full px-2 py-1"
                                 ref={clubWebsiteRef}
                                 onChange={(e) =>
                                   handleInputChange(
-                                    "Club Website",
+                                    'Club Website',
                                     e.target.value
                                   )
                                 }
                                 defaultValue={club[5]}
                               />
-                              <span className="text-red-500">
-                                {editErrorsMessages["editWebsite"]}
+                              <span className="text-red-600 text-xs self-start ml-1 mt-1">
+                                {editErrorsMessages['editWebsite']}
                               </span>
                             </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
                                 {club[5]}
                               </div>
                             </dd>
                           )}
                         </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
                             Club BC Society Number
                           </dt>
                           {editingClub === club[0] ? (
-                            <div className="flex flex-col items-end">
+                            <div className="basis-1/2 flex flex-col items-end">
                               <input
-                                className="border text-sm rounded-full w-[180px] p-1"
+                                className="border text-sm rounded-md w-full px-2 py-1"
                                 ref={clubBCSNumberRef}
                                 onChange={(e) =>
                                   handleInputChange(
-                                    "Club BC Society Number",
+                                    'Club BC Society Number',
                                     e.target.value
                                   )
                                 }
                                 defaultValue={club[6]}
                               />
-                              <span className="text-red-500">
-                                {editErrorsMessages["editBCSNumber"]}
-                              </span>
                             </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
                                 {club[6]}
                               </div>
                             </dd>
                           )}
                         </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
                             Financial Year End Date
                           </dt>
                           {editingClub === club[0] ? (
-                            <div className="flex flex-col items-end w-[200px]">
+                            <div className="basis-1/2 flex flex-col">
                               <DatePicker
                                 name="Financial Year End Date"
                                 type="text"
@@ -859,154 +1018,310 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 onChange={(date) => {
                                   setEditedDate(date);
                                   handleInputChange(
-                                    "Financial Year End Date",
+                                    'Financial Year End Date',
                                     formatDate(date)
                                   ); // Set dateModified to true
                                 }}
-                                className="border text-sm rounded-full w-[180px] p-1"
+                                className="border text-sm rounded-md px-2 py-1 w-full"
                                 ref={clubFEYDRef}
                                 placeholderText="Insert effective date"
                               />
-                              <span className="text-red-500">
-                                {editErrorsMessages["editFYED"]}
-                              </span>
                             </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
-                                {club[7] ? formatDate(club[7]) : ""}
+                                {club[7] ? formatDate(club[7]) : ''}
                               </div>
                             </dd>
                           )}
                         </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">Club GST Number</dt>
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
+                            Club GST Number
+                          </dt>
                           {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club GST Number",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={club[8]}
-                            />
+                            <div className="basis-1/2 flex flex-col items-end">
+                              <input
+                                className="border text-sm rounded-md w-full px-2 py-1"
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    'Club GST Number',
+                                    e.target.value
+                                  )
+                                }
+                                defaultValue={club[8]}
+                              />
+                            </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
                                 {club[8]}
                               </div>
                             </dd>
                           )}
                         </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">Club PST Number</dt>
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
+                            Club PST Number
+                          </dt>
                           {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club PST Number",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={club[9]}
-                            />
+                            <div className="basis-1/2 flex flex-col items-end">
+                              <input
+                                className="border text-sm rounded-md w-full px-2 py-1"
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    'Club PST Number',
+                                    e.target.value
+                                  )
+                                }
+                                defaultValue={club[9]}
+                              />
+                            </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
                                 {club[9]}
                               </div>
                             </dd>
                           )}
                         </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">Club Facebook</dt>
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
+                            Club Facebook
+                          </dt>
                           {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club Facebook",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={club[10]}
-                            />
+                            <div className="basis-1/2 flex flex-col items-end">
+                              <input
+                                className="border text-sm rounded-md w-full px-2 py-1"
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    'Club Facebook',
+                                    e.target.value
+                                  )
+                                }
+                                defaultValue={club[10]}
+                              />
+                            </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
                                 {club[10]}
                               </div>
                             </dd>
                           )}
                         </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">Club Instagram</dt>
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
+                            Club Instagram
+                          </dt>
                           {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club Instagram",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={club[11]}
-                            />
+                            <div className="basis-1/2 flex flex-col items-end">
+                              <input
+                                className="border text-sm rounded-md w-full px-2 py-1"
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    'Club Instagram',
+                                    e.target.value
+                                  )
+                                }
+                                defaultValue={club[11]}
+                              />
+                            </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
                                 {club[11]}
                               </div>
                             </dd>
                           )}
                         </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">Club Tik Tok</dt>
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
+                            Club Tik Tok
+                          </dt>
                           {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club Tik Tok",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={club[12]}
-                            />
+                            <div className="basis-1/2 flex flex-col items-end">
+                              <input
+                                className="border text-sm rounded-md w-full px-2 py-1"
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    'Club Tik Tok',
+                                    e.target.value
+                                  )
+                                }
+                                defaultValue={club[12]}
+                              />
+                            </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
                                 {club[12]}
                               </div>
                             </dd>
                           )}
                         </div>
-                        <div className="flex justify-between gap-x-4 py-3">
-                          <dt className="text-gray-500">
+                        <div className="flex items-center justify-between py-3 gap-x-2">
+                          <dt className="basis-1/2 text-gray-500">
                             Club YouTube Channel
                           </dt>
                           {editingClub === club[0] ? (
-                            <input
-                              className="border text-sm rounded-full w-[180px] p-1"
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "Club YouTube Channel",
-                                  e.target.value
-                                )
-                              }
-                              defaultValue={club[13]}
-                            />
+                            <div className="basis-1/2 flex flex-col items-end">
+                              <input
+                                className="border text-sm rounded-md w-full px-2 py-1"
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    'Club YouTube Channel',
+                                    e.target.value
+                                  )
+                                }
+                                defaultValue={club[13]}
+                              />
+                            </div>
                           ) : (
-                            <dd className="flex items-start gap-x-2">
+                            <dd className="flex items-center justify-end basis-1/2">
                               <div className="font-medium text-gray-900">
                                 {club[13]}
                               </div>
                             </dd>
                           )}
                         </div>
+                        {editingClub === club[0] && (
+                          <div className="flex flex-col justify-between gap-x-4 py-3">
+                            {allFiles.map((file, index) => (
+                              <div
+                                key={index}
+                                className="flex flex-col border shadow-md rounded mt-2 p-2 mx-1"
+                              >
+                                <div className="flex flex-col w-full px-1 outline-none">
+                                  <label className="ml-2 text-left montserrat font-semibold">
+                                    File
+                                  </label>
+                                  <div className="flex gap-2">
+                                    <input
+                                      ref={(el) =>
+                                        (fileInputRefs.current[index] = el)
+                                      }
+                                      type="file"
+                                      className="bg-white w-full rounded-md border border-gray-400 px-2 py-1.5 mt-1"
+                                      onChange={(e) =>
+                                        handleFilesChange(
+                                          index,
+                                          'file',
+                                          e.target.files[0]
+                                        )
+                                      }
+                                    />
+                                    <button
+                                      onClick={() => clearFileInput(index)}
+                                      className="px-4 mt-1 py-1.5 border border-gray-400 rounded-md"
+                                    >
+                                      Clear
+                                    </button>
+                                  </div>
+                                </div>
+
+                                <div className="flex gap-2">
+                                  <div className="flex flex-col w-full py-1 px-1 outline-none">
+                                    <label className="mt-2 ml-2 text-left montserrat font-semibold">
+                                      Type
+                                    </label>
+                                    <select
+                                      className="bg-white w-full rounded-md border border-gray-400 px-2 py-1.5 mt-1"
+                                      value={file.type}
+                                      onChange={(e) =>
+                                        handleFilesChange(
+                                          index,
+                                          'type',
+                                          e.target.value
+                                        )
+                                      }
+                                    >
+                                      <option value="" selected>
+                                        Select type
+                                      </option>
+                                      <option value="Land Agreement">
+                                        Land Agreement
+                                      </option>
+                                      <option value="Insurance Document">
+                                        Insurance Document
+                                      </option>
+                                      <option value="Annual Society Report">
+                                        Annual Society Report
+                                      </option>
+                                      <option value="Other">Other</option>
+                                    </select>
+                                    <span className="text-red-600 text-xs mt-1 ml-2">
+                                      {editErrorsMessages[`fileType_${index}`]}
+                                    </span>
+                                  </div>
+
+                                  <div className="flex flex-col w-full py-1 px-1 outline-none">
+                                    <label className="mt-2 ml-2 text-left montserrat font-semibold">
+                                      Expiry date
+                                    </label>
+                                    <input
+                                      type="date"
+                                      className="bg-white w-full rounded-md border border-gray-400 px-2 py-1.5 mt-1"
+                                      value={file.expiry}
+                                      onChange={(e) =>
+                                        handleFilesChange(
+                                          index,
+                                          'expiry',
+                                          e.target.value
+                                        )
+                                      }
+                                    />
+                                    <span className="text-red-600 text-xs mt-1 ml-2">
+                                      {
+                                        editErrorsMessages[
+                                          `fileExpiry_${index}`
+                                        ]
+                                      }
+                                    </span>
+                                  </div>
+                                </div>
+                                {allFiles.length > 1 && (
+                                  <div className="flex justify-end p-2">
+                                    <button onClick={() => removeFile(index)}>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="size-5 mt-1 text-red-600"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                        />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                            <div className="flex items-center justify-center gap-10 mt-4 mb-8">
+                              <button type="button" onClick={addFile}>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className="size-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </dl>
                     </li>
                   );

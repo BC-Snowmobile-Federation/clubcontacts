@@ -482,6 +482,16 @@ const AddDirectorModal = ({
     setPhone((prevPhone) => normalizeInput(value, prevPhone));
   };
 
+  useEffect(() => {
+    // Add the class to disable scroll on mount
+    document.body.classList.add('overflow-y-hidden');
+
+    // Remove the class when the component is unmounted
+    return () => {
+      document.body.classList.remove('overflow-y-hidden');
+    };
+  }, []);
+
   return (
     <div
       id="addMemberModal"
@@ -493,7 +503,7 @@ const AddDirectorModal = ({
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div className="relative transform overflow-hidden rounded-lg bg-white px-8 text-left shadow-xl transition-all w-[500px] ml-0 lg:ml-[23%] sm:my-8">
+          <div className="relative transform overflow-hidden rounded-lg bg-white px-8 text-left shadow-xl transition-all w-[500px] ml-0 lg:ml-72 sm:my-8">
             <div className="mt-3 text-center sm:mt-5 montserrat text-gray-900">
               {showExistingUser && (
                 <ExistingUserModal
@@ -1108,23 +1118,34 @@ const MemberCard = ({
   ).result;
 
   const membersJSX = editSelectedClub
-    ? uniqueMembers.map((member, index) => (
-        <MemberDetail
-          key={`${index}-${member[0]}`}
-          dtValue={member[7]}
-          member={member}
-          index={index}
-          clubName={clubName}
-          isManager={isManager}
-          isEditing={isEditing}
-          setIsEditing={setIsEditing}
-          data={data}
-          editSelectedClub={editSelectedClub}
-          handleSelectChange={handleSelectChange}
-          handleChangesSubmit={handleChangesSubmit}
-          handleOpenModal={handleOpenModal}
-        />
-      ))
+    ? uniqueMembers.map((member, index) => {
+        if (member[0] === '') {
+          return (
+            <div className="flex items-center justify-center py-8 text-sm font-medium">
+              <h3>
+                No directors found. Use the 'Add Director' button to start.
+              </h3>
+            </div>
+          );
+        }
+        return (
+          <MemberDetail
+            key={`${index}-${member[0]}`}
+            dtValue={member[7]}
+            member={member}
+            index={index}
+            clubName={clubName}
+            isManager={isManager}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            data={data}
+            editSelectedClub={editSelectedClub}
+            handleSelectChange={handleSelectChange}
+            handleChangesSubmit={handleChangesSubmit}
+            handleOpenModal={handleOpenModal}
+          />
+        );
+      })
     : dtValues.map((dtValue, dtIndex) => {
         if (dtValue === 'Director at Large' || dtValue === 'Other') {
           const membersWithRole = activeMembers.filter(

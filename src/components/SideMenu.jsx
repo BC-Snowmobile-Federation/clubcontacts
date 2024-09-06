@@ -168,7 +168,7 @@ const SideMenu = ({
                   type="button"
                   id="logout"
                   onClick={logOut}
-                  className="bg-[#EF3741] h-10 text-white hover:text-white hover:bg-[#F37164] group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold w-[240px] relative"
+                  className="bg-[#324280] hover:bg-[#2D4080] transition-all h-10 text-white hover:text-white group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold w-[240px] relative"
                 >
                   <div
                     id="logout-content"
