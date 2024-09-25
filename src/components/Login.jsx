@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllClubs, fetchClubData } from "../../redux/slice";
 import Spinner from "./Spinner";
-import RequestAccessForm from "./RequestAccess";
+import RequestAccess from "./RequestAccess";
 
 function Login({ onUserLogin }) {
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -26,7 +26,7 @@ function Login({ onUserLogin }) {
     },
     onError: (error) => console.log(`Login Failed: ${error}`),
   });
-  
+
   let { clubs } = useSelector((state) => state.reducer);
 
   const fetchUserData = (userEmail) => {
@@ -159,7 +159,7 @@ function Login({ onUserLogin }) {
         <div className="flex flex-col items-center justify-center g-signin2 mt-12">
           <button
             onClick={login}
-            className="relative mt-10 flex montserrat items-center w-60 h-[42px] bg-white border border-gray-300 rounded-full shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            className="relative mt-10 flex montserrat items-center w-60 h-[42px] bg-white border border-gray-300 rounded-full shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all"
           >
             <svg
               id="googleIcon"
@@ -224,13 +224,13 @@ function Login({ onUserLogin }) {
           <button
             id="requestAccess"
             onClick={handleRequestAccess}
-            className="relative flex mt-4 justify-center items-center montserrat w-60 h-[42px] bg-[#243746] text-white border border-gray-300 rounded-full shadow-md px-6 py-2 text-sm font-medium hover:bg-[#4F5664] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            className="relative flex mt-4 justify-center items-center montserrat w-60 h-[42px] bg-[#535787] text-white border border-gray-300 rounded-full shadow-md px-6 py-2 text-sm font-medium hover:bg-[#3C3F63] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all"
           >
             Request access
           </button>
         </div>
         {requestModal ? (
-          <RequestAccessForm setRequestModal={setRequestModal} />
+          <RequestAccess setRequestModal={setRequestModal} clubs={clubs} />
         ) : null}
         {showErrorModal ? (
           <ErrorLoginModal setShowErrorModal={setShowErrorModal} />

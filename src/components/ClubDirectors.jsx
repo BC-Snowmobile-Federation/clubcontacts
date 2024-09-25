@@ -503,7 +503,7 @@ const AddDirectorModal = ({
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div className="relative transform overflow-hidden rounded-lg bg-white px-8 text-left shadow-xl transition-all w-[500px] ml-0 lg:ml-72 sm:my-8">
+          <div className="relative transform overflow-hidden rounded-lg bg-white px-8 text-left shadow-xl transition-all w-[500px] ml-0 md:ml-72 sm:my-8">
             <div className="mt-3 text-center sm:mt-5 montserrat text-gray-900">
               {showExistingUser && (
                 <ExistingUserModal
@@ -662,7 +662,7 @@ const AddDirectorModal = ({
                         />
                       </div>
                       <div className="leading-6">
-                        <p className="sm:text-2xl lg:text-base">{el}</p>
+                        <p className="text-sm sm:text-base">{el}</p>
                       </div>
                     </div>
                   </div>
@@ -693,7 +693,7 @@ const AddDirectorModal = ({
                   </div>
                   <div className="text-sm leading-6">
                     <div className="flex gap-2 items-center">
-                      <p className="sm:text-2xl lg:text-base">Amilia Admin</p>
+                      <p className="text-sm sm:text-base">Amilia Admin</p>
                       <button className="relative group">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -710,10 +710,11 @@ const AddDirectorModal = ({
                           />
                         </svg>
 
-                        <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-1/3 translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
+                        <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-1/2  sm:-translate-x-1/3 translate-y-9 sm:translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
                           <div className="flex flex-col p-2 text-xs">
                             <span className="truncate">
                               Grants the user administrator access to the club's
+                              <br className="sm:hidden" />
                               Amilia Online Store
                             </span>
                           </div>
@@ -739,7 +740,7 @@ const AddDirectorModal = ({
                     </div>
                     <div className="leading-6">
                       <div className="flex gap-2 items-center">
-                        <p className="sm:text-2xl lg:text-base">Club Admin</p>
+                        <p className="text-sm sm:text-base">Club Admin</p>
                         <button className="relative group">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -756,11 +757,12 @@ const AddDirectorModal = ({
                             />
                           </svg>
 
-                          <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-3/4 translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
+                          <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-full sm:-translate-x-3/4 translate-y-9 sm:translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
                             <div className="flex flex-col p-2 text-xs">
                               <span className="truncate">
-                                Allows the user to make changes to club contacts
-                                in this app
+                                Allows the user to make changes to
+                                <br className="sm:hidden" /> club contacts in
+                                this app
                               </span>
                             </div>
                           </span>
@@ -781,7 +783,7 @@ const AddDirectorModal = ({
                 onClick={handleCloseModal}
                 id="closeAddModal"
                 type="button"
-                className="w-[120px] rounded-lg bg-transparent px-3 py-2 border-2 border-red-600 text-base font-semibold text-gray-900 shadow-sm hover:bg-red-600 hover:text-white transition-all"
+                className="w-[120px] rounded-lg bg-transparent px-3 py-2 border-2 border-red-600 text-base font-semibold text-gray-900 shadow-sm hover:bg-gray-100 transition-all"
               >
                 Close
               </button>
@@ -890,19 +892,21 @@ const MemberDetail = ({
         <div className="">
           {isEditing && editSelectedClub == clubName ? (
             <div className="flex justify-between">
-              <dd
-                id={`${clubName}-${dtValue}-${index}`}
-                data-index={index}
-                className="text-sm px-2 leading-6 whitespace-nowrap text-gray-900 sm:col-start-3 w-[180px]"
-              >
-                {member ? member[0] + ' ' + member[1] : ''}
-              </dd>
-              <div className="flex items-center text-left w-[200px] truncate">
-                {activeRoles.length > 0 && (
-                  <p className="text-left text-xs text-gray-600">
-                    {activeRoles.join(', ')}
-                  </p>
-                )}
+              <div className="flex">
+                <dd
+                  id={`${clubName}-${dtValue}-${index}`}
+                  data-index={index}
+                  className="text-sm px-2 leading-6 whitespace-nowrap text-gray-900 sm:col-start-3 min-w-[120px] sm:w-[180px]"
+                >
+                  {member ? member[0] + ' ' + member[1] : ''}
+                </dd>
+                <div className="flex items-center text-left truncate">
+                  {activeRoles.length > 0 && (
+                    <p className="text-left text-xs text-gray-600">
+                      {activeRoles.join(', ')}
+                    </p>
+                  )}
+                </div>
               </div>
               {isManager &&
                 member &&
@@ -1197,12 +1201,12 @@ const MemberCard = ({
       });
 
   return (
-    <div className="mt-8 w-[500px] rounded-xl shadow-2xl border">
+    <div className="mt-8 min-w-[350px] sm:w-[400px]  lg:w-[500px] rounded-xl shadow-2xl border mx-4">
       <div className="flex text-xl px-4 py-4 bg-gray-200 rounded-t-xl justify-between items-center">
         <h2
           className={`font-semibold ${
             isEditing && editSelectedClub === clubName
-              ? 'truncate max-w-[225px]'
+              ? 'mr-2 md:truncate md:max-w-[190px] lg:max-w-[225px]'
               : ''
           }`}
         >
@@ -1225,7 +1229,7 @@ const MemberCard = ({
                   ></div>
                 </div>
               ) : (
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row lg:items-center gap-4">
                   <button
                     className="text-base font-semibold border border-[#535787] px-4 py-1 text-[#535787] rounded-xl hover:bg-[#535787] hover:text-white transition-all"
                     onClick={handleOpenModal}
@@ -1324,7 +1328,7 @@ const ClubDirectors = ({
     <div className="flex-col flex items-center justify-center">
       {isBcsf ? (
         <>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center flex-col lg:flex-row gap-4">
             <div className="relative bg-transparent border-slate-100 border rounded-full w-[250px] h-10 items-center flex justify-around">
               <input
                 id="clubSearch"
@@ -1348,7 +1352,7 @@ const ClubDirectors = ({
                 </svg>
               </span>
             </div>
-            <div className="bg-slate-100 rounded-full w-[250px] h-10 ml-2 items-center flex justify-around">
+            <div className="bg-slate-100 rounded-full w-[250px] h-10 lg:ml-2 items-center flex justify-around">
               <div className="svg-container flex h-10 items-center ml-4">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

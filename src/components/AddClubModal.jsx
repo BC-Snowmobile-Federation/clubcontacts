@@ -715,7 +715,7 @@ const AddClubModal = ({ setOpenAddClubModal }) => {
                 id="closeAddClubModal"
                 type="button"
                 onClick={() => setOpenAddClubModal(false)}
-                className="w-[120px] rounded-lg bg-transparent px-3 py-2 border-2 border-red-600 text-base font-semibold text-gray-900 shadow-sm hover:bg-red-600 hover:text-white transition-all mr-4"
+                className="w-[120px] rounded-lg bg-transparent px-3 py-2 border-2 border-red-600 text-base font-semibold text-gray-900 shadow-sm hover:bg-gray-100 transition-all mr-4"
               >
                 Cancel
               </button>

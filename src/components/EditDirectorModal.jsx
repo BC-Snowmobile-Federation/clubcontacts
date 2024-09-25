@@ -408,7 +408,7 @@ const EditDirectorModal = ({
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div className="relative transform overflow-hidden rounded-lg bg-white px-8 text-left shadow-xl transition-all w-[500px] ml-0 lg:ml-72 sm:my-8 ">
+          <div className="relative transform overflow-hidden rounded-lg bg-white px-8 text-left shadow-xl transition-all w-[500px] ml-0 md:ml-72 sm:my-8 ">
             {confirmClose && (
               <div>
                 <ConfirmClose
@@ -582,7 +582,7 @@ const EditDirectorModal = ({
                         />
                       </div>
                       <div className="leading-6">
-                        <p className="sm:text-2xl lg:text-base">{role}</p>
+                        <p className="text-sm sm:text-base">{role}</p>
                       </div>
                     </div>
                   </div>
@@ -615,7 +615,7 @@ const EditDirectorModal = ({
                   </div>
                   <div className="text-sm leading-6">
                     <div className="flex gap-2 items-center">
-                      <p className="sm:text-2xl lg:text-base">Amilia Admin</p>
+                      <p className="text-sm sm:text-base">Amilia Admin</p>
                       <button className="relative group">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -632,10 +632,11 @@ const EditDirectorModal = ({
                           />
                         </svg>
 
-                        <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-1/3 translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
+                        <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-1/2 sm:-translate-x-1/3 translate-y-9 sm:translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
                           <div className="flex flex-col p-2 text-xs">
                             <span className="truncate">
                               Grants the user administrator access to the club's
+                              <br className="sm:hidden" />
                               Amilia Online Store
                             </span>
                           </div>
@@ -663,7 +664,7 @@ const EditDirectorModal = ({
                     </div>
                     <div className="leading-6">
                       <div className="flex gap-2 items-center">
-                        <p className="sm:text-2xl lg:text-base">Club Admin</p>
+                        <p className="text-sm sm:text-base">Club Admin</p>
                         <button className="relative group">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -680,11 +681,12 @@ const EditDirectorModal = ({
                             />
                           </svg>
 
-                          <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-3/4 translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
+                          <span className="group-hover:opacity-100 group-hover:visible transition-opacity bg-white px-1 text-sm text-black rounded-md absolute -translate-x-full sm:-translate-x-3/4 translate-y-9 sm:translate-y-full opacity-0 invisible mx-auto z-50 top-[-10px]">
                             <div className="flex flex-col p-2 text-xs">
                               <span className="truncate">
-                                Allows the user to make changes to club contacts
-                                in this app
+                                Allows the user to make changes to
+                                <br className="sm:hidden" /> club contacts in
+                                this app
                               </span>
                             </div>
                           </span>
@@ -705,7 +707,7 @@ const EditDirectorModal = ({
                 onClick={handleCloseModal}
                 id="closeAddModal"
                 type="button"
-                className="w-[120px] rounded-lg bg-transparent px-3 py-2 border-2 border-red-600 text-base font-semibold text-gray-900 shadow-sm hover:bg-red-600 hover:text-white transition-all"
+                className="w-[120px] rounded-lg bg-transparent px-3 py-2 border-2 border-red-600 text-base font-semibold text-gray-900 shadow-sm hover:bg-gray-100 transition-all"
               >
                 Close
               </button>

@@ -29,6 +29,8 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
   const clubWebsiteRef = useRef(null);
   const clubBCSNumberRef = useRef(null);
   const clubFEYDRef = useRef(null);
+  // menu ref
+  const menuRef = useRef(null);
 
   // eslint-disable-next-line
   const [selectedClub, setSelectedClub] = useState('');
@@ -344,9 +346,29 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
       setMenuVisible(true);
       setClubMenuOpen(clubname);
     } else {
+      setDeleteConfirmation('')
       setMenuVisible(false);
     }
   };
+
+  // functions to handle menu closing after clicking outside
+  // Function to handle click outside
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setMenuVisible(false);
+      setDeleteConfirmation('');
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener to detect clicks outside the menu
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      // Cleanup the event listener
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // const handleDeleteClub = (clubname) => {
   //   setClubToDelete(clubname);
@@ -363,10 +385,10 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
       // Set the confirmation state to the clicked club
       setDeleteConfirmation(clubName);
   
-      // Optionally, reset the confirmation state after a timeout if the user doesn't confirm
-      setTimeout(() => {
-        setDeleteConfirmation('');
-      }, 5000); // Reset after 5 seconds if not confirmed
+      // // Optionally, reset the confirmation state after a timeout if the user doesn't confirm
+      // setTimeout(() => {
+      //   setDeleteConfirmation('');
+      // }, 5000); // Reset after 5 seconds if not confirmed
     }
   };
   
@@ -436,7 +458,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
               id="addClubBtn"
               type="button"
               onClick={handleOpenAddClubModal}
-              className="w-[130px] mb-4 right-0 rounded-lg bg-[#535787] px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-[#3C3F63] transition-all"
+              className="w-[130px] mb-4 mr-4 sm:mr-2 right-0 rounded-lg bg-[#535787] px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-[#3C3F63] transition-all"
             >
               Add Club
             </button>
@@ -449,7 +471,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
         {isBcsf ? (
           <>
             <div>
-              <div className="flex items-center mb-8 justify-center">
+              <div className="flex items-center mb-8 justify-center flex-col lg:flex-row gap-4">
                 <div className="relative bg-transparent border-slate-100 border rounded-full w-[250px] h-10 items-center flex justify-around">
                   <input
                     id="clubSearch"
@@ -473,7 +495,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                     </svg>
                   </span>
                 </div>
-                <div className="bg-slate-100 rounded-full w-[250px] h-10 ml-2 items-center flex justify-around">
+                <div className="bg-slate-100 rounded-full w-[250px] h-10 items-center flex justify-around">
                   <div className="svg-container flex h-10 items-center ml-4">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -520,7 +542,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
               id="clubsProfileContainer"
               className={
                 filteredClubs.length >= 2
-                  ? 'grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8 xl:gap-x-8 flex justify-center items-center'
+                  ? 'grid grid-cols-1 xl:grid-cols-2 gap-x-6 gap-y-8 xl:gap-x-8 flex justify-center items-center'
                   : 'flex justify-center items-center'
               }
             >
@@ -530,7 +552,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                   return (
                     <li
                       key={index}
-                      className="overflow-hidden montserrat rounded-xl border border-gray-200 w-[416px]"
+                      className="overflow-hidden montserrat rounded-xl border border-gray-200 w-[358px] sm:w-[416px]"
                     >
                       <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
                         <div className="text-base font-semibold leading-6 text-[#243746]">
@@ -574,14 +596,14 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 <button
                                   type="button"
                                   onClick={() => handleOpenMenu(club[0])}
-                                  className="menu-button -m-2.5 block p-2.5 text-gray-400 hover:text-gray-500"
+                                  className="menu-button -m-2.5 block p-1.5 text-gray-600 hover:bg-gray-200 rounded-full transition-all"
                                   id={`options-menu-${index}-button`}
                                   aria-expanded="false"
                                   aria-haspopup="true"
                                 >
                                   <span className="sr-only">Open options</span>
                                   <svg
-                                    className="h-5 w-5"
+                                    className="h-5 w-5 rotate-90"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                     aria-hidden="true"
@@ -591,6 +613,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 </button>
                                 {menuVisible && club[0] === clubMenuOpen && (
                                   <div
+                                    ref={menuRef}
                                     className="dropdown-menu absolute right-0 z-10 mt-0.5 w-40 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                                     role="menu"
                                     aria-orientation="vertical"

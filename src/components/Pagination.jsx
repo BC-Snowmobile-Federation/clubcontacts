@@ -11,7 +11,7 @@ function Pagination({ totalItems, itemsPerPage, currentPage, onPageChange }) {
   const endPage = Math.min(startPage + 4, totalPages);
 
   return (
-    <nav className="flex items-center justify-between border-t border-gray-200 mt-4 px-4 sm:px-0">
+    <nav className="flex items-center justify-between border-t border-gray-200 mt-4 px-4 sm:px-0 mb-20">
       <div className="-mt-px flex w-0 flex-1">
         <a
           href="#"
@@ -28,7 +28,7 @@ function Pagination({ totalItems, itemsPerPage, currentPage, onPageChange }) {
           First
         </a>
       </div>
-      <div className="hidden md:-mt-px md:flex">
+      <div className=" md:-mt-px md:flex">
         {Array.from({ length: endPage - startPage + 1 }).map((_, idx) => {
           const pageNumber = startPage + idx;
           return (

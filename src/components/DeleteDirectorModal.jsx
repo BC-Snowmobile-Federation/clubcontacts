@@ -65,8 +65,8 @@ export default function DeleteDirectorModal({ member, setOpenDeleteModal }) {
     <div id="popup-modal" className="relative z-10 ml-[40px]">
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div className="flex bg-white ml-0 lg:ml-72 rounded-xl">
+        <div className="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex bg-white ml-0 md:ml-72 rounded-xl">
             <div className="p-4 md:p-5 text-center w-[350px]">
               <div className="text-red-600 flex items-center justify-center mb-4">
                 <svg
