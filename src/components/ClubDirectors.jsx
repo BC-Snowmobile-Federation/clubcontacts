@@ -106,6 +106,7 @@ const AddDirectorModal = ({
     'Membership Director',
     'Director at Large',
     'Other',
+    'Staff',
   ];
 
   const handleSubmit = async () => {
@@ -120,63 +121,6 @@ const AddDirectorModal = ({
       ameliaAdminRef,
       managerAccessRef,
     ];
-
-    // let newErrorMessages = {};
-    // let hasErrors = false;
-
-    // for (let i = 0; i < inputRefs.length; i++) {
-    //   const element = inputRefs[i]?.current;
-
-    //   if (!element) continue;
-
-    //   if (element == null) {
-    //     if (!startDate) {
-    //       newErrorMessages["Effective date"] = "Effective date is required";
-    //       hasErrors = true;
-    //     }
-    //     continue;
-    //   }
-
-    //   let isAnyRoleChecked = roles.some(
-    //     (role) => document.getElementById(role).checked
-    //   );
-
-    //   if (
-    //     element.tagName.toLowerCase() === "select" &&
-    //     element.selectedIndex === 0
-    //   ) {
-    //     newErrorMessages[element.name] = `${element.name} is required`;
-    //     hasErrors = true;
-    //   } else if (element.type !== "checkbox" && element.value.trim() === "") {
-    //     newErrorMessages[element.name] = `${element.name} is required`;
-    //     hasErrors = true;
-    //   } else if (!isAnyRoleChecked) {
-    //     newErrorMessages["Role"] = "At least one role must be selected";
-    //     hasErrors = true;
-    //   }
-
-    //   if (
-    //     element.name === "Phone number" ||
-    //     element.id === "phoneNumberInput"
-    //   ) {
-    //     // Adjust the condition as per the name or id of your phone number input
-    //     const phoneNumberPattern = /^\(\d{3}\) \d{3}-\d{4}$/; // Regex pattern for (xxx)yyy-zzzz
-    //     if (!phoneNumberPattern.test(element.value)) {
-    //       newErrorMessages[element.name] =
-    //         "Phone number format should be (xxx) yyy-zzzz";
-    //       hasErrors = true;
-    //     }
-    //   }
-    // }
-
-    // if (!dateSelected && startDate == null) {
-    //   newErrorMessages["Effective date"] = "Effective date is required";
-    //   hasErrors = true;
-    // }
-
-    // setErrorMessages(newErrorMessages);
-
-    // if (hasErrors) return;
 
     let checkedRoles = roles.filter(
       (role) => document.getElementById(role).checked
@@ -442,6 +386,8 @@ const AddDirectorModal = ({
   };
 
   const postDirectorData = async (clubName, memberData, hasManager) => {
+    // console.log(memberData)
+    // return
     const options = {
       method: 'post',
       mode: 'no-cors',
@@ -525,7 +471,7 @@ const AddDirectorModal = ({
 
             <div className="flex gap-2">
               <div className="flex flex-col w-full">
-                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                   Name{' '}
                 </label>
                 <input
@@ -542,7 +488,7 @@ const AddDirectorModal = ({
               </div>
 
               <div className="flex flex-col w-full">
-                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                   Last Name{' '}
                 </label>
                 <input
@@ -560,7 +506,7 @@ const AddDirectorModal = ({
             </div>
 
             <div className="flex flex-col w-full">
-              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+              <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                 Email
               </label>
               <input
@@ -577,7 +523,7 @@ const AddDirectorModal = ({
             </div>
 
             <div className="flex flex-col w-full">
-              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+              <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                 Phone Number{' '}
               </label>
               <input
@@ -597,7 +543,7 @@ const AddDirectorModal = ({
 
             <div className="flex gap-2">
               <div className="flex flex-col w-full">
-                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                   Gender{' '}
                 </label>
                 <select
@@ -619,7 +565,7 @@ const AddDirectorModal = ({
               </div>
 
               <div className="flex flex-col w-full">
-                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                   Effective Date
                 </label>
                 <DatePicker
@@ -642,7 +588,7 @@ const AddDirectorModal = ({
             </div>
 
             <div className="flex flex-col w-full">
-              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+              <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                 Role{' '}
               </label>
               <div className="grid grid-cols-2">
@@ -674,7 +620,7 @@ const AddDirectorModal = ({
             </div>
 
             <div className="flex flex-col w-full">
-              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+              <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                 Access{' '}
               </label>
               <div className="grid grid-cols-2 mt-2">
@@ -776,7 +722,7 @@ const AddDirectorModal = ({
 
             <div
               id="submitButtonsContainer"
-              className="mt-10 mb-4 flex gap-4 justify-center"
+              className="mt-6 mb-4 flex gap-4 justify-center"
             >
               <button
                 disabled={isLoading}
@@ -1014,6 +960,7 @@ const MemberCard = ({
     'Membership Director',
     'Director at Large',
     'Other',
+    'Staff',
   ];
 
   const [editSelectedClub, setEditSelectedClub] = useState('');
@@ -1151,7 +1098,11 @@ const MemberCard = ({
         );
       })
     : dtValues.map((dtValue, dtIndex) => {
-        if (dtValue === 'Director at Large' || dtValue === 'Other') {
+        if (
+          dtValue === 'Director at Large' ||
+          dtValue === 'Other' ||
+          dtValue === 'Staff'
+        ) {
           const membersWithRole = activeMembers.filter(
             (item) => item[7] === dtValue
           );
@@ -1281,6 +1232,11 @@ const MemberCard = ({
         />
       )}
       {membersJSX}
+      {isEditing && editSelectedClub === clubName && (
+        <div className="flex items-center justify-center py-4 text-xs font-medium">
+          <h4>* Changes might take a while to come into effect *</h4>
+        </div>
+      )}
     </div>
   );
 };

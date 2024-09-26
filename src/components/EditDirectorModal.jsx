@@ -171,6 +171,7 @@ const EditDirectorModal = ({
     'Membership Director',
     'Director at Large',
     'Other',
+    'Staff'
   ];
   let { data } = useSelector((state) => state.reducer);
   const initialCheckboxStates = {};
@@ -430,7 +431,7 @@ const EditDirectorModal = ({
             </div>
             <div className="flex gap-2">
               <div className="flex flex-col w-full">
-                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                   Name{' '}
                 </label>
                 <input
@@ -449,7 +450,7 @@ const EditDirectorModal = ({
               </div>
 
               <div className="flex flex-col w-full">
-                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                   Last Name{' '}
                 </label>
                 <input
@@ -469,7 +470,7 @@ const EditDirectorModal = ({
             </div>
 
             <div className="flex flex-col w-full">
-              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+              <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                 Email
               </label>
               <input
@@ -488,7 +489,7 @@ const EditDirectorModal = ({
             </div>
 
             <div className="flex flex-col w-full">
-              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+              <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                 Phone Number{' '}
               </label>
               <input
@@ -509,7 +510,7 @@ const EditDirectorModal = ({
 
             <div className="flex gap-2">
               <div className="flex flex-col w-full">
-                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                   Gender{' '}
                 </label>
                 <select
@@ -533,7 +534,7 @@ const EditDirectorModal = ({
               </div>
 
               <div className="flex flex-col w-full">
-                <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+                <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                   Effective Date
                 </label>
                 <DatePicker
@@ -556,7 +557,7 @@ const EditDirectorModal = ({
             </div>
 
             <div className="flex flex-col w-full">
-              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+              <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                 Role{' '}
               </label>
               <div className="grid grid-cols-2">
@@ -594,7 +595,7 @@ const EditDirectorModal = ({
             </div>
 
             <div className="flex flex-col w-full">
-              <label className="mt-4 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
+              <label className="mt-2 ml-2 text-left montserrat font-semibold after:content-['*'] after:ml-0.5 after:text-red-500">
                 Access{' '}
               </label>
               <div className="grid grid-cols-2 mt-2">
@@ -700,7 +701,7 @@ const EditDirectorModal = ({
 
             <div
               id="submitButtonsContainer"
-              className="mt-10 mb-4 flex gap-4 justify-center"
+              className="mt-6 mb-4 flex gap-4 justify-center"
             >
               <button
                 disabled={isLoading}
