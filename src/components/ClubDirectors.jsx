@@ -447,7 +447,7 @@ const AddDirectorModal = ({
       aria-modal="true"
     >
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-      <div className="fixed inset-0 z-10 overflow-y-auto">
+      <div className="fixed inset-0 z-10 overflow-y-auto mb-16 md:mb-0">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <div className="relative transform overflow-hidden rounded-lg bg-white px-8 text-left shadow-xl transition-all w-[500px] ml-0 md:ml-72 sm:my-8">
             <div className="mt-3 text-center sm:mt-5 montserrat text-gray-900">
@@ -842,13 +842,13 @@ const MemberDetail = ({
                 <dd
                   id={`${clubName}-${dtValue}-${index}`}
                   data-index={index}
-                  className="text-sm px-2 leading-6 whitespace-nowrap text-gray-900 sm:col-start-3 min-w-[120px] sm:w-[180px]"
+                  className="text-sm px-2 leading-6 whitespace-nowrap text-gray-900 sm:col-start-3 min-w-[120px] w-[150px] lg:w-[180px]"
                 >
                   {member ? member[0] + ' ' + member[1] : ''}
                 </dd>
-                <div className="flex items-center text-left truncate">
+                <div className="flex w-[140px] lg:w-[200px] items-center text-left">
                   {activeRoles.length > 0 && (
-                    <p className="text-left text-xs text-gray-600">
+                    <p className="text-left text-xs text-gray-600 text-pretty">
                       {activeRoles.join(', ')}
                     </p>
                   )}
@@ -1046,11 +1046,14 @@ const MemberCard = ({
       const sendSelectChanges = async () => {
         setIsLoadingSelect(true);
         await postSelectChanges(selectedChanges);
-        dispatch(fetchData());
+        // esperamos un segundo antes de buscar la data
+        setTimeout(() => {
+          dispatch(fetchData());
         setShouldChange(false);
         setIsLoadingSelect(false);
         setIsEditing(false);
         setIsChangingSelect(false);
+        }, 2000); 
       };
       sendSelectChanges();
     }
@@ -1067,6 +1070,8 @@ const MemberCard = ({
     },
     { seen: new Set(), result: [] }
   ).result;
+
+  // hay que checkear esto, ver como se llama la data luego de que se hagan edits
 
   const membersJSX = editSelectedClub
     ? uniqueMembers.map((member, index) => {

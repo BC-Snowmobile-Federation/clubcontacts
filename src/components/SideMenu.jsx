@@ -46,8 +46,11 @@ const SideMenu = ({
 
   function handleChangeSection(id) {
     if (isEditing) {
-      setShowModal(true);
-      setBtnId(id);
+      // before we showed a modal asking if we wanted to save changes
+      // uncomment this 2 lines of code to add back the functionality
+      // setShowModal(true);
+      // setBtnId(id);
+      setActiveButton(id);
     } else {
       setActiveButton(id);
     }
@@ -226,7 +229,7 @@ const SideMenu = ({
         </div>
       </div>
       {/* Bottom Menu for Smaller Screens */}
-      <div className="flex fixed inset-x-0 bottom-0 bg-[#243570] p-2 justify-around items-center md:hidden">
+      <div className="flex fixed inset-x-0 bottom-0 bg-[#243570] p-2 justify-around items-center z-50 md:hidden">
         {buttonData.slice(0, 3).map((btn) => (
           <button
             key={btn.id}

@@ -171,7 +171,7 @@ const EditDirectorModal = ({
     'Membership Director',
     'Director at Large',
     'Other',
-    'Staff'
+    'Staff',
   ];
   let { data } = useSelector((state) => state.reducer);
   const initialCheckboxStates = {};
@@ -368,12 +368,15 @@ const EditDirectorModal = ({
       const editDirector = async () => {
         setIsLoading(true);
         await editDirectorData(modifiedValues);
-        dispatch(fetchData());
-        setShouldPostEdition(false);
-        setIsLoading(false);
-        // setIsEditing(false);
-        setOpenEditModal(false);
-        setActiveSaveButton(false);
+        // esperamos dos segundos antes de buscar la data
+        setTimeout(() => {
+          dispatch(fetchData());
+          setShouldPostEdition(false);
+          setIsLoading(false);
+          // setIsEditing(false);
+          setOpenEditModal(false);
+          setActiveSaveButton(false);
+        }, 2000);
       };
       editDirector();
     }
@@ -407,7 +410,7 @@ const EditDirectorModal = ({
       aria-modal="true"
     >
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-      <div className="fixed inset-0 z-10 overflow-y-auto">
+      <div className="fixed inset-0 z-10 overflow-y-auto mb-16 md:mb-0">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <div className="relative transform overflow-hidden rounded-lg bg-white px-8 text-left shadow-xl transition-all w-[500px] ml-0 md:ml-72 sm:my-8 ">
             {confirmClose && (
