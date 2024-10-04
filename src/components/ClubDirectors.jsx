@@ -842,13 +842,13 @@ const MemberDetail = ({
                 <dd
                   id={`${clubName}-${dtValue}-${index}`}
                   data-index={index}
-                  className="text-sm px-2 leading-6 whitespace-nowrap text-gray-900 sm:col-start-3 min-w-[120px] w-[150px] lg:w-[180px]"
+                  className="text-sm pr-2 leading-6 whitespace-nowrap text-gray-900 sm:col-start-3 min-w-[140px] w-[140px] text-wrap sm:text-nowrap lg:w-[180px] "
                 >
                   {member ? member[0] + ' ' + member[1] : ''}
                 </dd>
-                <div className="flex w-[140px] lg:w-[200px] items-center text-left">
+                <div className="flex pr-2 sm:w-[140px] lg:w-[200px] items-center text-left">
                   {activeRoles.length > 0 && (
-                    <p className="text-left text-xs text-gray-600 text-pretty">
+                    <p className="text-left text-xs text-gray-600 text-wrap">
                       {activeRoles.join(', ')}
                     </p>
                   )}
@@ -1163,7 +1163,7 @@ const MemberCard = ({
           className={`font-semibold ${
             isEditing && editSelectedClub === clubName
               ? 'mr-2 md:truncate md:max-w-[190px] lg:max-w-[225px]'
-              : ''
+              : 'mr-4'
           }`}
         >
           {clubName}

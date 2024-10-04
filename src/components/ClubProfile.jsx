@@ -705,7 +705,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 </div>
                               ) : (
                                 <dd className="flex items-center justify-end basis-1/2">
-                                  <div className="font-medium text-gray-900">
+                                  <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                     {club[15] || ''}
                                   </div>
                                 </dd>
@@ -735,7 +735,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 </div>
                               ) : (
                                 <dd className="flex items-center justify-end basis-1/2">
-                                  <div className="font-medium text-gray-900">
+                                  <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                     {club[16] || ''}
                                   </div>
                                 </dd>
@@ -765,7 +765,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 </div>
                               ) : (
                                 <dd className="flex items-center justify-end basis-1/2">
-                                  <div className="font-medium text-gray-900">
+                                  <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                     {club[17] || ''}
                                   </div>
                                 </dd>
@@ -798,7 +798,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 </div>
                               ) : (
                                 <dd className="flex items-center justify-end basis-1/2">
-                                  <div className="font-medium text-gray-900">
+                                  <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                     {club[16] || ''}
                                   </div>
                                 </dd>
@@ -828,7 +828,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 </div>
                               ) : (
                                 <dd className="flex items-center justify-end basis-1/2">
-                                  <div className="font-medium text-gray-900">
+                                  <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                     {club[17] || ''}
                                   </div>
                                 </dd>
@@ -858,7 +858,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                 </div>
                               ) : (
                                 <dd className="flex items-center justify-end basis-1/2">
-                                  <div className="font-medium text-gray-900">
+                                  <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                     {club[18] || ''}
                                   </div>
                                 </dd>
@@ -909,7 +909,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[2]}
                               </div>
                             </dd>
@@ -938,7 +938,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[3]}
                               </div>
                             </dd>
@@ -967,7 +967,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[4]}
                               </div>
                             </dd>
@@ -996,7 +996,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[5]}
                               </div>
                             </dd>
@@ -1022,7 +1022,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[6]}
                               </div>
                             </dd>
@@ -1052,7 +1052,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[7] ? formatDate(club[7]) : ''}
                               </div>
                             </dd>
@@ -1077,7 +1077,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[8]}
                               </div>
                             </dd>
@@ -1102,7 +1102,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[9]}
                               </div>
                             </dd>
@@ -1127,7 +1127,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[10]}
                               </div>
                             </dd>
@@ -1152,7 +1152,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[11]}
                               </div>
                             </dd>
@@ -1177,7 +1177,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[12]}
                               </div>
                             </dd>
@@ -1202,7 +1202,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             </div>
                           ) : (
                             <dd className="flex items-center justify-end basis-1/2">
-                              <div className="font-medium text-gray-900">
+                              <div className="text-right font-medium text-gray-900 max-w-[159px] sm:max-w-[188px] text-wrap truncate">
                                 {club[13]}
                               </div>
                             </dd>
@@ -1213,7 +1213,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                             {allFiles.map((file, index) => (
                               <div
                                 key={index}
-                                className="flex flex-col border shadow-md rounded mt-2 p-2 mx-1"
+                                className="flex flex-col border shadow-md rounded mt-2 p-1 sm:p-2 mx-1"
                               >
                                 <div className="flex flex-col w-full px-1 outline-none">
                                   <label className="ml-2 text-left montserrat font-semibold">
@@ -1243,7 +1243,7 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
                                   </div>
                                 </div>
 
-                                <div className="flex gap-2">
+                                <div className="flex sm:gap-2">
                                   <div className="flex flex-col w-full py-1 px-1 outline-none">
                                     <label className="mt-2 ml-2 text-left montserrat font-semibold">
                                       Type

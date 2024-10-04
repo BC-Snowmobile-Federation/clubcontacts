@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import "./Arrow.css";
+import { useEffect } from "react";
 
 const MainContent = ({
   // eslint-disable-next-line
@@ -11,6 +12,7 @@ const MainContent = ({
   handleClubChange,
   // eslint-disable-next-line
   selectedClub,
+  setSelectedClub,
   // eslint-disable-next-line
   handleStatusChange,
   // eslint-disable-next-line
@@ -54,6 +56,7 @@ const MainContent = ({
 
   const onClubChange = (e) => {
     const newClub = e.target.value;
+    console.log(newClub)
     handleClubChange(newClub);
     setCurrentPage(1)
   };
@@ -72,7 +75,7 @@ const MainContent = ({
 
   return (
     <div className="flex items-center justify-center">
-      <div className="bg-transparent rounded-full w-[720px] h-[200px] lg:h-[100px] mb-6 h-10 items-center flex flex-col lg:flex-row justify-around">
+      <div className="bg-transparent rounded-full w-[720px] h-[200px] lg:h-[100px] mb-6 items-center flex flex-col lg:flex-row justify-around">
         <div className=" svg-container flex h-10 items-start mt-9">
           <svg
             xmlns="http://www.w3.org/2000/svg"

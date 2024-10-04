@@ -2,7 +2,6 @@ import './DataTable.css';
 // eslint-disable-next-line
 const DataTable = ({ data, headers }) => {
   data = data.filter((el) => el[0] != '' && el[1] != '');
-  console.log(data);
 
   return (
     <>

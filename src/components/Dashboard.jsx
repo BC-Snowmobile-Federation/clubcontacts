@@ -165,6 +165,13 @@ const Dashboard = () => {
     amiliaPosition,
   ]);
 
+  // si sacas esto no aparecen personas en la tab history
+  useEffect(() => {
+    if (data && data.length > 0 && filteredData.length === 0) {
+      setFilteredData(data);
+    }
+  }, [data, filteredData]);  
+
   // if (!clubData || clubData.length < 1) {
   //   return (
   //     <div className="flex justify-center m-auto items-center">
@@ -201,6 +208,7 @@ const Dashboard = () => {
                       selectedRole={selectedRole}
                       handleClubChange={handleClubChange}
                       selectedClub={selectedClub}
+                      setSelectedClub={setSelectedClub}
                       handleStatusChange={handleStatusChange}
                       statusPosition={statusPosition}
                       selectedStatus={selectedStatus}
@@ -212,6 +220,7 @@ const Dashboard = () => {
                       uniqueStatusValues={uniqueStatusValues}
                       uniqueAmiliaValues={uniqueAmiliaValues}
                       setCurrentPage={setCurrentPage}
+
                     />
                     <SearchBar setSearchQuery={setSearchQuery} />
                   </>
