@@ -33,7 +33,7 @@ const Dashboard = () => {
     dispatch(fetchClubData());
   }, [dispatch]);
 
-  let { data, clubData } = useSelector((state) => state.reducer);
+  let { data, clubData, loadClubData } = useSelector((state) => state.reducer);
 
   let headers = [
     "Name",
@@ -172,7 +172,7 @@ const Dashboard = () => {
     }
   }, [data, filteredData]);  
 
-  if (!clubData) {
+  if (loadClubData) {
     return (
       <div>
         <SideMenu

@@ -6,6 +6,7 @@ const initialState = {
   headers: [],
   clubData: [],
   clubs: [],
+  loadClubData: false
 };
 
 // esto es la data de cada una de las personas.
@@ -64,20 +65,28 @@ const appReducer = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchData.fulfilled, (state, action) => {
+    builder
+    .addCase(fetchData.fulfilled, (state, action) => {
       let setData = action.payload
       state.data = setData;
       state.allData = setData;
-    });
-    builder.addCase(fetchClubData.fulfilled, (state, action) => {
+    })
+    .addCase(fetchClubData.pending, (state) => {
+      state.loadClubData = true;
+    })
+    .addCase(fetchClubData.fulfilled, (state, action) => {
       state.clubData = action.payload;
-    });
-    builder.addCase(clear.fulfilled, (state, action) => {
+      state.loadClubData = false;
+    })
+    .addCase(fetchClubData.rejected, (state) => {
+      state.loadClubData = false;
+    })
+    .addCase(clear.fulfilled, (state, action) => {
       state.data = [];
       state.allData = [];
       state.clubData = [];
-    });
-    builder.addCase(fetchAllClubs.fulfilled, (state, action) => {
+    })
+    .addCase(fetchAllClubs.fulfilled, (state, action) => {
       state.clubs = action.payload
     })
   },
