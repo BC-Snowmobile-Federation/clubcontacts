@@ -375,7 +375,7 @@ const EditDirectorModal = ({
               dispatch(fetchData()),
               {
                 loading: 'Refreshing view...',
-                success: 'View data refresh successfully!',
+                success: 'Refresh successfully!',
                 error: 'Failed to update data. Please try again.',
               }
             );
