@@ -188,7 +188,7 @@ const AddDirectorModal = ({
   const handleCheckIfUserExists = async () => {
     setOpenModal(false);
     toast.promise(( async ()=>{
-      await checkIfUserExists()
+      checkIfUserExists()
       .then((resp) => {
         if (resp.status == 'Active') {
           setStatusUserFound('Active');
