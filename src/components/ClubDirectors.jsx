@@ -186,7 +186,6 @@ const AddDirectorModal = ({
   }
 
   const handleCheckIfUserExists = async () => {
-    setOpenModal(false);
     const func = async () => {
       const resp = await checkIfUserExists()
       if (resp.status == 'Active') {
@@ -280,7 +279,7 @@ const AddDirectorModal = ({
     await dispatch(fetchData()).then(() => {
       setIsLoading(false);
       // setIsEditing(false);
-      // setOpenModal(false);
+      setOpenModal(false);
     });
   };
 
