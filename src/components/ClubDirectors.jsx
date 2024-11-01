@@ -187,7 +187,7 @@ const AddDirectorModal = ({
 
   const handleCheckIfUserExists = async () => {
     setOpenModal(false);
-    toast.promise(
+    toast.promise(( async ()=>{
       await checkIfUserExists()
       .then((resp) => {
         if (resp.status == 'Active') {
@@ -212,7 +212,8 @@ const AddDirectorModal = ({
             }
           )
         }
-      }),
+        })
+      })(),
       {
         loading: 'Checking if user exists...',
         success: 'User check completed!',
