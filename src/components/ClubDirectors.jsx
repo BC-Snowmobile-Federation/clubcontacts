@@ -187,7 +187,7 @@ const AddDirectorModal = ({
 
   const handleCheckIfUserExists = async () => {
     setOpenModal(false);
-    toast.promise((async () => {
+    const func = async () => {
       const resp = await checkIfUserExists()
       if (resp.status == 'Active') {
         setStatusUserFound('Active');
@@ -202,17 +202,19 @@ const AddDirectorModal = ({
         setShowExistingUser(true);
         setIsLoading(false);
       } else {
-        toast.promise(
-          handleSubmitUser(),
-          {
-            loading: 'Submitting user data...',
-            success: 'User data submitted successfully!',
-            error: 'An error occurred while submitting user data.',
-          }
-        )
+        handleSubmitUser()
+        // toast.promise(()=>{}
+        //   ,
+        //   {
+        //     loading: 'Submitting user data...',
+        //     success: 'User data submitted successfully!',
+        //     error: 'An error occurred while submitting user data.',
+        //   }
+        // )
       }
       return resp
-    } )(),
+    }
+    toast.promise(func(),
       {
         loading: 'Checking if user exists...',
         success: 'User check completed!',
