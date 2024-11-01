@@ -5,6 +5,7 @@ import DatePicker from 'react-datepicker';
 import ConfirmClose from './ConfirmClose.jsx';
 import 'react-datepicker/dist/react-datepicker.css';
 import { APPS_SCRIPT_URL } from '../constants.js';
+import { toast } from 'sonner'
 
 // eslint-disable-next-line
 const EditDirectorModal = ({
@@ -367,16 +368,25 @@ const EditDirectorModal = ({
     if (shouldPostEdition && !isLoading) {
       const editDirector = async () => {
         setIsLoading(true);
-        await editDirectorData(modifiedValues);
-        // esperamos dos segundos antes de buscar la data
-        setTimeout(() => {
-          dispatch(fetchData());
-          setShouldPostEdition(false);
-          setIsLoading(false);
-          // setIsEditing(false);
-          setOpenEditModal(false);
-          setActiveSaveButton(false);
-        }, 2000);
+        toast.promise(editDirectorData(modifiedValues), {
+          loading: 'Saving changes...',
+          success: (data) => {
+            toast.promise(
+              dispatch(fetchData()),
+              {
+                loading: 'Refreshing view...',
+                success: 'View data refresh successfully!',
+                error: 'Failed to update data. Please try again.',
+              }
+            );
+            setShouldPostEdition(false);
+            setIsLoading(false);
+            setActiveSaveButton(false);
+            return `Saved`;
+          },
+          error: 'Error',
+        });
+        setOpenEditModal(false);
       };
       editDirector();
     }

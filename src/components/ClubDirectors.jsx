@@ -815,7 +815,7 @@ const MemberDetail = ({
 
   return (
     <dl className="divide-y divide-gray-500 montserrat">
-      {openEditModal ? (
+      {openEditModal && (
         <EditDirectorModal
           member={member}
           dtValue={dtValue}
@@ -823,16 +823,12 @@ const MemberDetail = ({
           setOpenEditModal={setOpenEditModal}
           setIsEditing={setIsEditing}
         />
-      ) : (
-        <></>
       )}
-      {openDeleteModal ? (
+      {openDeleteModal && (
         <DeleteDirectorModal
           member={member}
           setOpenDeleteModal={setOpenDeleteModal}
         />
-      ) : (
-        <></>
       )}
       <div className="px-4 py-4">
         <div className="">

@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 import { APPS_SCRIPT_URL } from '../constants';
 import { fetchData } from '../../redux/slice';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner'
 
 export default function DeleteDirectorModal({ member, setOpenDeleteModal }) {
   const username = member[0] + ' ' + member[1];
@@ -32,16 +33,32 @@ export default function DeleteDirectorModal({ member, setOpenDeleteModal }) {
     };
 
     try {
-      const response = await fetch(APPS_SCRIPT_URL, options);
+      toast.promise(
+        (async () => {
+          const response = await fetch(APPS_SCRIPT_URL, options);
+    
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+    
+          const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      // console.log('Response received:', result.message);
-      // hay que dejar de eliminar a las personas de la spreadsheet
-      dispatch(fetchData());
+          toast.promise(
+            dispatch(fetchData()),
+            {
+              loading: 'Refreshing view...',
+              success: 'View data refresh successfully!',
+              error: 'Failed to update data. Please try again.',
+            }
+          );
+          return result.message; // Puedes devolver un mensaje específico del resultado
+        })(),
+        {
+          loading: 'Processing deletion...',
+          success: 'Deletion completed successfully!',
+          error: 'An error occurred while deleting. Please try again.',
+        }
+      );
       setIsLoading(false);
       setOpenDeleteModal(false);
     } catch (e) {
