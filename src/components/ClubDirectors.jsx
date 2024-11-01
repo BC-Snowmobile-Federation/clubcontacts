@@ -186,7 +186,7 @@ const AddDirectorModal = ({
   }
 
   const handleCheckIfUserExists = async () => {
-    const func = async () => {
+    toast.promise((async () => {
       const resp = await checkIfUserExists()
       if (resp.status == 'Active') {
         setStatusUserFound('Active');
@@ -210,8 +210,7 @@ const AddDirectorModal = ({
         )
       }
       return resp
-    }
-    toast.promise(func(),
+    })(),
       {
         loading: 'Checking if user exists...',
         success: 'User check completed!',
@@ -236,7 +235,7 @@ const AddDirectorModal = ({
     let checkedRoles = roles.filter(
       (role) => document.getElementById(role).checked
     );
-
+    setOpenModal(false);
     for (let role of checkedRoles) {
       const formDataForRole = inputRefs
         .map((ref) => {
@@ -279,7 +278,7 @@ const AddDirectorModal = ({
     await dispatch(fetchData()).then(() => {
       setIsLoading(false);
       // setIsEditing(false);
-      setOpenModal(false);
+      // setOpenModal(false);
     });
   };
 
