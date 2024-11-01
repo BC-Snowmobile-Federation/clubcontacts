@@ -187,39 +187,37 @@ const AddDirectorModal = ({
 
   const handleCheckIfUserExists = async () => {
     setOpenModal(false);
-    toast.promise(( async ()=>{
-      checkIfUserExists()
-      .then((resp) => {
-        if (resp.status == 'Active') {
-          setStatusUserFound('Active');
-          setShowExistingUser(true);
-          setIsLoading(false);
-        } else if (resp.status == 'Inactive') {
-          setStatusUserFound('Inactive');
-          let checkedRoles = roles.filter(
-            (role) => document.getElementById(role).checked
-          );
-          setInactiveCheckedRole(checkedRoles);
-          setShowExistingUser(true);
-          setIsLoading(false);
-        } else {
-          toast.promise(
-            handleSubmitUser(),
-            {
-              loading: 'Submitting user data...',
-              success: 'User data submitted successfully!',
-              error: 'An error occurred while submitting user data.',
-            }
-          )
-        }
-        })
-      })(),
+    const resp = await toast.promise(checkIfUserExists(),
       {
         loading: 'Checking if user exists...',
         success: 'User check completed!',
         error: 'An error occurred while checking user status.',
       }
     )
+
+    if (resp.status == 'Active') {
+      setStatusUserFound('Active');
+      setShowExistingUser(true);
+      setIsLoading(false);
+    } else if (resp.status == 'Inactive') {
+      setStatusUserFound('Inactive');
+      let checkedRoles = roles.filter(
+        (role) => document.getElementById(role).checked
+      );
+      setInactiveCheckedRole(checkedRoles);
+      setShowExistingUser(true);
+      setIsLoading(false);
+    } else {
+      toast.promise(
+        handleSubmitUser(),
+        {
+          loading: 'Submitting user data...',
+          success: 'User data submitted successfully!',
+          error: 'An error occurred while submitting user data.',
+        }
+      )
+    }
+
   };
 
   const handleSubmitUser = async () => {
