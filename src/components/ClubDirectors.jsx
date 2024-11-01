@@ -202,15 +202,13 @@ const AddDirectorModal = ({
         setShowExistingUser(true);
         setIsLoading(false);
       } else {
-        handleSubmitUser()
-        // toast.promise(()=>{}
-        //   ,
-        //   {
-        //     loading: 'Submitting user data...',
-        //     success: 'User data submitted successfully!',
-        //     error: 'An error occurred while submitting user data.',
-        //   }
-        // )
+        toast.promise(handleSubmitUser()
+          ,{
+            loading: 'Submitting user data...',
+            success: 'User data submitted successfully!',
+            error: 'An error occurred while submitting user data.',
+          }
+        )
       }
       return resp
     }
