@@ -11,7 +11,7 @@ import RequestAccess from "./RequestAccess";
 function Login({ onUserLogin }) {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [userInfo, setUserInfo] = useState([]);
-  const [userEmail, setUserEmail] = useState([]);
+  const [userEmail, setUserEmail] = useState(null);
   const [makePost, setMakePost] = useState(false);
   const [goToDashboard, setGoToDashboard] = useState(false);
   const [requestModal, setRequestModal] = useState(false);
@@ -78,6 +78,7 @@ function Login({ onUserLogin }) {
 
   useEffect(() => {
     if (makePost) {
+      setIsLoadingLogin(true);
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
       axios
         .get(
@@ -104,6 +105,7 @@ function Login({ onUserLogin }) {
         .catch((error) => console.log(error))
         .finally(()=>{
           setMakePost(false);
+          setIsLoadingLogin(false);
         })
     }
   }, [makePost, isUserBcsf]);
@@ -227,7 +229,7 @@ function Login({ onUserLogin }) {
           </button>
         </div>
         {requestModal ? (
-          <RequestAccess setRequestModal={setRequestModal} clubs={clubs} />
+          <RequestAccess setRequestModal={setRequestModal} clubs={clubs} userEmail={userEmail}/>
         ) : null}
         {showErrorModal ? (
           <ErrorLoginModal setShowErrorModal={setShowErrorModal}>

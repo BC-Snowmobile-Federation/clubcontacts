@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Spinner from './Spinner'; // Ensure this component is available
 import RequestForm from './RequestForm'; // Import the form component
 
-const RequestAccess = ({ setRequestModal, clubs }) => {
+const RequestAccess = ({ setRequestModal, clubs, userEmail }) => {
   const [requestSent, setRequestSent] = useState(false);
   const [isLoadingRequest, setIsLoadingRequest] = useState(false);
 
@@ -47,6 +47,7 @@ const RequestAccess = ({ setRequestModal, clubs }) => {
                     setRequestSent={setRequestSent}
                     setIsLoadingRequest={setIsLoadingRequest}
                     clubs={clubs}
+                    userEmail={userEmail}
                   />
                 </>
               )}

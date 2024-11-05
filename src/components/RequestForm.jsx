@@ -2,11 +2,12 @@
 import { useState, useRef } from 'react';
 import { APPS_SCRIPT_URL } from '../constants';
 
-const RequestForm = ({ setRequestSent, setIsLoadingRequest, clubs }) => {
+const RequestForm = ({ setRequestSent, setIsLoadingRequest, clubs, userEmail }) => {
   const emailRequestRef = useRef(null);
   const [role, setRole] = useState('manager'); // Default to 'manager'
   const [selectedClub, setSelectedClub] = useState(''); // Store selected club
   const [errors, setErrors] = useState({ email: '', club: '' });
+  const [email, setEmail] = useState(userEmail?.email || "")
 
   const clubsList = role === 'manager' ? ['All Clubs', ...clubs] : clubs;
 
@@ -68,6 +69,10 @@ const RequestForm = ({ setRequestSent, setIsLoadingRequest, clubs }) => {
     }
   }
 
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value)
+  }
+
   return (
     <div className="mt-4 flex flex-col items-center gap-2">
       <div className="flex flex-col items-start">
@@ -76,6 +81,8 @@ const RequestForm = ({ setRequestSent, setIsLoadingRequest, clubs }) => {
           ref={emailRequestRef}
           name="email"
           id="email"
+          value={email}
+          onChange={handleEmailChange}
           className={`w-64 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
             errors.email ? 'ring-red-600' : ''
           }`}
