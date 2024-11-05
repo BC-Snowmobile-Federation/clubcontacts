@@ -104,7 +104,6 @@ function Login({ onUserLogin }) {
   }, [makePost]);
 
   useEffect(()=>{
-    console.log("then de isUserBcsf: ", isUserBcsf);
     if (isUserBcsf !== null) {
       setGoToDashboard(true);
     }
