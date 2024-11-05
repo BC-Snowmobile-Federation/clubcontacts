@@ -101,7 +101,10 @@ function Login({ onUserLogin }) {
             setGoToDashboard(true);
           }
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error))
+        .finally(()=>{
+          setMakePost(false);
+        })
     }
   }, [makePost, isUserBcsf]);
 
@@ -136,6 +139,7 @@ function Login({ onUserLogin }) {
 
   function handleRequestAccess() {
     setRequestModal(true);
+    setShowErrorModal(false)
   }
 
   return (
@@ -221,19 +225,20 @@ function Login({ onUserLogin }) {
               Sign in with Google
             </span>
           </button>
-          <button
-            id="requestAccess"
-            onClick={handleRequestAccess}
-            className="relative flex mt-4 justify-center items-center montserrat w-60 h-[42px] bg-[#535787] text-white border border-gray-300 rounded-full shadow-md px-6 py-2 text-sm font-medium hover:bg-[#3C3F63] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all"
-          >
-            Request access
-          </button>
         </div>
         {requestModal ? (
           <RequestAccess setRequestModal={setRequestModal} clubs={clubs} />
         ) : null}
         {showErrorModal ? (
-          <ErrorLoginModal setShowErrorModal={setShowErrorModal} />
+          <ErrorLoginModal setShowErrorModal={setShowErrorModal}>
+            <button
+              id="requestAccess"
+              onClick={handleRequestAccess}
+              className="min-w-[120px] ml-2 rounded-lg bg-[#535787] px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-[#3C3F63] transition-all"
+            >
+              Request access
+            </button>
+          </ErrorLoginModal>
         ) : null}
       </div>
     </div>
