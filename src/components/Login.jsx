@@ -95,20 +95,20 @@ function Login({ onUserLogin }) {
           setUserEmail(response.data);
           return fetchUserData(response.data.email);
         })
-        .then(() => {
-          if (isUserBcsf !== null) {
-            setIsLoadingLogin(false);
-            setMakePost(false);
-            setGoToDashboard(true);
-          }
-        })
         .catch((error) => console.log(error))
         .finally(()=>{
           setMakePost(false);
           setIsLoadingLogin(false);
         })
     }
-  }, [makePost, isUserBcsf]);
+  }, [makePost]);
+
+  useEffect(()=>{
+    console.log("then de isUserBcsf: ", isUserBcsf);
+    if (isUserBcsf !== null) {
+      setGoToDashboard(true);
+    }
+  }, [isUserBcsf])
 
   useEffect(() => {
     const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
