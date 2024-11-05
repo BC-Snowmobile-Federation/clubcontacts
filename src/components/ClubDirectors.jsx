@@ -8,6 +8,7 @@ import SaveChangesModal from './SaveChangesModal';
 import ExistingUserModal from './ExistingUserModal';
 import DeleteDirectorModal from './DeleteDirectorModal';
 import { APPS_SCRIPT_URL } from '../constants';
+import { toast } from 'sonner';
 
 // const groupDataById = (data) => {
 //   if (data.length >= 1) {
@@ -185,7 +186,8 @@ const AddDirectorModal = ({
   }
 
   const handleCheckIfUserExists = async () => {
-    await checkIfUserExists().then((resp) => {
+    toast.promise((async () => {
+      const resp = await checkIfUserExists()
       if (resp.status == 'Active') {
         setStatusUserFound('Active');
         setShowExistingUser(true);
@@ -199,9 +201,22 @@ const AddDirectorModal = ({
         setShowExistingUser(true);
         setIsLoading(false);
       } else {
-        handleSubmitUser();
+        toast.promise(handleSubmitUser()
+          ,{
+            loading: 'Submitting user data...',
+            success: 'User data submitted successfully!',
+            error: 'An error occurred while submitting user data.',
+          }
+        )
       }
-    });
+      return resp
+    })(),
+      {
+        loading: 'Checking if user exists...',
+        success: 'User check completed!',
+        error: 'An error occurred while checking user status.',
+      }
+    )
   };
 
   const handleSubmitUser = async () => {
@@ -220,7 +235,7 @@ const AddDirectorModal = ({
     let checkedRoles = roles.filter(
       (role) => document.getElementById(role).checked
     );
-
+    setOpenModal(false);
     for (let role of checkedRoles) {
       const formDataForRole = inputRefs
         .map((ref) => {
@@ -263,7 +278,7 @@ const AddDirectorModal = ({
     await dispatch(fetchData()).then(() => {
       setIsLoading(false);
       // setIsEditing(false);
-      setOpenModal(false);
+      // setOpenModal(false);
     });
   };
 
@@ -815,7 +830,7 @@ const MemberDetail = ({
 
   return (
     <dl className="divide-y divide-gray-500 montserrat">
-      {openEditModal ? (
+      {openEditModal && (
         <EditDirectorModal
           member={member}
           dtValue={dtValue}
@@ -823,16 +838,12 @@ const MemberDetail = ({
           setOpenEditModal={setOpenEditModal}
           setIsEditing={setIsEditing}
         />
-      ) : (
-        <></>
       )}
-      {openDeleteModal ? (
+      {openDeleteModal && (
         <DeleteDirectorModal
           member={member}
           setOpenDeleteModal={setOpenDeleteModal}
         />
-      ) : (
-        <></>
       )}
       <div className="px-4 py-4">
         <div className="">

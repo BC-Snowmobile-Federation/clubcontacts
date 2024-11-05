@@ -11,7 +11,7 @@ import RequestAccess from "./RequestAccess";
 function Login({ onUserLogin }) {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [userInfo, setUserInfo] = useState([]);
-  const [userEmail, setUserEmail] = useState([]);
+  const [userEmail, setUserEmail] = useState(null);
   const [makePost, setMakePost] = useState(false);
   const [goToDashboard, setGoToDashboard] = useState(false);
   const [requestModal, setRequestModal] = useState(false);
@@ -78,6 +78,7 @@ function Login({ onUserLogin }) {
 
   useEffect(() => {
     if (makePost) {
+      setIsLoadingLogin(true);
       const userInfo = JSON.parse(localStorage.getItem("userInfo"));
       axios
         .get(
@@ -94,16 +95,19 @@ function Login({ onUserLogin }) {
           setUserEmail(response.data);
           return fetchUserData(response.data.email);
         })
-        .then(() => {
-          if (isUserBcsf !== null) {
-            setIsLoadingLogin(false);
-            setMakePost(false);
-            setGoToDashboard(true);
-          }
+        .catch((error) => console.log(error))
+        .finally(()=>{
+          setMakePost(false);
+          setIsLoadingLogin(false);
         })
-        .catch((error) => console.log(error));
     }
-  }, [makePost, isUserBcsf]);
+  }, [makePost]);
+
+  useEffect(()=>{
+    if (isUserBcsf !== null) {
+      setGoToDashboard(true);
+    }
+  }, [isUserBcsf])
 
   useEffect(() => {
     const userEmailInStorage = JSON.parse(localStorage.getItem("userEmail"));
@@ -136,6 +140,7 @@ function Login({ onUserLogin }) {
 
   function handleRequestAccess() {
     setRequestModal(true);
+    setShowErrorModal(false)
   }
 
   return (
@@ -221,19 +226,20 @@ function Login({ onUserLogin }) {
               Sign in with Google
             </span>
           </button>
-          <button
-            id="requestAccess"
-            onClick={handleRequestAccess}
-            className="relative flex mt-4 justify-center items-center montserrat w-60 h-[42px] bg-[#535787] text-white border border-gray-300 rounded-full shadow-md px-6 py-2 text-sm font-medium hover:bg-[#3C3F63] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all"
-          >
-            Request access
-          </button>
         </div>
         {requestModal ? (
-          <RequestAccess setRequestModal={setRequestModal} clubs={clubs} />
+          <RequestAccess setRequestModal={setRequestModal} clubs={clubs} userEmail={userEmail}/>
         ) : null}
         {showErrorModal ? (
-          <ErrorLoginModal setShowErrorModal={setShowErrorModal} />
+          <ErrorLoginModal setShowErrorModal={setShowErrorModal}>
+            <button
+              id="requestAccess"
+              onClick={handleRequestAccess}
+              className="min-w-[120px] ml-2 rounded-lg bg-[#535787] px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-[#3C3F63] transition-all"
+            >
+              Request access
+            </button>
+          </ErrorLoginModal>
         ) : null}
       </div>
     </div>

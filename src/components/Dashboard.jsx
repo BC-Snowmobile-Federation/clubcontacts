@@ -9,7 +9,7 @@ import ClubDirectors from "./ClubDirectors";
 import ClubProfile from "./ClubProfile";
 import { useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
-// import Spinner from "./Spinner";
+import Spinner from "./Spinner";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const Dashboard = () => {
     dispatch(fetchClubData());
   }, [dispatch]);
 
-  let { data, clubData } = useSelector((state) => state.reducer);
+  let { data, clubData, loadClubData } = useSelector((state) => state.reducer);
 
   let headers = [
     "Name",
@@ -172,13 +172,23 @@ const Dashboard = () => {
     }
   }, [data, filteredData]);  
 
-  // if (!clubData || clubData.length < 1) {
-  //   return (
-  //     <div className="flex justify-center m-auto items-center">
-  //       <Spinner />
-  //     </div>
-  //   );
-  // }
+  if (loadClubData) {
+    return (
+      <div>
+        <SideMenu
+          setActiveButton={setActiveButton}
+          activeButton={activeButton}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          setShowModal={setShowModal}
+          setBtnId={setBtnId}
+        />
+        <div className="md:pl-[280px] flex h-dvh justify-center m-auto items-center">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;

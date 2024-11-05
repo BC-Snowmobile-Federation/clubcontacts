@@ -6,12 +6,14 @@ import store from "../store.js";
 import { Provider } from "react-redux";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./index.css";
+import { Toaster } from 'sonner'
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <GoogleOAuthProvider clientId="221017514620-u92vs7m1sc2n294j2pv2s1i00gnm77jm.apps.googleusercontent.com" scopes={['email']}>
     <React.StrictMode>
       <Provider store={store}>
         <App />
+        <Toaster />
       </Provider>
     </React.StrictMode>
   </GoogleOAuthProvider>

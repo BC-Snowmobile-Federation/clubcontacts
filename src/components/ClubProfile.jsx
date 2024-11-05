@@ -125,10 +125,6 @@ function ClubProfile({ isBcsf, clubData, uniqueClubValues }) {
       }
     });
 
-    if (filtered.length != 0) {
-      console.log('');
-    }
-
     setFilteredClubs(filtered);
 
     if (postDeleteClub == true && !isLoadingPost) {
