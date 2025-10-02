@@ -45,7 +45,9 @@ const AdminAccess = () => {
   async function request() {
     let clubToRequest = clubToMakeAdmin.current.value;
     let userPhoneNumber = userPhoneNum.current.value;
-    let url = `https://script.google.com/macros/s/AKfycbz0voHFfq9AWnCqtwKKBdHDHFmdGrnbvUAiqdYY6H42T1YP-slsOKT1nzENqCR1dul5/exec`;
+    // let url = `https://script.google.com/macros/s/AKfycbz0voHFfq9AWnCqtwKKBdHDHFmdGrnbvUAiqdYY6H42T1YP-slsOKT1nzENqCR1dul5/exec`;
+    let url = `https://script.google.com/macros/s/AKfycbyIFIDagEQnkF3YrRICwgmhAq6gGycMpEHTF9oXYkpqx0h4uAmaVF46nhI0zHYW9eC-NA/exec`;
+
     let params;
     let errors = {};
     if (userData) {

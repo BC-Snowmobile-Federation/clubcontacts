@@ -10,7 +10,16 @@ const AddGWSGroup = ({ setAddGwsGroup, clubName, setOpenAddClubModal }) => {
   function handleSendRequest() {
     setIsLoadingRequest(true);
     let gwsEmail = gwsGroupRef.current.value;
-    return axios
+    // return axios
+    //   .get(
+    //     `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=addGwsGroupTpSheet&clubName=${encodeURI(clubName)}&gwsEmail=${encodeURI(gwsEmail)}`
+    //   )
+    //   .then((response) => {
+    //     setIsLoadingRequest(false);
+    //     setRequestSent(true);
+    //     setOpenAddClubModal(false)
+    //   });
+      return axios
       .get(
         `https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=addGwsGroupTpSheet&clubName=${encodeURI(clubName)}&gwsEmail=${encodeURI(gwsEmail)}`
       )

@@ -13,11 +13,12 @@ const initialState = {
 export const fetchData = createAsyncThunk("getData/fetchData", async () => {
   let email = JSON.parse(localStorage.getItem("userEmail"));
   let user = email.email;
+  // let url =
+  //   "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=getAllData&activeUser=" + user;
   let url =
-    "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=getAllData&activeUser=" + user;
+  "https://script.google.com/macros/s/AKfycbyIFIDagEQnkF3YrRICwgmhAq6gGycMpEHTF9oXYkpqx0h4uAmaVF46nhI0zHYW9eC-NA/exec?action=getAllData&activeUser=" + user;
   const response = await fetch(url);
   const data = await response.json();
-  // console.log(data.response)
   return data.response;
 });
 
@@ -25,8 +26,10 @@ export const fetchClubData = createAsyncThunk("getData/fetchClubData", async () 
   let isBcsf = JSON.parse(localStorage.getItem("isBcsf"));
   let email = JSON.parse(localStorage.getItem("userEmail"));
   let user = email.email;
+  // let url =
+  //   "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=fetchClubsProfileData&isBcsf=" + isBcsf + "&user=" + user;
   let url =
-    "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=fetchClubsProfileData&isBcsf=" + isBcsf + "&user=" + user;
+  "https://script.google.com/macros/s/AKfycbyIFIDagEQnkF3YrRICwgmhAq6gGycMpEHTF9oXYkpqx0h4uAmaVF46nhI0zHYW9eC-NA/exec?action=fetchClubsProfileData&isBcsf=" + isBcsf + "&user=" + user;
   const response = await fetch(url);
   const data = await response.json();
   return data.response;
@@ -37,8 +40,10 @@ export const clear = createAsyncThunk("getData/clear", async () => {
 });
 
 export const fetchAllClubs = createAsyncThunk("getData/fetchAllClubs", async () => {
+  // let url =
+  //   "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=fetchAllClubs";
   let url =
-    "https://script.google.com/macros/s/AKfycbzS8V3isIRn4Ccd1FlvxMXsNj_BFs_IQe5r7Vr5LWNVbX2v1mvCDCYWc8QDVssxRj8k3g/exec?action=fetchAllClubs";
+  "https://script.google.com/macros/s/AKfycbyIFIDagEQnkF3YrRICwgmhAq6gGycMpEHTF9oXYkpqx0h4uAmaVF46nhI0zHYW9eC-NA/exec?action=fetchAllClubs";
   const response = await fetch(url);
   const data = await response.json();
   return data.response;
