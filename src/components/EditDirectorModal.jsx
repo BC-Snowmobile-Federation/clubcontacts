@@ -339,11 +339,12 @@ const EditDirectorModal = ({
 
   const handleFormatNumber = (e) => {
     const value = e.target.value;
-    setPhone((prevPhone) => normalizeInput(value, prevPhone));
+    const newPhone = normalizeInput(value, phone);
+    setPhone(newPhone);
     setPhonedSet(true);
     setModifiedValues((prevData) => ({
       ...prevData,
-      ['editphoneNumber']: phone,
+      ['editphoneNumber']: newPhone,
       email: member[2],
     }));
   };
